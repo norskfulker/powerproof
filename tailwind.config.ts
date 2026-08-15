@@ -1,0 +1,253 @@
+import type { Config } from "tailwindcss";
+
+export default {
+  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
+  prefix: "",
+  theme: {
+    container: {
+      center: true,
+      padding: "2rem",
+      screens: { "2xl": "1200px" },
+    },
+    extend: {
+      maxWidth: {
+        platform: "1200px",
+        landing: "1200px",
+        "landing-lg": "1400px",
+        "landing-xl": "1600px",
+      },
+      screens: {
+        /** Design-reference min-widths (pair with `max-[389px]:` for sub-390). */
+        "layout-xs": "390px",
+        "layout-sm": "810px",
+        "layout-md": "1200px",
+      },
+      spacing: {
+        "section-gap": "var(--section-gap)",
+        "section-header-gap": "var(--section-header-gap)",
+        "item-gap": "var(--item-gap)",
+        "sub-item-gap": "var(--sub-item-gap)",
+        "card-padding": "var(--card-padding)",
+        "card-padding-lg": "var(--card-padding-lg)",
+      },
+      // TYPOGRAPHY RULE: Only use the standard Tailwind text-* scale.
+      // Never add custom fontSize values here.
+      // See src/lib/typeScale.ts for the official scale and migration map.
+      // Bespoke text-[Npx] classes are banned — use the scale above.
+      fontSize: {
+        "page-title": ["var(--text-page-title)", { lineHeight: "1.2", fontWeight: "700", fontFamily: "var(--font-display)", letterSpacing: "var(--tracking-title)" }],
+        "section-header": ["var(--text-section-header)", { lineHeight: "1.4", fontWeight: "500", fontFamily: "var(--font-display)", letterSpacing: "var(--tracking-heading)" }],
+        body: ["var(--text-body)", { lineHeight: "1.5" }],
+        caption: ["var(--text-caption)", { lineHeight: "1.4" }],
+      },
+      colors: {
+        border: "hsl(var(--border))",
+        "border-default": "hsl(var(--border-default))",
+        "border-subtle": "hsl(var(--border-subtle))",
+        "border-strong": "hsl(var(--border-strong))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        /** Primary-tinted text for emphasis on cards (must be defined in `.dark` too). */
+        "primary-ink": "hsl(var(--primary-ink))",
+        "surface": "hsl(var(--bg-surface))",
+        "surface-alt": "hsl(var(--bg-surface-alt))",
+        "surface-hover": "hsl(var(--bg-hover))",
+        "bg-sunken": "hsl(var(--bg-sunken))",
+        "bg-elevated": "hsl(var(--bg-elevated))",
+        "bg-canvas": "hsl(var(--bg-canvas))",
+        "canvas-accent": "hsl(var(--canvas-accent))",
+        blue: {
+          50: "hsl(var(--blue-50))",
+          100: "hsl(var(--blue-100))",
+          200: "hsl(var(--blue-200))",
+          300: "hsl(var(--blue-300))",
+          400: "hsl(var(--blue-400))",
+          500: "hsl(var(--blue-500))",
+          600: "hsl(var(--blue-600))",
+          700: "hsl(var(--blue-700))",
+          800: "hsl(var(--blue-800))",
+          900: "hsl(var(--blue-900))",
+        },
+        "navbar-bg": "hsl(var(--navbar-bg) / 0.92)",
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          50: "hsl(var(--primary-50))",
+          100: "hsl(var(--primary-100))",
+          200: "hsl(var(--primary-200))",
+          300: "hsl(var(--primary-300))",
+          400: "hsl(var(--primary-400))",
+          500: "hsl(var(--primary-500))",
+          600: "hsl(var(--primary-600))",
+          700: "hsl(var(--primary-700))",
+          800: "hsl(var(--primary-800))",
+          900: "hsl(var(--primary-900))",
+        },
+        "primary-hover": "hsl(var(--primary-hover))",
+        "primary-subtle": "hsl(var(--primary-subtle) / 0.08)",
+        "saffron-50": "hsl(var(--saffron-50))",
+        "saffron-100": "hsl(var(--saffron-100))",
+        "saffron-400": "hsl(var(--saffron-400))",
+        "saffron-500": "hsl(var(--saffron-500))",
+        "saffron-600": "hsl(var(--saffron-600))",
+        "red-50": "hsl(var(--red-50))",
+        "red-100": "hsl(var(--red-100))",
+        "red-200": "hsl(var(--red-200))",
+        "red-600": "hsl(var(--red-600))",
+        "red-700": "hsl(var(--red-700))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          bg: "hsl(var(--success-bg))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          bg: "hsl(var(--warning-bg))",
+        },
+        "semantic-positive": "hsl(var(--semantic-positive))",
+        text: {
+          primary: "hsl(var(--text-primary))",
+          secondary: "hsl(var(--text-secondary))",
+          tertiary: "hsl(var(--text-tertiary))",
+          disabled: "hsl(var(--text-disabled))",
+        },
+        scrim: "hsl(var(--scrim))",
+        "status-cancel": {
+          bg: "hsl(var(--status-cancel-bg))",
+          fg: "hsl(var(--status-cancel-fg))",
+        },
+        "status-trial": {
+          bg: "hsl(var(--status-trial-bg))",
+          fg: "hsl(var(--status-trial-fg))",
+        },
+        "status-active": {
+          bg: "hsl(var(--status-active-bg))",
+        },
+        "status-promo": {
+          bg: "hsl(var(--status-promo-bg))",
+          fg: "hsl(var(--status-promo-fg))",
+        },
+        "status-danger": {
+          surface: "hsl(var(--status-danger-surface))",
+          border: "hsl(var(--status-danger-border))",
+          text: "hsl(var(--status-danger-text))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        // Badge semantic
+        "badge-trending-bg": "hsl(var(--badge-trending-bg))",
+        "badge-trending-text": "hsl(var(--badge-trending-text))",
+        "badge-hot-bg": "hsl(var(--badge-hot-bg))",
+        "badge-hot-text": "hsl(var(--badge-hot-text))",
+        "badge-low-bg": "hsl(var(--badge-low-bg))",
+        "badge-low-text": "hsl(var(--badge-low-text))",
+        "badge-new-bg": "hsl(var(--badge-new-bg))",
+        "badge-new-text": "hsl(var(--badge-new-text))",
+        "badge-global-bg": "hsl(var(--badge-global-bg))",
+        "badge-global-text": "hsl(var(--badge-global-text))",
+        sidebar: {
+          DEFAULT: "hsl(var(--sidebar-background))",
+          foreground: "hsl(var(--sidebar-foreground))",
+          primary: "hsl(var(--sidebar-primary))",
+          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
+          accent: "hsl(var(--sidebar-accent))",
+          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
+          border: "hsl(var(--sidebar-border))",
+          ring: "hsl(var(--sidebar-ring))",
+        },
+      },
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+        xl: "calc(var(--radius) + 8px)",
+        "2xl": "calc(var(--radius) + 12px)",
+      },
+      letterSpacing: {
+        heading: "var(--tracking-heading)",
+        title: "var(--tracking-title)",
+        description: "var(--tracking-description)",
+        body: "var(--tracking-body)",
+      },
+      fontFamily: {
+        sans: ["var(--font-sans)"],
+        body: ["var(--font-body)"],
+        cal: ["var(--font-inter)"],
+        system: ["var(--font-system)"],
+        poppins: ["var(--font-inter)"],
+        "elms-sans": ["var(--font-inter)"],
+        "elm-sans": ["var(--font-inter)"],
+        instrument: ["var(--font-inter)"],
+        "instrument-serif": ["var(--font-inter)"],
+        serif: ["var(--font-serif)"],
+        accent: ["var(--font-accent)"],
+        description: ["var(--font-description)"],
+        mono: ["ui-monospace", "SFMono-Regular", "Menlo", "Monaco", "Consolas", "monospace"],
+        display: ["var(--font-display)"],
+      },
+      /** Named easings avoid ambiguous `ease-[cubic-bezier(...)]` in Tailwind v4. */
+      transitionTimingFunction: {
+        nav: "cubic-bezier(0.25, 0.1, 0.25, 1)",
+        spring: "cubic-bezier(0.34, 1.56, 0.64, 1)",
+      },
+      keyframes: {
+        "accordion-down": {
+          from: { height: "0", opacity: "0" },
+          to: { height: "var(--radix-accordion-content-height)", opacity: "1" },
+        },
+        "accordion-up": {
+          from: { height: "var(--radix-accordion-content-height)", opacity: "1" },
+          to: { height: "0", opacity: "0" },
+        },
+        "accordion-header-in": {
+          from: { transform: "scale(0.985)", opacity: "0.92" },
+          to: { transform: "scale(1)", opacity: "1" },
+        },
+        "fadeSlideUp": {
+          from: { opacity: "0", transform: "translateY(16px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "popover-open": {
+          from: { opacity: "0", transform: "scaleY(0.86) scaleX(0.94)" },
+          to: { opacity: "1", transform: "scaleY(1) scaleX(1)" },
+        },
+        "popover-close": {
+          from: { opacity: "1", transform: "scaleY(1) scaleX(1)" },
+          to: { opacity: "0", transform: "scaleY(0.86) scaleX(0.94)" },
+        },
+      },
+      animation: {
+        "accordion-down": "accordion-down 0.38s cubic-bezier(0.16, 1, 0.3, 1)",
+        "accordion-up": "accordion-up 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        "accordion-header-in": "accordion-header-in 0.32s cubic-bezier(0.16, 1, 0.3, 1)",
+        "fade-slide-up": "fadeSlideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "popover-open": "popover-open 0.22s cubic-bezier(0.16, 1, 0.3, 1) both",
+        "popover-close": "popover-close 0.16s cubic-bezier(0.4, 0, 0.2, 1) both",
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate")],
+} satisfies Config;

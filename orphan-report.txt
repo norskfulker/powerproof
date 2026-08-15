@@ -1,0 +1,35 @@
+# Detailed reference map
+
+Reachable: 619 / 668
+
+## Top 30 most-imported files
+ 292  src/lib/utils.ts
+ 194  src/lib/icons.tsx
+  87  src/lib/supabase.ts
+  69  src/components/ui/button.tsx
+  59  src/contexts/AuthContext.tsx
+  39  src/components/ui/sonner.tsx
+  35  src/lib/iconClassNames.ts
+  32  src/lib/authLanding.ts
+  32  src/hooks/useCurrency.ts
+  31  src/lib/discoverHeroRoutes.ts
+  31  src/lib/opportunityCardClasses.ts
+  27  src/components/ui/card.tsx
+  26  src/components/discover/discoverHeroTokens.ts
+  24  src/components/opportunity/detail/OpportunityAccordionHeaderRow.tsx
+  23  src/components/opportunity/detail/OpportunityDetailAccordion.tsx
+  22  src/components/ui/tooltip.tsx
+  22  src/components/ui/badge.tsx
+  22  src/hooks/useBreakpoint.ts
+  22  src/types/database.ts
+  21  src/lib/byok.ts
+  19  src/types/research.ts
+  19  src/lib/sourcingTypes.ts
+  18  src/components/admin/adminUi.tsx
+  18  src/lib/aiModels.ts
+  18  src/hooks/useOpportunityEditSectionAccordion.ts
+  17  src/lib/researchStyles.ts
+  17  src/lib/playbookTypes.ts
+  17  src/pages/roadmap/roadmapTypes.ts
+  16  src/lib/sidebarWorkspaceNav.ts
+  16  src/components/ui/accordion.tsx

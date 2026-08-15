@@ -1,0 +1,21 @@
+Total src files: 668
+Reachable: 619
+Orphans (no static reacher): 52
+
+Orphans by folder:
+  src/components/  (2)
+  src/components/admin/  (4)
+  src/components/discover/  (1)
+  src/components/investors/  (4)
+  src/components/landing/  (1)
+  src/components/landing/preview/  (5)
+  src/components/layout/  (2)
+  src/components/opportunity/detail/  (5)
+  src/components/research/  (2)
+  src/components/roadmap/  (1)
+  src/components/skeletons/  (1)
+  src/components/ui/  (5)
+  src/components/warroom/  (1)
+  src/hooks/  (2)
+  src/lib/  (9)
+  src/lib/landing/  (7)

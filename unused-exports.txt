@@ -1,0 +1,2116 @@
+# Files with unused named exports (Reachable files only)
+# Total: 1324 unused exports across 395 files
+
+## src/lib/landing/data.ts (55)
+  Opportunity
+  PlatformStatus
+  PlatformPillar
+  FooterColumn
+  MarketingSocialPlatform
+  MarketingSocialLink
+  MARKETING_SOCIAL_LINKS
+  LANDING_PLATFORM_BADGE
+  LandingProductNavIcon
+  LandingProductNavLink
+  LANDING_PRODUCT_SIGN_IN_COPY
+  LandingDirectNavLink
+  LANDING_DIRECT_NAV_LINKS
+  LANDING_GITBOOK_DOCS_URL
+  LANDING_DOCS_NAV_LINK
+  LANDING_OPPORTUNITIES
+  TYPICAL_SETUP_MIN_USD
+  TYPICAL_SETUP_MAX_USD
+  TYPICAL_SETUP_MIN_INR
+  TYPICAL_SETUP_MAX_INR
+  LandingStatRow
+  LANDING_STATS
+  PLATFORM_PILLARS
+  HOME_QUICK_FEATURES_SECTION
+  HomeQuickFeatureIcon
+  HomeQuickFeatureHighlight
+  HomeQuickFeature
+  HOME_QUICK_FEATURES
+  HOME_AUDIENCES_SECTION
+  LandingAudienceId
+  LandingAudience
+  HOME_AUDIENCES
+  PlatformFeatureModule
+  PLATFORM_FEATURE_MODULES
+  PlatformWorkflowStep
+  PLATFORM_WORKFLOW_STEPS
+  PlatformDataPoint
+  PLATFORM_DATA_TRANSPARENCY
+  LandingTestimonial
+  HOME_TESTIMONIALS_SECTION
+  landingTestimonialInitials
+  HOME_TESTIMONIALS
+  LandingHomeFaq
+  PricingIncludedFeature
+  PRICING_INCLUDED_FEATURES
+  PricingTrustStripItem
+  PRICING_TRUST_STRIP
+  PRICING_FAQS_SECTION
+  PRICING_FAQS
+  HOME_FAQS_SECTION
+  HOME_FAQS
+  APP_FOOTER_LINKS
+  FOOTER_LINKS
+  formatRupeeRange
+  formatMonthlyProfitRange
+
+## src/components/discover/discoverHeroTokens.ts (45)
+  discoverHeroTabsHeaderClassName
+  discoverHeroTabsScrollRailClassName
+  discoverHeroModeTabsListClassName
+  discoverHeroModeTabsBoxBodyClassName
+  discoverHeroModeTabsRowClassName
+  discoverHeroMobileModeCardsInsideFluidClassName
+  discoverHeroTabsListClassName
+  discoverHeroTabDividerClassName
+  discoverHeroTabTriggerClassName
+  discoverHeroItchTabTriggerClassName
+  discoverHeroItchWorkspaceTabTriggerClassName
+  discoverHeroOutlineBlueTabTriggerClassName
+  discoverHeroPrimaryModeTabTriggerClassName
+  discoverHeroWorkspacePanelRowClassName
+  discoverHeroFluidSegmentTextClassName
+  discoverHeroFluidBoxPaddingClassName
+  discoverHeroFluidGlassSurfaceClassName
+  discoverHeroComposerSurfaceClassName
+  discoverHeroComposerGlassWrapClassName
+  discoverHeroComposerInnerShellClassName
+  discoverHeroFluidComposerWrapClassName
+  discoverHeroMobileModeMenuGlassShellClassName
+  discoverHeroMobileModeMenuItemClassName
+  discoverHeroMobileModeMenuItemActiveClassName
+  discoverHeroMobileModeMenuItemInactiveClassName
+  discoverHeroFluidChipsInsideClassName
+  discoverHeroFluidComposerColumnClassName
+  discoverHeroButtonClassName
+  discoverHeroResearchFluidBandClassName
+  discoverHeroMobileViewportInsetClassName
+  discoverHeroFluidCardMinHeightMobileViewportClassName
+  discoverHeroFluidCardMinHeightBrowseClassName
+  discoverHeroFluidCardMinHeightChipsClassName
+  discoverHeroFluidCardMobileShellClassName
+  discoverHeroFluidCardBodyMobileClassName
+  discoverHeroResearchFluidInnerClassName
+  discoverHeroFluidCardBodyClassName
+  discoverHeroFluidInnerCenterWrapClassName
+  discoverHeroFluidMobileBottomStackClassName
+  discoverHeroFluidMobileComposerOrderClassName
+  discoverHeroFluidMobileChipsOrderClassName
+  discoverHeroResearchFluidTopClusterClassName
+  discoverHeroCenteredBlockClassName
+  discoverHeroLogoAboveGreetingClassName
+  discoverHeroTabsInnerStackClassName
+
+## src/lib/icons.tsx (42)
+  RemixIcon
+  RemixIconProps
+  ZoomIn
+  Bell
+  Bookmark
+  BookmarkCheck
+  Bot
+  BriefcaseBusiness
+  CalendarDays
+  CircleCheck
+  CircleDot
+  Coffee
+  Diamond
+  Database
+  Facebook
+  FileTextIcon
+  FolderOpen
+  GripVertical
+  Inbox
+  Instagram
+  LayoutGrid
+  Leaf
+  List
+  MessageSquareText
+  MessageSquareWarning
+  MonitorDown
+  Newspaper
+  PauseCircle
+  Phone
+  Plug
+  Repeat2
+  Reply
+  SearchIcon
+  Send
+  SettingsIcon
+  Share
+  UserCircle
+  UserRound
+  Youtube
+  CreditsIcon
+  CreditsFigure
+  CreditsCoupon
+
+## src/types/database.ts (37)
+  Role
+  OpportunityStatus
+  BadgeType
+  EaseLevel
+  Source
+  PaymentStatus
+  MachineryItem
+  RawMaterialItem
+  RevenueStreamModel
+  RevenueStreamFrequency
+  RevenueStream
+  MarketingChannelType
+  MarketingChannel
+  MarketingBudgetMilestoneChannel
+  MarketingBudgetMilestone
+  MarketingPsychologyLever
+  MarketingStrategy
+  ResearchCompetitors
+  ResearchDemandTrend
+  ResearchSpaceLocation
+  CalculatorBillingModel
+  OpportunityCalculatorConfig
+  DbWebsiteScanHistory
+  DbCategory
+  SetupCostDerivation
+  ProfitDerivation
+  EffortScorecard
+  DbOpportunity
+  SaturationLevel
+  PainPoint
+  MarketVerdict
+  FutureOutlook
+  DbUserOpportunity
+  ResearchTask
+  Payment
+  PlatformSetting
+  Project
+
+## src/components/opportunity/detail/detailSectionClasses.ts (32)
+  opportunityDetailEqualBadgeFluidHeroClassName
+  opportunityDetailFluidGlassSurfaceClassName
+  opportunityDetailPageBackgroundClass
+  opportunityDetailPageShellClassName
+  opportunityDetailFluidHeroClassName
+  opportunityDetailFluidGlassBadgeClassName
+  opportunityDetailFluidMetricCardClassName
+  opportunityDetailFluidHeroTitleClassName
+  opportunityDetailFluidHeroSubtitleClassName
+  opportunityDetailFluidHeroDarkTitleClassName
+  opportunityDetailFluidHeroDarkSubtitleClassName
+  opportunityDetailFluidDarkGlassSurfaceClassName
+  opportunityDetailFluidGlassActionClassName
+  opportunityDetailFluidGlassEditButtonClassName
+  opportunityDetailFluidDarkGlassEditButtonClassName
+  opportunityDetailFluidGlassActionActiveClassName
+  opportunityAccordionTitleClass
+  opportunityAccordionDescriptionClass
+  opportunityDetailBadgeSize
+  opportunityDetailInlineBadgeClass
+  opportunityDetailInnerRadiusClass
+  opportunityDetailAccordionItemClass
+  opportunityMetricsGridClass
+  opportunityDetailPanelClass
+  opportunityCardRadiusClass
+  opportunityBentoGridClass
+  OpportunityBentoSpan
+  opportunityBentoCellClass
+  opportunityMetricCardsGridClass
+  opportunitySectionHeadingClass
+  opportunitySectionHeaderRowClass
+  opportunitySectionHeaderRowLooseClass
+
+## src/lib/websiteScannerApi.ts (29)
+  ScannerSectionKey
+  SeoAuditFinding
+  SeoAudit
+  BusinessAudit
+  CompetitorMention
+  CompetitorAudit
+  RoadmapStep
+  RoadmapAudit
+  CrawledPageSummary
+  CrawlSummary
+  Stage
+  SwitchingCosts
+  StageEstimate
+  SwitchingCostsEstimate
+  ThreatCompetitor
+  CompetitorAngle
+  BusinessInsights
+  CompetitorInsights
+  Insights
+  ScanProgressStatus
+  ScanSectionId
+  WebsiteScanReport
+  ScanWebsiteOptions
+  ScanWebsiteError
+  WebsiteScanStreamEvent
+  function
+  normalizeUrlInput
+  WebsiteScanHistoryRow
+  WebsiteScanHistorySummary
+
+## src/lib/previewResearch.ts (24)
+  isFrontendVague
+  PREVIEW_SESSION_KEY
+  PREVIEW_DATA_KEY
+  PREVIEW_QUERY_KEY
+  PREVIEW_PENDING_QUERY_KEY
+  PREVIEW_RATE_TIMESTAMPS_KEY
+  PREVIEW_MAX_PER_HOUR
+  PREVIEW_MIN_QUERY_LENGTH
+  PREVIEW_RATE_WINDOW_MS
+  PREVIEW_RATE_LIMIT_MESSAGE
+  PREVIEW_PLACEHOLDERS
+  PreviewQueryValidation
+  validatePreviewQuery
+  getPreviewRateLimitInfo
+  recordPreviewRequest
+  tryConsumePreviewRequestSlot
+  canStartPreviewRequest
+  setPreviewPendingQuery
+  consumePendingPreviewQuery
+  readStoredPreview
+  persistPreviewSession
+  refundLastPreviewRequestSlot
+  function
+  isPreviewSignInIntent
+
+## src/lib/designTokens.ts (19)
+  SIDEBAR_NAV_ACTIVE_BG
+  SIDEBAR_NAV_HOVER_BG
+  SURFACE_FLAT
+  SURFACE_RAISED
+  SURFACE_DROPDOWN
+  RADIUS_SHARP
+  RADIUS_DEFAULT
+  RADIUS_XL
+  RADIUS_FULL
+  NAV_ITEM_INTERACTIVE
+  PILL_BASE
+  PILL_TRANSITION
+  PILL_PRESS
+  ROW_HOVER_CLASS
+  ROW_ACTIVE_CLASS
+  CARD_HOVER_CLASS
+  ICON_SIZE_XS
+  ICON_SIZE_MD
+  ICON_SIZE_LG
+
+## src/lib/sidebarWorkspaceNav.ts (19)
+  SCANNER_DETAIL_BASE_PATH
+  SidebarWorkspaceNavId
+  SidebarWorkspaceNavItem
+  SIDEBAR_ROOM_NAV_IDS
+  RoomComposerMode
+  SIDEBAR_DISCOVER_NAV_IDS
+  DISCOVER_HERO_SIDEBAR_TAB_VALUES
+  MOBILE_BOTTOM_NAV_IDS
+  SIDEBAR_RETIRED_NAV_IDS
+  ADMIN_ONLY_NAV_IDS
+  SIDEBAR_HIDDEN_NAV_IDS
+  WorkspaceFeatureAccess
+  hasPaidWorkspaceToolsUnlocked
+  SIDEBAR_ROOM_NAV
+  SIDEBAR_PRIMARY_NAV
+  SIDEBAR_DISCOVER_NAV
+  MOBILE_MENU_WORKSPACE_NAV
+  MOBILE_MENU_ROOM_NAV
+  MOBILE_MENU_DISCOVER_NAV
+
+## src/types/research.ts (16)
+  ClarifyQuestion
+  ClarifyAnswer
+  ClarifyRound
+  ClarifyNeedsMoreResponse
+  ClarifyReadyResponse
+  ClarifyResearchPromptResponse
+  ClarificationDraftStatus
+  ClarificationDraft
+  SaturationData
+  LocationTierSuitability
+  LocationTier
+  LocationTiers
+  ExpertTipStructured
+  UserResearchOpportunityFields
+  parseStringArrayField
+  parseLocationTiers
+
+## src/lib/opportunityEditChat.ts (15)
+  EditChatConfidence
+  EditChatQuestion
+  EditChatSuggestion
+  EditChatChatResponse
+  EditChatConfirmResponse
+  EditChatMessageResponse
+  EditChatQuestionsResponse
+  EditChatCompleteResponse
+  EditChatCancelledResponse
+  EditChatAnswerResponse
+  EditChatNewSessionResponse
+  EditChatHistorySession
+  EditChatHistoryResponse
+  scrollToOpportunitySection
+  function
+
+## src/components/discover/DiscoverHeroBox.tsx (14)
+  discoverHeroBoxOuterClassName
+  discoverHeroBoxInnerSurfaceClassName
+  discoverHeroBoxSurfaceClassName
+  discoverHeroBoxStackClassName
+  discoverHeroWorkspaceCardShellClassName
+  discoverHeroBoxHeaderClassName
+  discoverHeroBoxDescriptionClassName
+  discoverHeroBoxBodyClassName
+  discoverHeroBoxInnerClassName
+  discoverHeroBoxSearchInputClassName
+  discoverHeroBoxSearchInputInlineClassName
+  discoverHeroBoxSearchInputInlineWrapClassName
+  DiscoverHeroBoxSearchInput
+  DiscoverHeroBoxEmpty
+
+## src/lib/aiModels.ts (13)
+  AIModelId
+  POWERPROOF_AI_MODEL_LABELS
+  PREFERRED_AI_MODEL_VALUES
+  PLAYBOOK_BASE_CREDIT_COST
+  isValidAiModelId
+  powerproofComposerModelLabel
+  RESEARCH_MODEL_DISPLAY
+  WAR_ROOM_MODEL_DISPLAY
+  powerproofAiModelLabel
+  PONDER_TASK_BASE_CREDITS
+  PonderTaskType
+  getPonderTaskCreditCost
+  getMinPonderTaskCreditCost
+
+## src/lib/marketTestTypes.ts (12)
+  MARKET_TEST_AI_MODEL_CREDIT_COSTS
+  MARKET_TEST_CREDIT_COST
+  marketTestModelLabel
+  MarketTestVerdict
+  DemandSignalStrength
+  RedFlagSeverity
+  MarketTestDemandSignal
+  MarketTestRedFlag
+  MarketTestPastFailure
+  MarketTestPastSuccess
+  MarketTestResult
+  MarketTestStreamEvent
+
+## src/lib/platformLayout.ts (12)
+  PLATFORM_MAX_WIDTH_PX
+  appShellInsetXClass
+  appShellInsetXOnlyClass
+  appSidebarLogoHeaderHeightClass
+  APP_SIDEBAR_MOBILE_MAX_WIDTH_PX
+  appStickyChromeHeaderClass
+  appMobileOnlyClass
+  appDesktopOnlyClass
+  pageSectionYClass
+  pageTitleClass
+  adminStatGridClass
+  platformContainerWithPaddingClass
+
+## src/lib/playbookTypes.ts (12)
+  BriefingCompetitor
+  BriefingResult
+  IntelPayload
+  InferredContext
+  PlaybookQuestionsResponse
+  PlaybookPhaseName
+  PlaybookRedFlag
+  PlaybookStep
+  ThirtyDaySprintObject
+  UserPlaybook
+  WarRoomExtractedContext
+  GeneratePlaybookDonePayload
+
+## src/lib/warroomEditChat.ts (12)
+  WarroomEditTarget
+  WARROOM_SECTION_LABELS
+  WarroomEditChatResponse
+  WarroomEditConfirmFlatResponse
+  WarroomEditConfirmStepsResponse
+  WarroomEditConfirmResponse
+  WarroomEditMessageResponse
+  WarroomEditQuestionsResponse
+  WarroomEditCompleteResponse
+  WarroomEditCancelledResponse
+  WarroomEditAnswerResponse
+  function
+
+## src/lib/landing/landingAiTiers.ts (11)
+  LandingAiTierId
+  LandingAiProviderId
+  LandingAiTier
+  LandingAiProvider
+  LANDING_AI_TIER_SECTION
+  LANDING_AI_PROVIDERS
+  LANDING_AI_TIERS
+  LandingAiRoutePoint
+  landingAiDirectRoutePath
+  landingAiRoutePath
+  landingAiAnchorPoint
+
+## src/components/admin/AnalyticsComponents.tsx (10)
+  DailyActivity
+  BUDGET_LABELS
+  SectionHeader
+  KPICard
+  PlanBadge
+  OppRow
+  CatRow
+  ContentHealthCard
+  ActivityChart
+  AnalyticsSkeleton
+
+## src/components/shared/roomHeroCardStyles.ts (10)
+  RoomHeroCardAccent
+  RoomHeroCardHoverBorderTone
+  RoomHeroCardShellOptions
+  roomHeroCardHoverBorderClassName
+  roomHeroCardShellClassName
+  roomHeroCardActivateProps
+  roomHeroCardPaddingClassName
+  roomHeroCardDraftStatusChipClassName
+  roomHeroCardDraftShellClassName
+  roomHeroCardStatusBadgeClassName
+
+## src/components/ui/input.tsx (10)
+  InputHelperVariant
+  InputSize
+  InputTone
+  CANONICAL_RADIUS
+  CANONICAL_HEIGHT_DEFAULT
+  CANONICAL_HEIGHT_COMPACT
+  CANONICAL_PADDING_DEFAULT
+  CANONICAL_PADDING_COMPACT
+  CANONICAL_TEXT_DEFAULT
+  CANONICAL_TEXT_COMPACT
+
+## src/hooks/useAdminAnalytics.ts (10)
+  AdminAnalyticsData
+  UserStat
+  FeatureKey
+  ResearchAnalytics
+  WarRoomAnalytics
+  RoadmapAnalytics
+  SourcingAnalytics
+  MarketTestAnalytics
+  ItchAnalytics
+  FeatureAnalyticsData
+
+## src/lib/appBrandingTheme.ts (10)
+  AppBranding
+  BRANDING_ID
+  BRANDING_LS_KEY
+  POWERPROOF_BRAND_LOGO_URL
+  defaultBranding
+  BrandingLogoKey
+  readStoredBranding
+  persistBranding
+  hydrateBrandingFromLocalStorageSync
+  shouldReplaceBranding
+
+## src/lib/clarifyNav.ts (10)
+  ClarifyNavPhase
+  ClarifyNavItemKind
+  ClarifyNavItemStatus
+  ClarifyNavItem
+  ClarifyNavModel
+  truncateClarifyLabel
+  clarifyQuestionNavId
+  clarifyRoundNavId
+  buildQuestionNavItems
+  BuildClarificationNavModelInput
+
+## src/lib/discoverHeroRoutes.ts (10)
+  DiscoverHeroTab
+  ROOM_ROUTE
+  ROOM_MODE_PARAM
+  ROOM_BROWSE_PARAM
+  DiscoverBrowseView
+  ARSENAL_VIEW_PARAM
+  WAR_ROOM_ROUTE
+  ClarifyFlowKind
+  isLegacyArsenalModeParam
+  discoverHeroTabFromLegacyPath
+
+## src/lib/landing/legalContent.tsx (10)
+  LEGAL_LAST_UPDATED
+  LEGAL_CONTACT_EMAIL
+  SUPPORT_EMAIL
+  GRIEVANCE_EMAIL
+  PLATFORM_NAME
+  PLATFORM_URL
+  SUPPORTED_COUNTRY_NAMES
+  PrivacyPolicyContent
+  TermsOfServiceContent
+  DisclaimerContent
+
+## src/lib/researchDepthTypes.ts (10)
+  FundingOptionType
+  FundingOptionsData
+  RiskMatrixRiskItem
+  RiskMatrixData
+  UnitEconomicsDeepData
+  ToolStackItem
+  SaturationLevel
+  PainPoint
+  MarketVerdict
+  FutureOutlook
+
+## src/lib/subscriptionStatus.ts (10)
+  SubscriptionFeatureLocks
+  SubscriptionUsageItem
+  SubscriptionUsageBucket
+  SubscriptionUsage
+  SubscriptionChatStatus
+  PendingSubscription
+  ActiveSubscriptionStatus
+  InactiveSubscriptionStatus
+  SubscriptionStatus
+  TrialSeverity
+
+## src/lib/landing/heroCopyVariants.ts (9)
+  LANDING_SEO_TITLE
+  LANDING_SEO_DESCRIPTION
+  LANDING_HERO_HEADLINE
+  LANDING_HERO_DESCRIPTION
+  LANDING_HERO_JOINED_MIN
+  LANDING_HERO_JOINED_MAX
+  pickLandingHeroJoinedCount
+  landingHeroSeoTitle
+  landingHeroSeoDescription
+
+## src/lib/landing/landingHeroFluid.ts (9)
+  LANDING_HOME_FLUID_THEME
+  LANDING_FINAL_CTA_FLUID_THEME
+  INVESTORS_LANDING_FLUID_THEME
+  LANDING_PRICING_FLUID_THEME
+  LandingMarketingFluidPage
+  landingFluidThemeForMarketingPage
+  landingFluidThemeForProductPage
+  LandingHeroFluidTextTone
+  landingFluidThemeTextTone
+
+## src/lib/sourcingTypes.ts (9)
+  SourcingSourceKey
+  SourcingQuantityPriceTier
+  SourcingKeyValue
+  SourcingCard
+  SourcingSourceResult
+  SourcingSourceProgress
+  SourcingSourceResultsMap
+  SourcingResponse
+  SourcingHistoryRow
+
+## src/lib/types.ts (9)
+  BadgeType
+  EaseLevel
+  ProfileTab
+  Opportunity
+  User
+  FilterState
+  AdminUser
+  AdminOpportunity
+  AnalyticsData
+
+## src/lib/askAiTypes.ts (8)
+  AskAiSuggestion
+  AskAiMessage
+  AskAiSession
+  AskAiNewSessionResponse
+  AskAiMessageResponse
+  AskAiHistoryResponse
+  AskAiSendOptions
+  AskAiAdapter
+
+## src/lib/calculatorDefaults.ts (8)
+  CalculatorBillingModel
+  CALCULATOR_DAYS_PER_MONTH
+  CalculatorConfig
+  FinancialProjections
+  ResolvedCalculatorDefaults
+  formatUnitSliderLabel
+  deriveAvgBill
+  resolveCalculatorDefaults
+
+## src/lib/geoIpCurrency.ts (8)
+  LANDING_GEO_CURRENCY_SESSION_KEY
+  LANDING_GEO_COUNTRY_SESSION_KEY
+  countryCodeToSupportedCurrency
+  readLandingGeoCurrencySession
+  function
+  readLandingGeoCountrySession
+  LandingGeoResolution
+  resolveLandingGeo
+
+## src/types/previewResearch.ts (8)
+  RoadmapPhasePreview
+  PreviewSaturationVerdict
+  PreviewResult
+  PreviewResearchState
+  PreviewVagueQueryResponse
+  PreviewResearchResponse
+  PreviewRateLimitedResponse
+  ClaimPreviewSessionResult
+
+## src/lib/askRoadmapAi.ts (7)
+  AskRoadmapSuggestion
+  AskRoadmapMessage
+  AskRoadmapSession
+  AskRoadmapNewSessionResponse
+  AskRoadmapMessageResponse
+  AskRoadmapHistoryResponse
+  function
+
+## src/lib/authLanding.ts (7)
+  LANDING_SIGN_IN_INTENT_PARAM
+  DEFAULT_POST_LOGIN_PATH
+  POWERPROOF_OPEN_SIGN_IN_EVENT
+  dispatchFocusLandingSignIn
+  parseLandingSignInIntent
+  AUTH_SESSION_TARGET_DAYS
+  AuthCallbackHash
+
+## src/lib/fitScore.ts (7)
+  FitScoreKey
+  FitScoreBreakdown
+  ScoreDimensionMeta
+  normalizeScoreBreakdown
+  FitDimensionBarTone
+  FitScoreTier
+  getScoreLabelBadgeClass
+
+## src/lib/reResearchSections.ts (7)
+  ReResearchSectionKey
+  ReResearchSectionDef
+  ReResearchSectionGroup
+  RE_RESEARCH_STANDARD_GROUPS
+  getStyleAddonSections
+  getStyleAddonSectionKeys
+  RE_RESEARCH_SECTIONS
+
+## src/lib/researchOpportunityStream.ts (7)
+  ResearchVisibility
+  ResearchStreamStarted
+  ResearchStreamComplete
+  ResearchStreamError
+  ResearchStreamHandlers
+  ResearchStreamResult
+  function
+
+## src/lib/roadmapPreferences.ts (7)
+  ROADMAP_MODEL_STORAGE_KEY
+  ROADMAP_COUNTRIES
+  readRoadmapModel
+  writeRoadmapModel
+  readRoadmapCountry
+  writeRoadmapCountry
+  useRoadmapPreferences
+
+## src/lib/seo/pageSeoConfig.ts (7)
+  PageSeoEntry
+  PAGE_SEO_ENTRIES
+  PAGE_SEO_BY_PATH
+  PAGE_SEO_BY_KEY
+  getPageSeoByKey
+  PRERENDER_PAGE_SEO_ENTRIES
+  pageSeoToFallback
+
+## src/pages/roadmap/roadmapTypes.ts (7)
+  NodeType
+  RoadmapDomain
+  RoadmapDifficulty
+  RoadmapMeta
+  RoadmapNodeWithChildren
+  RoadmapNode
+  UserRoadmap
+
+## src/components/admin/adminUi.tsx (6)
+  ADMIN_TABLE_PAGE_SIZE
+  adminTextareaClass
+  AdminStatMini
+  AdminExpandableText
+  AdminListRow
+  roleSelectClass
+
+## src/components/landing/landingHeroStyles.ts (6)
+  landingHeroColumnClass
+  landingHeroGlassBadgeClass
+  landingHeroGlassBadgeLightClass
+  landingHeroTitleClassForTone
+  landingHeroDescriptionClassForTone
+  landingCtaRowClass
+
+## src/components/research/researchHeroCardParts.tsx (6)
+  RoomCardIconTone
+  resolveResearchStyleOption
+  ResearchModelBadge
+  ResearchStyleBadge
+  ResearchHeroCategoryIcon
+  ResearchHeroCardMetaRow
+
+## src/components/ui/carousel.tsx (6)
+  type CarouselApi
+  Carousel
+  CarouselContent
+  CarouselItem
+  CarouselPrevious
+  CarouselNext
+
+## src/lib/landing/landingTypography.ts (6)
+  landingTitleFontClass
+  landingFluidPageTitleClass
+  landingProductPageTitleClass
+  landingDescriptionClass
+  landingBodyClass
+  landingQuoteClass
+
+## src/lib/userResearch.ts (6)
+  RESEARCH_STATUS_INITIAL
+  RESEARCH_STATUS_FAILED
+  RESEARCH_STATUS_INCOMPLETE
+  STALE_PENDING_MS
+  isActiveUserResearch
+  function
+
+## src/lib/warRoomCredits.ts (6)
+  WAR_ROOM_SCOUT_FEATURE
+  WAR_ROOM_PLAYBOOK_FEATURE_BY_MODEL
+  WAR_ROOM_CREDIT_DEFAULTS
+  WarRoomCreditCosts
+  warRoomCostsFromGetter
+  function
+
+## src/components/layout/SharedCommandComposerShell.tsx (5)
+  COMMAND_COMPOSER_LAYOUT_ID
+  commandComposerShellClassName
+  DiscoverMode
+  SharedCommandComposerInnerRowProps
+  SharedCommandComposerInnerRow
+
+## src/components/ModelSelector.tsx (5)
+  ModelKey
+  roadmapModelLabel
+  roadmapCreditCostForModel
+  ROADMAP_AI_MODEL_CREDIT_COSTS
+  roadmapCreditCostForAiModelId
+
+## src/components/TypewriterText.tsx (5)
+  TYPEWRITER_INDEX_COLORS
+  TypewriterTextProps
+  TypewriterText
+  TypewriterMarkdownProps
+  TypewriterMarkdown
+
+## src/hooks/useBackgroundJobs.ts (5)
+  ActiveResearch
+  ActivePlaybook
+  ActiveRoadmap
+  ActiveSourcingTask
+  BackgroundJobs
+
+## src/lib/clarifyRoadmapPrompt.ts (5)
+  ClarifyRoadmapPromptBody
+  ClarifyRoadmapNeedsMoreResponse
+  ClarifyRoadmapReadyResponse
+  ClarifyRoadmapPromptResponse
+  function
+
+## src/lib/heroComposerSelect.ts (5)
+  HERO_FOOTER_CHIP_MENU_ITEM_ROW_CLASS
+  HERO_MOBILE_FOOTER_ICON_BUTTON_CLASS
+  HERO_FOOTER_CHIP_STYLE_TRIGGER_CLASS
+  HERO_FOOTER_CHIP_MODEL_TRIGGER_CLASS
+  HERO_FOOTER_CHIP_COUNTRY_TRIGGER_CLASS
+
+## src/lib/opportunityDetailUtils.ts (5)
+  MARKET_SIZING_INR_PER_USD
+  MARKET_SIZE_UNIT_USD_M
+  detectLegacyMarketSizingUnit
+  normalizeMarketSizeUnitHint
+  marketSizingCrToUsdWhole
+
+## src/lib/opportunityEditSectionFocus.ts (5)
+  OPPORTUNITY_NAV_ANCHOR_HIGHLIGHT_MS
+  OpportunityEditSectionFocusDetail
+  EditSectionFocusTarget
+  OpportunitySectionScrollOptions
+  resolveEditSectionFocusTarget
+
+## src/lib/profileDisplayName.ts (5)
+  ProfileNameFields
+  UserNameFields
+  getProfileUsernameLabel
+  getProfileAccountLabel
+  formatPersonSearchLabel
+
+## src/lib/razorpayCheckout.ts (5)
+  RazorpaySuccessResponse
+  OpenRazorpayCheckoutOpts
+  RazorpayConfigError
+  ensureRazorpayLoaded
+  function
+
+## src/lib/sidebarNavStyles.ts (5)
+  sidebarNavRowClassName
+  sidebarNavHelpClassName
+  sidebarNavListGapClassName
+  sidebarRoomNestedGroupClassName
+  sidebarNavIconClass
+
+## src/lib/sourcingDrawerTypes.ts (5)
+  SupplierStatus
+  SUPPLIER_STATUS_OPTIONS
+  PriceTier
+  PriceIntelligence
+  SupplierDrawerProps
+
+## src/lib/sourcingHistoryDetails.ts (5)
+  getHistoryPreviewCards
+  getHistoryDisplayCards
+  SourceCountEntry
+  getSourceCountEntries
+  formatHistorySearchedAt
+
+## src/lib/textModeration.ts (5)
+  containsProfanity
+  containsDiscoverHeroBlockedContent
+  looksLikeGibberish
+  ModerationStatus
+  containsFoulTermInScannerUrl
+
+## src/lib/warRoomCountries.ts (5)
+  WAR_ROOM_COUNTRY_OPTIONS
+  WarRoomCountry
+  WAR_ROOM_COUNTRIES
+  WAR_ROOM_COUNTRY_SELECT_OPTIONS
+  isWarRoomCountry
+
+## src/pages/roadmap/roadmapUtils.ts (5)
+  flattenTree
+  sortPhases
+  phaseTasks
+  journeySteps
+  phaseJourneySteps
+
+## src/components/detail/DetailHeroPanel.tsx (4)
+  opportunityDetailFluidHeroDarkTitleClassName
+  opportunityDetailFluidHeroDarkSubtitleClassName
+  DetailHeroPanelTwScroll
+  DetailHeroPanelProps
+
+## src/components/discover/SearchResultComponents.tsx (4)
+  SearchResultSection
+  MatchHighlight
+  SearchResultButton
+  NoResultsPanel
+
+## src/components/landing/LandingSemanticIconHolder.tsx (4)
+  LandingSemanticTone
+  LANDING_SEMANTIC_TONES
+  landingSemanticTone
+  landingSemanticTextHoverClass
+
+## src/components/landing/preview/LandingPreviewConversionBanner.tsx (4)
+  LandingPreviewConversionBanner
+  LandingPreviewRateLimitedBanner
+  LandingPreviewErrorBanner
+  PREVIEW_DISCLAIMER
+
+## src/components/opportunity/OpportunityEditChat.tsx (4)
+  OpportunityEditChatTrigger
+  OpportunityEditChatPanel
+  OpportunityEditChatProps
+  OpportunityEditChat
+
+## src/components/shared/RoomHeroCard.tsx (4)
+  RoomHeroCardState
+  roomHeroCardBodyClassName
+  roomHeroCardFooterClassName
+  RoomHeroCardProps
+
+## src/components/ui/input-otp.tsx (4)
+  InputOTPLength
+  InputOTPValue
+  InputOTPProps
+  InputOTPHandle
+
+## src/components/ui/ScrollStack.tsx (4)
+  ScrollStackItemProps
+  ScrollStackItem
+  ScrollStackProps
+  (default:ScrollStack)
+
+## src/contexts/AppChromeHeaderContext.tsx (4)
+  AppChromeRegenerateConfig
+  AppChromeHeaderBadges
+  RoomAdminPreviewVariant
+  useAppChromeHeader
+
+## src/hooks/useBreakpoint.ts (4)
+  Breakpoint
+  useIsTablet
+  useIsDesktop
+  useCanHover
+
+## src/hooks/useIdeaChipsSession.ts (4)
+  IdeaChipsContext
+  readIdeaChipsCache
+  writeIdeaChipsCache
+  IdeaChipsSession
+
+## src/hooks/useOnboardingOpportunityTypewriterReveal.ts (4)
+  ONBOARDING_REVEAL_INTERVAL_MS
+  ONBOARDING_GENERATE_DURATION_MS
+  OnboardingRevealPhase
+  opportunityDetailPathWithOnboardingReveal
+
+## src/hooks/useSeoSettings.ts (4)
+  SeoSettingRow
+  SeoPayload
+  OpportunitySeoOverrides
+  UseSeoSettingsOptions
+
+## src/lib/composerSearchRecents.ts (4)
+  ComposerSearchFeature
+  ComposerSearchRecent
+  composerSearchFeatureFromHeroTab
+  recordComposerSearchRecent
+
+## src/lib/countries.ts (4)
+  Country
+  INR_RATES
+  convertFromINR
+  DEFAULT_COUNTRY
+
+## src/lib/financialProjections.ts (4)
+  FP_USD_UNIT
+  parseUsdAmount
+  fpMoneyFieldToRupees
+  fpLakhToRupees
+
+## src/lib/heroComposerTarget.ts (4)
+  HERO_COMPOSER_TARGET_KEY
+  HeroComposerTarget
+  readHeroComposerTarget
+  heroComposerTargetFromPath
+
+## src/lib/landing/productPages.ts (4)
+  LandingProductPageId
+  LandingProductPageContent
+  LANDING_PRODUCT_PAGES
+  LANDING_PRODUCT_PAGE_SLUGS
+
+## src/lib/marketTestApi.ts (4)
+  MARKET_TEST_COUNTRY
+  RunMarketTestParams
+  function
+  MarketTestListRow
+
+## src/lib/opportunitiesFeedSelect.ts (4)
+  OPPORTUNITIES_FEED_COLUMNS
+  OPPORTUNITIES_FEED_SELECT
+  OPPORTUNITIES_FEED_SELECT_FLAT
+  USER_OPPORTUNITIES_FEED_COLUMNS
+
+## src/lib/playbookDisplay.ts (4)
+  PlaybookTitleSource
+  PlaybookMetaKind
+  PlaybookMetaItem
+  playbookMetaParts
+
+## src/lib/publicCatalog.ts (4)
+  PUBLIC_CATALOG_EXCLUDED_SLUG
+  PublicCatalogFeedRow
+  PublicCatalogFacetRow
+  function
+
+## src/lib/referrals.ts (4)
+  PENDING_REFERRAL_STORAGE_KEY
+  readPendingReferralCode
+  clearPendingReferralCode
+  function
+
+## src/lib/researchTimedProgress.ts (4)
+  TimedSectionStatus
+  TimedResearchSection
+  RESEARCH_TIMED_SECTIONS
+  RESEARCH_TIMED_DURATION_SEC
+
+## src/lib/shopifyApi.ts (4)
+  SHOPIFY_DOMAIN_RE
+  function
+  ShortlistedProductInsert
+  ShopifyListProductResult
+
+## src/lib/sourcingRoutes.ts (4)
+  SOURCING_SEARCH_RESULTS_PATH
+  SOURCING_PRODUCT_PATH
+  isSourcingSearchResultsPath
+  isSourcingProductPath
+
+## src/lib/websiteScannerConfig.ts (4)
+  isBlockedScannerHostname
+  isBlockedNsfwScannerUrl
+  parseScannerUrl
+  ScannerUrlValidation
+
+## src/components/admin/JsonArrayEditor.tsx (3)
+  FieldDef
+  JsonArrayEditorProps
+  (default:JsonArrayEditor)
+
+## src/components/ask-ai/useAskAiChatState.tsx (3)
+  AskAiChatLayout
+  AskAiEditModeControls
+  AskAiChatConfig
+
+## src/components/discover/DiscoverHeroLiveSearch.tsx (3)
+  DiscoverHeroRouteContext
+  DiscoverHeroLiveSearchHeroProps
+  DiscoverHeroLiveSearchProps
+
+## src/components/discover/DiscoverHeroOpportunityChips.tsx (3)
+  HeroOppChip
+  DiscoverHeroOpportunityWorkspaceSlots
+  DiscoverHeroOpportunityChipsProps
+
+## src/components/discover/DiscoverHeroWorkspacePanelChips.tsx (3)
+  DiscoverHeroWorkspacePanelChipAccent
+  DiscoverHeroWorkspacePanelChipItem
+  DiscoverHeroWorkspacePanelChips
+
+## src/components/discover/HeroInlineSelect.tsx (3)
+  HeroInlineSelectTone
+  HeroInlineSelectItem
+  HeroInlineSelectProps
+
+## src/components/landing/LandingText.tsx (3)
+  LandingTextSpeed
+  LandingTextTag
+  LandingTextProps
+
+## src/components/landing/preview/LandingPreviewFloatingSignUp.tsx (3)
+  previewMobileFloatClearanceClass
+  LandingPreviewMobileBottomSpacer
+  LandingPreviewFloatingSignUp
+
+## src/components/layout/AppBottomNav.tsx (3)
+  APP_BOTTOM_NAV_H_PX
+  AppBottomNav
+  appBottomNavPaddingClass
+
+## src/components/research/ClarificationWizard.tsx (3)
+  ClarifyStagedProgressStep
+  ClarifyInvokeFn
+  ClarificationWizardProps
+
+## src/components/ui/card.tsx (3)
+  cardTopSlotRowClass
+  cardTopSlotIconClass
+  cardTopSlotTitleClass
+
+## src/hooks/useCurrency.ts (3)
+  formatCurrencyAmount
+  FALLBACK_INR_BASE_RATES
+  FALLBACK_USD_BASE_RATES
+
+## src/hooks/useResearchOpportunity.ts (3)
+  ResearchFlowStep
+  ResearchFlowError
+  ResearchRunOpts
+
+## src/hooks/useWarRoom.ts (3)
+  ExtractedContext
+  WarRoomPhase
+  WarRoomClarifyStep
+
+## src/lib/brandLogos.ts (3)
+  BRAND_LOGO_BASE_URL
+  GEMINI_LOGO_URL
+  RESEARCH_STYLE_LOGO_FILES
+
+## src/lib/budgetInput.ts (3)
+  BUDGET_INPUT_MAX_DIGITS
+  parseBudgetAmount
+  validateBudgetRange
+
+## src/lib/composerSelectionToast.ts (3)
+  toastComposerCountryChange
+  toastComposerResearchStyleChange
+  toastComposerAiModelChange
+
+## src/lib/createWorkspaceProject.ts (3)
+  DEFAULT_WORKSPACE_NAME
+  CreatedWorkspaceRow
+  function
+
+## src/lib/devAuth.ts (3)
+  DevSignInBuildMode
+  readDevSignInBuildMode
+  writeDevSignInBuildMode
+
+## src/lib/displayCurrency.ts (3)
+  DEFAULT_DISPLAY_CURRENCY_SYMBOL
+  inrToDefaultDisplayAmount
+  deriveUsdBaseFromInrBase
+
+## src/lib/iconClassNames.ts (3)
+  IconTone
+  iconSizeClass
+  interactiveIconClass
+
+## src/lib/inAppBrowser.ts (3)
+  InAppBrowserId
+  InAppBrowserInfo
+  function
+
+## src/lib/investorCardBadges.ts (3)
+  InvestorCardBadge
+  collectInvestorCardBadges
+  collectInvestorLandingTeaserBadges
+
+## src/lib/landing/fetchLandingShowcaseOpportunities.ts (3)
+  LANDING_SHOWCASE_EXCLUDED_SLUG
+  LANDING_SHOWCASE_RECENT_POOL_SIZE
+  function
+
+## src/lib/landing/landingLayout.ts (3)
+  landingSectionYClass
+  LandingSectionAlign
+  landingSectionClass
+
+## src/lib/landing/previewUnlockContent.ts (3)
+  PreviewUnlockChip
+  PREVIEW_RESEARCH_UNLOCK_CHIPS
+  PREVIEW_ROADMAP_UNLOCK_CHIPS
+
+## src/lib/landing/productFaqs.ts (3)
+  LandingFaqSection
+  PRODUCT_FAQS
+  resolveLandingFaqSection
+
+## src/lib/landingFluidThemes.ts (3)
+  LandingFluidThemeId
+  LandingFluidThemePalette
+  landingFluidThemeFromDiscoverHero
+
+## src/lib/logger.ts (3)
+  logDebug
+  logInfo
+  logWarn
+
+## src/lib/marketTestBadgeStyles.ts (3)
+  marketTestBadgeHeightClassName
+  marketTestScoreBadgeClassName
+  marketTestFailedBadgeClassName
+
+## src/lib/onboardingResearchDemo.ts (3)
+  readPendingOnboardingRevealPath
+  clearPendingOnboardingRevealPath
+  clearFirstRegistrationOnboarding
+
+## src/lib/opportunityTermDefinitions.ts (3)
+  OpportunityTermKey
+  OPPORTUNITY_TERM_DEFINITIONS
+  OPPORTUNITY_SECTION_TITLE_TERMS
+
+## src/lib/publicMarketingPaths.ts (3)
+  PUBLIC_MARKETING_PATHNAMES
+  isLegacyOpportunityDetailPath
+  isBlogPath
+
+## src/lib/roadmapApi.ts (3)
+  ROADMAP_CREDIT_COST
+  GenerateRoadmapOptions
+  function
+
+## src/lib/sourcingMerge.ts (3)
+  interleaveCards
+  reliabilityScore
+  SourcingSortKey
+
+## src/pages/clarify/FlowClarifyPage.tsx (3)
+  ResearchClarifyPage
+  WarRoomClarifyPage
+  RoadmapClarifyPage
+
+## src/types/discovery.ts (3)
+  BudgetFilter
+  SortOption
+  DiscoverFilters
+
+## src/types/persona.ts (3)
+  Persona
+  PERSONA_VALUES
+  PERSONA_FILTER_LABELS
+
+## src/components/admin/AdminRoadmapAnalyticsTab.tsx (2)
+  AdminRoadmapRow
+  AdminRoadmapAnalyticsTab
+
+## src/components/admin/featureAnalyticsHelpers.tsx (2)
+  RESEARCH_STYLE_LABELS
+  WAR_ROOM_MODEL_LABELS
+
+## src/components/discover/DiscoverHeroFeatureSelect.tsx (2)
+  DiscoverHeroFeatureValue
+  DiscoverHeroFeatureOption
+
+## src/components/discover/DiscoverHeroInput.tsx (2)
+  composerInputErrorBorderClassName
+  ComposerInlineInputError
+
+## src/components/FuzzyText.tsx (2)
+  FuzzyTextProps
+  (default:FuzzyText)
+
+## src/components/landing/preview/PreviewVagueError.tsx (2)
+  PreviewVagueErrorState
+  PreviewVagueError
+
+## src/components/market-test/MarketTestHeroChips.tsx (2)
+  MarketTestHeroWorkspaceSlots
+  MarketTestHeroChipsHandle
+
+## src/components/onboarding/OnboardingSteps.tsx (2)
+  ONBOARDING_STEPS
+  OnboardingStepId
+
+## src/components/opportunity/detail/FitScoreSidebar.tsx (2)
+  FitScoreSidebarProps
+  ResearchSaturationIndicator
+
+## src/components/opportunity/detail/OpportunityAiOverview.tsx (2)
+  OpportunityAiOverviewProps
+  OpportunityAiOverview
+
+## src/components/opportunity/detail/OpportunitySectionNav.tsx (2)
+  OpportunitySectionNavItem
+  OpportunitySectionNavProps
+
+## src/components/opportunity/detail/ResearchDetailBanner.tsx (2)
+  ResearchDetailBannerProps
+  ResearchDetailBanner
+
+## src/components/opportunity/detail/RiskMatrixSection.tsx (2)
+  NormalizedRisk
+  normalizeRiskItem
+
+## src/components/promo/PromoSlider.tsx (2)
+  PromoSliderVariant
+  PromoSliderProps
+
+## src/components/research/ClarificationChromeTabs.tsx (2)
+  ClarificationChromeTabs
+  useClarificationChromeHeader
+
+## src/components/research/ClarificationSidebar.tsx (2)
+  ClarificationSidebarNav
+  ClarificationSidebarProps
+
+## src/components/research/ResearchHeroChips.tsx (2)
+  ResearchHeroWorkspaceSlots
+  ResearchHeroChipsHandle
+
+## src/components/research/ResearchSectionProgressList.tsx (2)
+  ResearchSectionProgressItem
+  ResearchSectionProgressListProps
+
+## src/components/roadmap/RoadmapGenerationOptions.tsx (2)
+  RoadmapGenerationOptions
+  MODEL_CREDITS
+
+## src/components/roadmap/RoadmapHeroChips.tsx (2)
+  RoadmapHeroWorkspaceSlots
+  RoadmapHeroChipsHandle
+
+## src/components/skeletons/AnalyticsSkeleton.tsx (2)
+  AnalyticsStatCardSkeleton
+  AnalyticsStatsRowSkeleton
+
+## src/components/sourcing/SourcingHeroChips.tsx (2)
+  SourcingHeroWorkspaceSlots
+  SourcingHeroChipsHandle
+
+## src/components/ui/alert.tsx (2)
+  AlertTitle
+  alertVariants
+
+## src/components/ui/calendar.tsx (2)
+  CalendarProps
+  Calendar
+
+## src/components/ui/SpecularFx.tsx (2)
+  SpecularFxProps
+  SpecularFx
+
+## src/components/warroom/WarRoomHeroChips.tsx (2)
+  WarRoomHeroWorkspaceSlots
+  WarRoomHeroChipsHandle
+
+## src/components/warroom/WarRoomPlaybookHistory.tsx (2)
+  PlaybookHistoryRow
+  WarRoomPlaybookHistory
+
+## src/contexts/AppDataContext.tsx (2)
+  AppDataProjectRow
+  useAppData
+
+## src/contexts/OpportunityEditChatContext.tsx (2)
+  OpportunityEditChatRegistration
+  useOpportunityEditChatOptional
+
+## src/hooks/useGeoSubdivisions.ts (2)
+  GeoSubdivisionRow
+  GeoSubdivisionsState
+
+## src/hooks/useOpportunityDetail.ts (2)
+  normalizeOpportunity
+  OpportunityDetailDataSource
+
+## src/hooks/useShopifyConnection.ts (2)
+  ShopifyConnection
+  shopifyConnectionQueryKey
+
+## src/hooks/useSourcing.ts (2)
+  SourcingStep
+  UseSourcingReturn
+
+## src/hooks/useSupplierDrawer.ts (2)
+  RFQFormValues
+  RFQGenerateOverrides
+
+## src/hooks/useTypingQueue.ts (2)
+  TypingSpeed
+  TypingGranularity
+
+## src/lib/adminNav.ts (2)
+  AdminNavSection
+  AdminNavItem
+
+## src/lib/adminOpportunityEditorChecklist.ts (2)
+  EditorChecklistPriority
+  EditorChecklistItem
+
+## src/lib/backgroundJobs.ts (2)
+  BACKGROUND_JOB_STALE_MS
+  BackgroundJobKind
+
+## src/lib/catalogCache.ts (2)
+  CategoryCountRow
+  function
+
+## src/lib/clarifyInvalidInput.ts (2)
+  ClarifyInvalidCategory
+  ClarifyInvalidInputError
+
+## src/lib/clarifyPrompt.ts (2)
+  ClarifyPromptBody
+  function
+
+## src/lib/editChatStorage.ts (2)
+  editChatSessionStorageKey
+  editChatPanelOpenStorageKey
+
+## src/lib/fuzzy.ts (2)
+  normalizeQuery
+  fuzzyRank
+
+## src/lib/generatePlaybookStream.ts (2)
+  GeneratePlaybookStreamEvent
+  function
+
+## src/lib/ideaChipsErrors.ts (2)
+  IdeaChipsErrorInfo
+  function
+
+## src/lib/investorsApi.ts (2)
+  INVESTOR_PUBLIC_SELECT
+  function
+
+## src/lib/landing/fetchLandingCatalogMetrics.ts (2)
+  LandingCatalogMetrics
+  function
+
+## src/lib/landing/landingResultsByRealPeople.ts (2)
+  LandingResultShot
+  LANDING_RESULTS_BY_REAL_PEOPLE
+
+## src/lib/marketTestEditChat.ts (2)
+  MARKET_TEST_SECTION_LABELS
+  function
+
+## src/lib/marketTestRoutes.ts (2)
+  MarketTestNewLocationState
+  truncateMarketTestQuery
+
+## src/lib/marketTestSectionNav.ts (2)
+  MARKET_TEST_SECTION_FOCUS_EVENT
+  MarketTestSectionFocusDetail
+
+## src/lib/normalizePlaybookSteps.ts (2)
+  PlaybookPhase
+  normalizePlaybookStep
+
+## src/lib/onboardingOpportunityIdeas.ts (2)
+  OnboardingOppChip
+  function
+
+## src/lib/phoneDialCodes.ts (2)
+  PhoneDialEntry
+  dialCodeForCountryIso
+
+## src/lib/playbookQuestionsStream.ts (2)
+  PlaybookQuestionsStreamEvent
+  function
+
+## src/lib/researchCancel.ts (2)
+  CancelResearchResult
+  function
+
+## src/lib/researchStyles.ts (2)
+  ResearchStyle
+  ResearchStyleOption
+
+## src/lib/roomWorkspaceHeader.ts (2)
+  RoomWorkspaceMode
+  roomWorkspaceModeFromPath
+
+## src/lib/routes.ts (2)
+  PUBLIC_BASE
+  absUrl
+
+## src/lib/userFeedback.ts (2)
+  UserFeedbackType
+  parseUserFeedbackSelectValue
+
+## src/lib/warRoomDraft.ts (2)
+  WarRoomIntakeDraft
+  function
+
+## src/lib/warroomEditSectionFocus.ts (2)
+  focusWarroomEditSection
+  focusWarroomEditStep
+
+## src/pages/admin/AdminAnalyticsPage.tsx (2)
+  AdminAnalyticsPage
+  (default:AdminAnalyticsPage)
+
+## src/pages/admin/AdminUsersPage.tsx (2)
+  AdminUsersPage
+  (default:AdminUsersPage)
+
+## src/pages/HistoryPage.tsx (2)
+  HistoryPage
+  (default:HistoryPage)
+
+## src/pages/InvestorDetailPage.tsx (2)
+  InvestorDetailPage
+  (default:InvestorDetailPage)
+
+## src/pages/OpportunityDetailPage.tsx (2)
+  OpportunityDetailPageProps
+  (default:OpportunityDetailPage)
+
+## src/pages/ProfilePage.tsx (2)
+  ProfilePage
+  (default:ProfilePage)
+
+## src/pages/ReferralsPage.tsx (2)
+  ReferralsPage
+  (default:ReferralsPage)
+
+## src/pages/roadmap/roadmapNodeGraph.ts (2)
+  buildTaskDescription
+  prepareRoadmapNodes
+
+## src/pages/roadmap/RoadmapView.tsx (2)
+  RoadmapView
+  (default:RoadmapView)
+
+## src/pages/sourcing/SourcingProductPage.tsx (2)
+  SourcingProductLocationState
+  (default:SourcingProductPage)
+
+## src/pages/WebsiteScannerPage.tsx (2)
+  WebsiteScannerPage
+  (default:WebsiteScannerPage)
+
+## src/types/investors.ts (2)
+  InvestorPortfolioCompany
+  Investor
+
+## src/App.tsx (1)
+  (default:App)
+
+## src/components/admin/AdminCategories.tsx (1)
+  (default:AdminCategories)
+
+## src/components/admin/AdminOpportunities.tsx (1)
+  (default:AdminOpportunities)
+
+## src/components/admin/AdminOpportunityEditor.tsx (1)
+  (default:AdminOpportunityEditor)
+
+## src/components/admin/AdminProjectsWarRoomTab.tsx (1)
+  AdminProjectsWarRoomTab
+
+## src/components/admin/AdminProjectWarRoomPanel.tsx (1)
+  AdminWarRoomRow
+
+## src/components/admin/AdminSettings.tsx (1)
+  (default:AdminSettings)
+
+## src/components/admin/CompetitorsEditor.tsx (1)
+  Competitor
+
+## src/components/admin/FeatureAnalyticsShell.tsx (1)
+  FeatureStat
+
+## src/components/admin/MultiSelectDropdown.tsx (1)
+  (default:MultiSelectDropdown)
+
+## src/components/admin/TagEditor.tsx (1)
+  (default:TagEditor)
+
+## src/components/ask-ai/askAiAdapters.ts (1)
+  askAiEmptyStateLabel
+
+## src/components/CountrySelect.tsx (1)
+  CountrySelectOption
+
+## src/components/credits/CreditsIcon.tsx (1)
+  formatCreditsDisplay
+
+## src/components/discover/DiscoverHeroWorkspaceSectionTitle.tsx (1)
+  DiscoverHeroWorkspaceSectionAccent
+
+## src/components/FaqAccordionModule.tsx (1)
+  FaqAccordionItem
+
+## src/components/FaqMarkdown.tsx (1)
+  FaqMarkdown
+
+## src/components/Fuzzy404.tsx (1)
+  Fuzzy404Size
+
+## src/components/FuzzySomethingWentWrong.tsx (1)
+  FuzzySomethingWentWrongSize
+
+## src/components/HeadcountSection.tsx (1)
+  (default:HeadcountSection)
+
+## src/components/ideas/IdeaChips.tsx (1)
+  IdeaChipsHandle
+
+## src/components/investors/InvestorDetailBackBar.tsx (1)
+  InvestorDetailBackBar
+
+## src/components/investors/InvestorFilterPill.tsx (1)
+  InvestorFilterPill
+
+## src/components/investors/InvestorsLockedPlaceholderList.tsx (1)
+  InvestorsLockedPlaceholderList
+
+## src/components/investors/InvestorsUnlockBanner.tsx (1)
+  InvestorsUnlockBanner
+
+## src/components/landing/LandingScrollReveal.tsx (1)
+  LandingScrollReveal
+
+## src/components/landing/LandingSignInCard.tsx (1)
+  LandingSignInCard
+
+## src/components/landing/preview/LandingPreviewBrandLogo.tsx (1)
+  LandingPreviewBrandLogo
+
+## src/components/landing/preview/LandingPreviewLoadingCard.tsx (1)
+  LandingPreviewLoadingCard
+
+## src/components/layout/AppChromeHeader.tsx (1)
+  isAccountChromePath
+
+## src/components/layout/AppFloatingShell.tsx (1)
+  APP_MAIN_SCROLL_ID
+
+## src/components/layout/AppMobileMenuButton.tsx (1)
+  appMobileMenuButtonClassName
+
+## src/components/layout/AppSidebar.tsx (1)
+  readSidebarCollapsedPreference
+
+## src/components/layout/ClarifyPageHeader.tsx (1)
+  ClarifyPageHeader
+
+## src/components/layout/MobileComposerOptionsSheet.tsx (1)
+  MobileComposerOptionsSheetView
+
+## src/components/market-test/MarketTestDeepLoadingPage.tsx (1)
+  MarketTestDeepLoadingPageProps
+
+## src/components/market-test/MarketTestDetailBanner.tsx (1)
+  MarketTestDetailBannerProps
+
+## src/components/market-test/MarketTestPendingState.tsx (1)
+  MarketTestPendingStateProps
+
+## src/components/onboarding/OnboardingOpportunityGeneratingScreen.tsx (1)
+  OnboardingGenerateChunk
+
+## src/components/opportunity/detail/DemographicsSection.tsx (1)
+  DemographicsSectionProps
+
+## src/components/opportunity/detail/EditableHeroField.tsx (1)
+  EditableHeroFieldProps
+
+## src/components/opportunity/detail/FaqSection.tsx (1)
+  FaqSectionProps
+
+## src/components/opportunity/detail/KeyMarketTrendsBlocks.tsx (1)
+  KeyMarketTrendsProps
+
+## src/components/opportunity/detail/LicensesSection.tsx (1)
+  LicensesSectionProps
+
+## src/components/opportunity/detail/MachinerySection.tsx (1)
+  MachinerySectionProps
+
+## src/components/opportunity/detail/MachineryTable.tsx (1)
+  MachineryTableProps
+
+## src/components/opportunity/detail/MarketTrendsSection.tsx (1)
+  MarketTrendsSectionProps
+
+## src/components/opportunity/detail/MetricDerivationSheet.tsx (1)
+  MetricDerivationSheetProps
+
+## src/components/opportunity/detail/OpportunityAccordionHeaderRow.tsx (1)
+  OpportunityAccordionHeaderRowProps
+
+## src/components/opportunity/detail/OpportunityDetailBackBar.tsx (1)
+  OpportunityDetailBackBar
+
+## src/components/opportunity/detail/OpportunityDetailMobileSectionNav.tsx (1)
+  OpportunityDetailMobileSectionNav
+
+## src/components/opportunity/detail/OpportunityDetailSectionShell.tsx (1)
+  OpportunityDetailSectionShellProps
+
+## src/components/opportunity/detail/OpportunityDetailSectionTabs.tsx (1)
+  OpportunityDetailSectionTabsProps
+
+## src/components/opportunity/detail/OpportunityHeroPanel.tsx (1)
+  OpportunityHeroPanelProps
+
+## src/components/opportunity/detail/OpportunityMetricsBar.tsx (1)
+  OpportunityMetricsBarProps
+
+## src/components/opportunity/detail/OpportunityPageFooter.tsx (1)
+  OpportunityPageFooterProps
+
+## src/components/opportunity/detail/OpportunityProgressBar.tsx (1)
+  OpportunityProgressBarProps
+
+## src/components/opportunity/detail/OpportunityProLock.tsx (1)
+  OpportunityProLockProps
+
+## src/components/opportunity/detail/OpportunitySectionNavRail.tsx (1)
+  OpportunitySectionNavRail
+
+## src/components/opportunity/detail/OpportunitySectionTitle.tsx (1)
+  OpportunitySectionTitleProps
+
+## src/components/opportunity/detail/OpportunitySeoHead.tsx (1)
+  OpportunitySeoHeadProps
+
+## src/components/opportunity/detail/OpportunityTermLabel.tsx (1)
+  OpportunityTermLabelProps
+
+## src/components/opportunity/detail/RawMaterialsSection.tsx (1)
+  RawMaterialsSectionProps
+
+## src/components/opportunity/detail/SchemesSection.tsx (1)
+  SchemesSectionProps
+
+## src/components/opportunity/RevenueScenarioCards.tsx (1)
+  RevenueScenarioOpportunity
+
+## src/components/page-shells/types.ts (1)
+  PageShellProps
+
+## src/components/ProfileActions.tsx (1)
+  ProfileActions
+
+## src/components/ProtectedRoute.tsx (1)
+  (default:ProtectedRoute)
+
+## src/components/research/ClarificationDraftCard.tsx (1)
+  ClarificationDraftCardProps
+
+## src/components/research/ClarificationFlowLayout.tsx (1)
+  ClarificationFlowLayoutProps
+
+## src/components/research/ResearchDeepLoadingPage.tsx (1)
+  ResearchDeepLoadingPageProps
+
+## src/components/research/ResearchErrorState.tsx (1)
+  ResearchErrorStateProps
+
+## src/components/research/ResearchHeroHistoryPanel.tsx (1)
+  ResearchHeroHistoryRow
+
+## src/components/research/ResearchPendingState.tsx (1)
+  ResearchPendingStateProps
+
+## src/components/research/ResearchStylePicker.tsx (1)
+  ResearchStylePickerProps
+
+## src/components/research/SaturationPanels.tsx (1)
+  SaturationAssessmentSection
+
+## src/components/research/StyleAddonsSection.tsx (1)
+  StyleAddonsSectionProps
+
+## src/components/research/UserResearchCard.tsx (1)
+  UserResearchCardData
+
+## src/components/scanner/WebsiteScanReportView.tsx (1)
+  SCAN_REPORT_SECTIONS
+
+## src/components/shared/RoomCardActions.tsx (1)
+  RoomCardActionsConfirmCopy
+
+## src/components/ShareDrawer.tsx (1)
+  (default:ShareDrawer)
+
+## src/components/skeletons/ProfileSessionsSkeleton.tsx (1)
+  ProfileSessionsSkeleton
+
+## src/components/sourcing/SourcingHeroHistoryPanel.tsx (1)
+  SourcingMySourcesChip
+
+## src/components/ui/popover.tsx (1)
+  PopoverAnchor
+
+## src/components/ui/radio-group.tsx (1)
+  RadioGroupItem
+
+## src/components/ui/slider.tsx (1)
+  SliderProps
+
+## src/components/ui/sonner.tsx (1)
+  Toaster
+
+## src/components/ui/tabs.tsx (1)
+  TabsVariant
+
+## src/components/ui/textarea.tsx (1)
+  TextareaProps
+
+## src/components/warroom/BattlefieldBriefing.tsx (1)
+  BattlefieldBriefingProps
+
+## src/components/warroom/WarRoomPlaybookCard.tsx (1)
+  WarRoomPlaybookCard
+
+## src/contexts/BackgroundJobsContext.tsx (1)
+  useBackgroundJobsContext
+
+## src/contexts/OnboardingOpportunityPreviewContext.tsx (1)
+  OnboardingOpportunityPreviewContextValue
+
+## src/contexts/OpportunityDetailNavContext.tsx (1)
+  useOpportunityDetailNav
+
+## src/contexts/ResearchOpportunityContext.tsx (1)
+  useResearchOpportunityContextOptional
+
+## src/contexts/RoadmapClarifyContext.tsx (1)
+  useRoadmapClarifyContextOptional
+
+## src/contexts/WarRoomContext.tsx (1)
+  useWarRoomContextOptional
+
+## src/hooks/useAdminOwnerProfiles.ts (1)
+  AdminOwnerProfile
+
+## src/hooks/useEmailPresenceCheck.ts (1)
+  EmailPresenceState
+
+## src/hooks/useFilterOptions.ts (1)
+  FilterOptions
+
+## src/hooks/useInvestorsListAccess.ts (1)
+  useInvestorsListAccess
+
+## src/hooks/useMyReferrals.ts (1)
+  ReferredUserRow
+
+## src/hooks/useOpportunitySectionVisibility.ts (1)
+  OpportunityDetailSectionId
+
+## src/hooks/useReferralCodeValidation.ts (1)
+  ReferralCheckState
+
+## src/hooks/useResponsiveSheetSide.ts (1)
+  useResponsiveSheetSide
+
+## src/hooks/useRoadmapClarifyFlow.ts (1)
+  RoadmapClarifyStep
+
+## src/hooks/useSubscriptionPlans.ts (1)
+  SubscriptionPlan
+
+## src/lib/accountSetup.ts (1)
+  function
+
+## src/lib/appScrollRoot.ts (1)
+  APP_MAIN_SCROLL_ID
+
+## src/lib/askAiPanelEvents.ts (1)
+  AskAiOpenRequestDetail
+
+## src/lib/askAiSidebar.ts (1)
+  ASK_AI_SIDEBAR_RAIL_PX
+
+## src/lib/askAiStorage.ts (1)
+  AskAiStorageNamespace
+
+## src/lib/askResearchAi.ts (1)
+  function
+
+## src/lib/askWarroomAi.ts (1)
+  function
+
+## src/lib/backgroundJobEvents.ts (1)
+  BackgroundJobCompleteDetail
+
+## src/lib/byok.ts (1)
+  BYOK_SETTINGS_PATH
+
+## src/lib/cardSurface.ts (1)
+  cardSurfaceElevated
+
+## src/lib/categoryIcons.tsx (1)
+  CategoryRemixIconName
+
+## src/lib/claimPreviewSession.ts (1)
+  function
+
+## src/lib/clarifyNavPath.ts (1)
+  getClarifyFlowKind
+
+## src/lib/clarifyResearchPrompt.ts (1)
+  function
+
+## src/lib/clarifyWarRoomPrompt.ts (1)
+  function
+
+## src/lib/editChatMessageHydration.ts (1)
+  HydratedChatMessage
+
+## src/lib/facilityDeletes.ts (1)
+  function
+
+## src/lib/fetchIdeaChipsPool.ts (1)
+  function
+
+## src/lib/guestDisplayCurrency.ts (1)
+  GUEST_DISPLAY_CURRENCY_STORAGE_KEY
+
+## src/lib/handleError.ts (1)
+  isEmailSendRateLimited
+
+## src/lib/iconMaps.tsx (1)
+  getNavIcon
+
+## src/lib/investorsLayout.ts (1)
+  investorsPagePadXClass
+
+## src/lib/landing/landingCopy.ts (1)
+  LANDING_ACCESS_CTA
+
+## src/lib/landing/landingMarketingPage.ts (1)
+  LandingMarketingPageConfig
+
+## src/lib/marketTestChatApi.ts (1)
+  function
+
+## src/lib/marketTestEditChatStorage.ts (1)
+  marketTestEditSessionStorageKey
+
+## src/lib/metaPixel.ts (1)
+  trackMetaCompleteRegistration
+
+## src/lib/onboardingStatus.ts (1)
+  isProfileOnboardingComplete
+
+## src/lib/opportunityCardClasses.ts (1)
+  OpportunityCardTopSlotTone
+
+## src/lib/opportunityCompleteness.ts (1)
+  CompletenessOpp
+
+## src/lib/opportunityExport.ts (1)
+  OpportunityExportFormat
+
+## src/lib/opportunityFormatters.ts (1)
+  formatRevEst
+
+## src/lib/opportunitySectionNav.ts (1)
+  OPPORTUNITY_SECTION_ICONS
+
+## src/lib/opportunityTrendChart.ts (1)
+  TrendKind
+
+## src/lib/planGate.ts (1)
+  PlanGateReason
+
+## src/lib/previewVagueQuery.ts (1)
+  FrontendVagueCheck
+
+## src/lib/productAnalyticsNav.ts (1)
+  ProductAnalyticsLink
+
+## src/lib/pwa.ts (1)
+  isPwaUpdateDismissed
+
+## src/lib/researchHeroState.ts (1)
+  HeroResearchNavigationState
+
+## src/lib/researchPageState.ts (1)
+  ResearchPageState
+
+## src/lib/responsive.ts (1)
+  r
+
+## src/lib/roadmapClarifyPersistence.ts (1)
+  function
+
+## src/lib/seoUrls.ts (1)
+  absoluteFromSeoPath
+
+## src/lib/sourcingFilters.ts (1)
+  SourcingResultsFilters
+
+## src/lib/supabaseFunctionStream.ts (1)
+  function
+
+## src/lib/supabaseRealtime.ts (1)
+  function
+
+## src/lib/trackAnalyticsEvent.ts (1)
+  AnalyticsEventParams
+
+## src/lib/unlockPreviewResearch.ts (1)
+  function
+
+## src/lib/warRoomClarifyPersistence.ts (1)
+  function
+
+## src/lib/warroomEditChatStorage.ts (1)
+  warroomEditSessionStorageKey
+
+## src/lib/warRoomGenerateGuard.ts (1)
+  function
+
+## src/pages/admin/AdminItchAnalyticsPage.tsx (1)
+  (default:AdminItchAnalyticsPage)
+
+## src/pages/admin/AdminMarketTestAnalyticsPage.tsx (1)
+  (default:AdminMarketTestAnalyticsPage)
+
+## src/pages/admin/AdminOpportunitiesHubPage.tsx (1)
+  (default:AdminOpportunitiesHubPage)
+
+## src/pages/admin/AdminPromoPage.tsx (1)
+  (default:AdminPromoPage)
+
+## src/pages/admin/AdminResearchAnalyticsPage.tsx (1)
+  (default:AdminResearchAnalyticsPage)
+
+## src/pages/admin/AdminRoadmapAnalyticsPage.tsx (1)
+  (default:AdminRoadmapAnalyticsPage)
+
+## src/pages/admin/AdminSourcingAnalyticsPage.tsx (1)
+  (default:AdminSourcingAnalyticsPage)
+
+## src/pages/admin/AdminWarRoomAnalyticsPage.tsx (1)
+  (default:AdminWarRoomAnalyticsPage)
+
+## src/pages/AdminPage.tsx (1)
+  (default:AdminPage)
+
+## src/pages/AnalyticsDashboardPage.tsx (1)
+  AnalyticsDashboardPage
+
+## src/pages/AuthCallbackPage.tsx (1)
+  (default:AuthCallbackPage)
+
+## src/pages/blog/BlogIndex.tsx (1)
+  (default:BlogIndex)
+
+## src/pages/blog/BlogPost.tsx (1)
+  (default:BlogPost)
+
+## src/pages/EditProfilePage.tsx (1)
+  (default:EditProfilePage)
+
+## src/pages/MarketTestDetailPage.tsx (1)
+  MarketTestDetailPage
+
+## src/pages/MarketTestNewPage.tsx (1)
+  MarketTestNewPage
+
+## src/pages/NotFound.tsx (1)
+  (default:NotFound)
+
+## src/pages/roadmap/components/RoadmapTaskCard.tsx (1)
+  RoadmapTaskCardProps
+
+## src/pages/roadmap/roadmapCopyUtils.ts (1)
+  PassConditionCopy
+
+## src/pages/roadmap/RoadmapJourneyBlocks.tsx (1)
+  RoadmapHero
+
+## src/pages/roadmap/roadmapResourceUtils.ts (1)
+  RoadmapResource
+
+## src/pages/RoomPage.tsx (1)
+  (default:RoomPage)
+
+## src/pages/SignInPage.tsx (1)
+  SignInPage
+
+## src/pages/sourcing/SourcingSearchResultsPage.tsx (1)
+  (default:SourcingSearchResultsPage)
+
+## src/pages/UnifiedLandingPage.tsx (1)
+  (default:UnifiedLandingPage)
+
+## src/pages/UserOpportunityDetailPage.tsx (1)
+  (default:UserOpportunityDetailPage)
+
+## src/pages/UserResearchDetailPage.tsx (1)
+  UserResearchDetailPage
+
+## src/pages/WarRoomPlaybookDetailPage.tsx (1)
+  WarRoomPlaybookDetailPage
+
+## src/pages/WebsiteScannerDetailPage.tsx (1)
+  WebsiteScannerDetailPage
+
+## src/types/clarifyState.ts (1)
+  ClarifyStatePersisted
+
+## src/utils/normalizeBrandingColors.ts (1)
+  BrandingColors

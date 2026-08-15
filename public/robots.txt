@@ -1,0 +1,57 @@
+# AI crawlers — explicitly allow
+User-agent: GPTBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: anthropic-ai
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+
+User-agent: *
+
+Allow: /
+
+# Public pages
+Allow: /o/
+Allow: /explore
+Allow: /how-it-works
+Allow: /platform
+Allow: /product/
+Allow: /pricing
+Allow: /about
+Allow: /founder-story
+Allow: /careers
+Allow: /help-center
+Allow: /contact
+Allow: /privacy
+Allow: /terms
+Allow: /disclaimer
+Allow: /blog
+Allow: /blog/
+
+# Auth & app (no crawl)
+Disallow: /admin
+Disallow: /dashboard
+Disallow: /opportunities
+Disallow: /opportunity/
+Disallow: /my-opportunities/
+Disallow: /my-research/
+Disallow: /onboarding
+Disallow: /settings
+Disallow: /settings/
+Disallow: /war-room
+Disallow: /workspace/
+Disallow: /b2b/
+Disallow: /profile
+Disallow: /analytics
+Disallow: /website-builder
+Disallow: /playbook/
+
+Sitemap: https://powerproof.live/sitemap.xml

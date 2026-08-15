@@ -1,0 +1,85 @@
+/* Override driver.js to match PowerProof design system.
+   Do NOT set background on .driver-overlay — driver.js draws the dim fill on an
+   SVG <path> with a cutout; a CSS background paints over the hole and kills highlighting. */
+.driver-overlay {
+  z-index: 2147483640 !important;
+  touch-action: none;
+  background: none !important;
+}
+
+.driver-popover,
+.driver-popover.powerproof-tour-popover {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+  background: hsl(var(--bg-surface, var(--card))) !important;
+  border: 1px solid hsl(var(--border-default, var(--border))) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.18) !important;
+  font-family: var(--font-sans) !important;
+  padding: 20px 24px !important;
+  max-width: 320px !important;
+}
+
+.driver-popover-title {
+  font-size: 15px !important;
+  font-weight: 600 !important;
+  color: hsl(var(--foreground)) !important;
+  margin-bottom: 6px !important;
+}
+
+.driver-popover-description {
+  font-size: 13px !important;
+  color: hsl(var(--muted-foreground)) !important;
+  line-height: 1.6 !important;
+}
+
+.driver-popover-progress-text {
+  font-size: 11px !important;
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.driver-popover-next-btn,
+.driver-popover-done-btn {
+  background: hsl(var(--primary)) !important;
+  color: hsl(var(--primary-foreground)) !important;
+  border: none !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  padding: 7px 16px !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-prev-btn {
+  background: transparent !important;
+  color: hsl(var(--muted-foreground)) !important;
+  border: 1px solid hsl(var(--border-default, var(--border))) !important;
+  border-radius: 8px !important;
+  font-size: 13px !important;
+  padding: 7px 16px !important;
+  text-shadow: none !important;
+}
+
+.driver-popover-close-btn {
+  color: hsl(var(--muted-foreground)) !important;
+}
+
+.driver-active-element {
+  position: relative !important;
+  z-index: 2147483645 !important;
+  border-radius: 12px !important;
+  scroll-margin: 72px 12px !important;
+  box-shadow: 0 0 0 4px hsl(var(--primary) / 0.4) !important;
+}
+
+@media (max-width: 809px) {
+  .driver-popover,
+  .driver-popover.powerproof-tour-popover {
+    max-width: min(320px, calc(100vw - 24px)) !important;
+  }
+
+  .driver-active-element {
+    scroll-margin: 96px 16px !important;
+  }
+}
