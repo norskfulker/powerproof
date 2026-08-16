@@ -194,7 +194,7 @@ export function DiscoverHeroRoomInputShell({
         </div>
       </div>
       {/* Desktop: title → tools → composer → idea chips card → workspace. */}
-      <div className="max-md:hidden">
+      <div className="max-md:hidden w-full min-w-0">
         <div className={desktopRoomHeroSectionClassName}>
           <div
             className={cn(

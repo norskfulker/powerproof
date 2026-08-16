@@ -39,12 +39,20 @@ export function scanWorkspaceMetrics(
   ]
 }
 
+function marketTestStatusLabel(status: string | null | undefined): string {
+  const value = String(status ?? '').toLowerCase()
+  if (value === 'complete') return 'Complete'
+  if (value === 'failed') return 'Failed'
+  if (value === 'pending' || value === 'running') return 'Running'
+  return value ? value : '—'
+}
+
 export function marketTestWorkspaceMetrics(
   row: MarketTestListRow,
 ): [DiscoverHeroWorkspaceMetric, DiscoverHeroWorkspaceMetric, DiscoverHeroWorkspaceMetric] {
   const score = Number(row.market_reality_score)
   const verdict = row.verdict_label?.trim() || row.verdict?.trim() || '—'
-  const country = row.country?.trim() || '—'
+  const status = marketTestStatusLabel(row.generation_status)
 
   return [
     {
@@ -53,7 +61,11 @@ export function marketTestWorkspaceMetrics(
       tone: Number.isFinite(score) && score >= 60 ? 'success' : 'default',
     },
     { label: 'Verdict', value: verdict, tone: verdict !== '—' ? 'default' : 'muted' },
-    { label: 'Country', value: country, tone: country !== '—' ? 'default' : 'muted' },
+    {
+      label: 'Status',
+      value: status,
+      tone: status === 'Complete' ? 'success' : status === 'Failed' ? 'muted' : 'default',
+    },
   ]
 }
 
@@ -64,7 +76,7 @@ export const EMPTY_MARKET_TEST_WORKSPACE_METRICS: [
 ] = [
   { label: 'Score', value: '—', tone: 'muted' },
   { label: 'Verdict', value: '—', tone: 'muted' },
-  { label: 'Country', value: '—', tone: 'muted' },
+  { label: 'Status', value: 'Running', tone: 'default' },
 ]
 
 export function sourcingWorkspaceMetrics(

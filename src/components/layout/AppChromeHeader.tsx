@@ -1,7 +1,6 @@
 import { useEffect } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { ChevronLeft, LifeBuoy, MessageSquare, RefreshCw } from '@/lib/icons'
-import { AppChromeProfileMenu } from '@/components/layout/AppChromeProfileMenu'
 import { AppMobileMenuButton } from '@/components/layout/AppMobileMenuButton'
 import { useAppChromeHeaderOptional, type RoomAdminPreviewVariant } from '@/contexts/AppChromeHeaderContext'
 import { useAuth } from '@/contexts/AuthContext'
@@ -326,7 +325,6 @@ export function AppChromeHeader({ className, mobileOnly, desktopOnly }: AppChrom
                 Support
               </Button>
             ) : null}
-            <AppChromeProfileMenu />
             {regenerate ? (
               <button
                 type="button"

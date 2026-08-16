@@ -104,7 +104,7 @@ export function ResearchHeroHistoryPanel({
     return pending.filter((row) => row.project_id === activeProject.id)
   }, [activeProject?.id, backgroundJobs?.activeResearches])
   const [rows, setRows] = useState<ResearchRow[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [hasFetched, setHasFetched] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<{
@@ -120,6 +120,7 @@ export function ResearchHeroHistoryPanel({
 
   const load = useCallback(async () => {
     if (!user?.id || !activeProject?.id) {
+      setLoading(false)
       setHasFetched(true)
       return
     }
@@ -242,11 +243,14 @@ export function ResearchHeroHistoryPanel({
       onHasContentChange?.(false)
       return
     }
-    if (!user?.id || workspaceLoading || !activeProject?.id) {
+    if (!user?.id || !activeProject?.id) {
       onHasContentChange?.(false)
       return
     }
-    if (loading || !hasFetched) return
+    if (workspaceLoading || loading || !hasFetched) {
+      onHasContentChange?.(true)
+      return
+    }
     onHasContentChange?.(hasListContent)
   }, [
     expanded,

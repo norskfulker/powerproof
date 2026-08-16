@@ -126,7 +126,7 @@ export const SCAN_WORKSPACE_METRIC_COLUMNS: DiscoverHeroWorkspaceMetricColumns =
 }
 
 export const MARKET_TEST_WORKSPACE_METRIC_COLUMNS: DiscoverHeroWorkspaceMetricColumns = {
-  labels: ['Score', 'Verdict', 'Country'],
+  labels: ['Score', 'Verdict', 'Status'],
   metaLabel: null,
 }
 
@@ -378,12 +378,12 @@ function WorkspaceSortHeaderButton({
 function MetricsTableColGroup({ showMeta = true }: { showMeta?: boolean }) {
   return (
     <colgroup>
-      <col style={{ width: showMeta ? '26%' : '30%' }} />
-      <col style={{ width: showMeta ? '11%' : '13%' }} />
-      <col style={{ width: showMeta ? '13%' : '15%' }} />
-      <col style={{ width: showMeta ? '10%' : '12%' }} />
+      <col style={{ width: showMeta ? '26%' : '36%' }} />
+      <col style={{ width: showMeta ? '11%' : '14%' }} />
+      <col style={{ width: showMeta ? '13%' : '16%' }} />
+      <col style={{ width: showMeta ? '10%' : '14%' }} />
       {showMeta ? <col style={{ width: '22%' }} /> : null}
-      <col style={{ width: showMeta ? '18%' : '30%' }} />
+      <col style={{ width: showMeta ? '18%' : '20%' }} />
     </colgroup>
   )
 }
@@ -498,7 +498,7 @@ export function DiscoverHeroWorkspaceTable({
           aria-label={ariaLabel}
         >
           {visibleItems.map((child, index) => (
-            <div key={index} className="flex h-full min-w-0" role="listitem">
+            <div key={index} className="flex h-full min-w-0 w-full max-w-full flex-col" role="listitem">
               {child}
             </div>
           ))}
@@ -603,6 +603,38 @@ export function DiscoverHeroWorkspaceTableRow({ children }: { children: ReactNod
   )
 }
 
+function WorkspaceGridCardSkeleton() {
+  return (
+    <div className="flex h-full w-full min-w-0 flex-col overflow-hidden rounded-xl border border-border-subtle bg-muted/35 shadow-sm">
+      <div className="flex items-center justify-between gap-2 px-3 py-2.5">
+        <div className="h-3.5 w-14 animate-pulse rounded bg-muted/50" />
+        <div className="h-3.5 w-24 animate-pulse rounded bg-muted/50" />
+      </div>
+      <div className="flex flex-1 flex-col gap-3 border-t border-border-subtle bg-card p-4">
+        <div className="flex items-center gap-3">
+          <div className="h-5 w-5 shrink-0 animate-pulse rounded bg-muted/40" />
+          <div className="h-4 w-3/4 animate-pulse rounded bg-muted/40" />
+        </div>
+        <div className="grid grid-cols-3 overflow-hidden rounded-xl border border-border-subtle">
+          {Array.from({ length: 3 }, (_, index) => (
+            <div
+              key={index}
+              className={cn(
+                'flex min-w-0 flex-col gap-1.5 px-3 py-2.5',
+                index > 0 && 'border-l border-border-subtle',
+              )}
+            >
+              <div className="h-2.5 w-10 animate-pulse rounded bg-muted/40" />
+              <div className="h-3.5 w-12 animate-pulse rounded bg-muted/40" />
+            </div>
+          ))}
+        </div>
+        <div className="mt-auto h-7 w-full animate-pulse rounded-md bg-muted/40" />
+      </div>
+    </div>
+  )
+}
+
 export function DiscoverHeroBoxLoadingSkeleton({
   count = 6,
   className,
@@ -617,6 +649,9 @@ export function DiscoverHeroBoxLoadingSkeleton({
   initialVisibleCount?: number
 }) {
   const { layout } = useDiscoverHeroWorkspaceLayoutView()
+  const resolvedMetricColumns = metricColumns ?? FINANCIAL_WORKSPACE_METRIC_COLUMNS
+  const showMetaColumn = resolvedMetricColumns.metaLabel != null
+  const skeletonCap = initialVisibleCount ?? count
 
   if (layout === 'table' && columns === 'metrics') {
     return (
@@ -624,26 +659,24 @@ export function DiscoverHeroBoxLoadingSkeleton({
         className={className}
         ariaLabel="Loading workspace items"
         columns="metrics"
-        metricColumns={metricColumns}
-        initialVisibleCount={initialVisibleCount}
+        metricColumns={resolvedMetricColumns}
+        initialVisibleCount={skeletonCap}
       >
         {Array.from({ length: count }, (_, i) => (
           <tr key={i} className="border-b border-border-subtle last:border-b-0">
             <td className="px-4 py-3">
               <div className="h-5 w-3/4 animate-pulse rounded bg-muted/30" />
             </td>
-            <td className={cn('px-3 py-3', metricsDesktopOnlyColClassName)}>
-              <div className="h-5 w-16 animate-pulse rounded bg-muted/30" />
-            </td>
-            <td className={cn('px-3 py-3', metricsDesktopOnlyColClassName)}>
-              <div className="h-5 w-20 animate-pulse rounded bg-muted/30" />
-            </td>
-            <td className={cn('px-3 py-3', metricsDesktopOnlyColClassName)}>
-              <div className="h-5 w-12 animate-pulse rounded bg-muted/30" />
-            </td>
-            <td className="px-3 py-3">
-              <div className="h-4 w-24 animate-pulse rounded bg-muted/30" />
-            </td>
+            {resolvedMetricColumns.labels.map((label) => (
+              <td key={label} className={cn('px-3 py-3', metricsDesktopOnlyColClassName)}>
+                <div className="h-5 w-16 animate-pulse rounded bg-muted/30" />
+              </td>
+            ))}
+            {showMetaColumn ? (
+              <td className="px-3 py-3">
+                <div className="h-4 w-24 animate-pulse rounded bg-muted/30" />
+              </td>
+            ) : null}
             <td className="px-3 py-3">
               <div className="ml-auto h-5 w-14 animate-pulse rounded bg-muted/30" />
             </td>
@@ -659,19 +692,34 @@ export function DiscoverHeroBoxLoadingSkeleton({
       ariaLabel="Loading workspace items"
       columns={columns}
       metricColumns={metricColumns}
-      initialVisibleCount={initialVisibleCount}
+      initialVisibleCount={skeletonCap}
     >
-      {Array.from({ length: count }, (_, i) => (
-        <div
-          key={i}
-          className={
-            layout === 'grid'
-              ? 'h-48 animate-pulse rounded-xl border border-border-subtle bg-muted/30'
-              : 'h-[4.5rem] animate-pulse bg-muted/25'
-          }
-        />
-      ))}
+      {Array.from({ length: count }, (_, i) =>
+        layout === 'grid' ? (
+          <WorkspaceGridCardSkeleton key={i} />
+        ) : (
+          <div key={i} className="h-[4.5rem] animate-pulse bg-muted/25" />
+        ),
+      )}
     </DiscoverHeroWorkspaceTable>
+  )
+}
+
+/** Full room-page placeholder while auth or workspace history is hydrating. */
+export function DiscoverHeroRoomPageSkeleton() {
+  return (
+    <DiscoverHeroWorkspaceLayoutProvider>
+      <div className="flex w-full min-w-0 flex-col gap-6 px-3 pb-8 pt-6 md:pt-8">
+        <div className="mx-auto flex w-full max-w-[min(100%,36rem)] flex-col items-center gap-3">
+          <div className="h-8 w-40 animate-pulse rounded-md bg-muted/30" />
+          <div className="h-14 w-full animate-pulse rounded-xl border border-border-subtle bg-muted/25" />
+        </div>
+        <div className="flex flex-col gap-3">
+          <div className="h-7 w-52 animate-pulse rounded-md bg-muted/30" />
+          <DiscoverHeroBoxLoadingSkeleton columns="metrics" count={6} />
+        </div>
+      </div>
+    </DiscoverHeroWorkspaceLayoutProvider>
   )
 }
 

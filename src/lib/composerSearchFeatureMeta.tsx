@@ -1,15 +1,15 @@
 import type { RemixIcon } from '@/lib/icons'
-import { Compass, Map, PackageSearch, Radar, Swords, Target, Wand2 } from '@/lib/icons'
+import { Compass, Crosshair, Scan2Line, SearchAiLine, SeoLine, Store2Line, Waypoints } from '@/lib/icons'
 import type { ComposerSearchFeature } from '@/lib/composerSearchRecents'
 
 const FEATURE_ICONS: Record<ComposerSearchFeature, RemixIcon> = {
-  research: Wand2,
-  'war-room': Swords,
-  roadmap: Map,
-  'market-test': Target,
-  sourcing: PackageSearch,
+  research: SeoLine,
+  'war-room': Crosshair,
+  roadmap: Waypoints,
+  'market-test': Store2Line,
+  sourcing: SearchAiLine,
   opportunities: Compass,
-  scanner: Radar,
+  scanner: Scan2Line,
 }
 
 export function composerSearchFeatureIcon(feature: ComposerSearchFeature): RemixIcon {

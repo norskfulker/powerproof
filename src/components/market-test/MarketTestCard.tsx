@@ -1,11 +1,13 @@
-import { Loader2, Play } from '@/lib/icons'
+import { Loader2, Play, Store2Line } from '@/lib/icons'
 import { Button } from '@/components/ui/button'
 import {
   useDiscoverHeroWorkspaceLayoutView,
 } from '@/components/discover/DiscoverHeroBox'
 import { DiscoverHeroWorkspaceItem } from '@/components/discover/DiscoverHeroWorkspaceItem'
+import { cardTopSlotRowClass, cardTopSlotTitleClass } from '@/components/ui/card'
 import type { MarketTestListRow } from '@/lib/marketTestApi'
 import { MARKET_TEST_RERUN_CONFIRM } from '@/lib/rerunConfirm'
+import { formatSourcingTimestamp } from '@/lib/sourcingHistoryDetails'
 import {
   EMPTY_MARKET_TEST_WORKSPACE_METRICS,
   marketTestWorkspaceMetrics,
@@ -42,6 +44,7 @@ export function MarketTestCard({
   const isFailed = status === 'failed'
   const isPending = !isComplete && !isFailed
   const metrics = isPending ? EMPTY_MARKET_TEST_WORKSPACE_METRICS : marketTestWorkspaceMetrics(row)
+  const testedLabel = row.created_at ? formatSourcingTimestamp(row.created_at) : ''
 
   const footerActions =
     isPending ? (
@@ -81,20 +84,35 @@ export function MarketTestCard({
       )
     ) : onDeleteRequest && onReRunRequest && (isComplete || isFailed) ? (
       layout === 'table' ? (
-        <RoomCardActions
-          compact
-          reRunLabel="Re-run"
-          reRunVariant="primary"
-          disabled={disabled}
-          requireReRunConfirm
-          reRunConfirm={{
-            title: MARKET_TEST_RERUN_CONFIRM.title,
-            description: MARKET_TEST_RERUN_CONFIRM.description,
-            confirmLabel: MARKET_TEST_RERUN_CONFIRM.confirmLabel,
-          }}
-          onReRun={onReRunRequest}
-          onDelete={onDeleteRequest}
-        />
+        <div className="flex flex-wrap items-center justify-end gap-1.5">
+          <Button
+            type="button"
+            variant="secondary"
+            size="sm"
+            className="h-7 min-h-7 px-2.5 text-[11px] font-semibold"
+            disabled={disabled}
+            onClick={(event) => {
+              event.stopPropagation()
+              onClick()
+            }}
+          >
+            Open
+          </Button>
+          <RoomCardActions
+            compact
+            reRunLabel="Re-run"
+            reRunVariant="primary"
+            disabled={disabled}
+            requireReRunConfirm
+            reRunConfirm={{
+              title: MARKET_TEST_RERUN_CONFIRM.title,
+              description: MARKET_TEST_RERUN_CONFIRM.description,
+              confirmLabel: MARKET_TEST_RERUN_CONFIRM.confirmLabel,
+            }}
+            onReRun={onReRunRequest}
+            onDelete={onDeleteRequest}
+          />
+        </div>
       ) : (
         <RoomCardActions
           reRunLabel="Re-run"
@@ -129,9 +147,18 @@ export function MarketTestCard({
   return (
     <DiscoverHeroWorkspaceItem
       title={title}
-      iconOverride={isPending ? Loader2 : undefined}
+      iconOverride={isPending ? Loader2 : Store2Line}
       iconTone={isPending ? 'amber' : 'primary'}
+      subtitle={layout === 'table' ? testedLabel || undefined : undefined}
       metrics={metrics}
+      topSlot={
+        layout === 'grid' && testedLabel ? (
+          <div className={cn(cardTopSlotRowClass, 'justify-between gap-2')}>
+            <span className={cn(cardTopSlotTitleClass, 'text-muted-foreground')}>Tested</span>
+            <span className="truncate text-[13px] font-semibold text-foreground">{testedLabel}</span>
+          </div>
+        ) : undefined
+      }
       highlight={isPending ? 'in-progress' : null}
       onActivate={disabled ? undefined : onClick}
       disabled={disabled}

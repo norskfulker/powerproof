@@ -85,7 +85,7 @@ export function WarRoomHeroHistoryPanel({
   )
 
   const [rows, setRows] = useState<UserPlaybook[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<UserPlaybook | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -229,7 +229,10 @@ export function WarRoomHeroHistoryPanel({
       onHasContentChange?.(false)
       return
     }
-    if (loading) return
+    if (loading) {
+      onHasContentChange?.(true)
+      return
+    }
     onHasContentChange?.(hasListContent)
   }, [expanded, user?.id, loading, hasListContent, onHasContentChange])
 

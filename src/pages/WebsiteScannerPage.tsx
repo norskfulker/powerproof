@@ -50,6 +50,7 @@ import {
   Layers,
   Loader2,
   Radar,
+  Scan2Line,
   Search,
   TrendingUp,
   Zap,
@@ -107,7 +108,7 @@ const SCANNER_MAX_LENGTH = SCANNER_URL_MAX_LENGTH
 export function WebsiteScannerPage() {
   // Stable JSX node — useRegisterAppChromeHeader depends on identity, so a fresh
   // element every render would re-run the effect and cause an update loop.
-  const headerIcon = useMemo(() => <Radar aria-hidden />, [])
+  const headerIcon = useMemo(() => <Scan2Line aria-hidden />, [])
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
@@ -491,7 +492,13 @@ export function WebsiteScannerPage() {
         submitLabel="Get Insights"
         submitAriaLabel="Get Insights"
         submitTitle="Get Insights"
-        leadingSlot={<SiteFavicon hostname={inputHostname} size={18} />}
+        leadingSlot={
+          inputHostname ? (
+            <SiteFavicon hostname={inputHostname} size={18} />
+          ) : (
+            <Scan2Line className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+          )
+        }
         detailsSlot={
           <label
             className={cn(
@@ -866,41 +873,16 @@ function ScanWorkspaceItem({
         </>
       }
       actions={
-        layout === 'table' ? (
-          <div className="flex flex-wrap items-center justify-end gap-1.5">
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              className="h-7 min-h-7 px-2.5 text-[11px] font-semibold"
-              disabled={Boolean(loadingId)}
-              onClick={(event) => {
-                event.stopPropagation()
-                onOpen(row.id)
-              }}
-            >
-              Open
-            </Button>
-            <RoomCardActions
-              className="w-auto pt-0"
-              reRunLabel="Open"
-              reRunVariant="primary"
-              requireReRunConfirm={false}
-              disabled={Boolean(loadingId)}
-              onReRun={() => onOpen(row.id)}
-              onDelete={() => onDeleteGroup(group)}
-            />
-          </div>
-        ) : (
-          <RoomCardActions
-            reRunLabel="Open"
-            reRunVariant="primary"
-            requireReRunConfirm={false}
-            disabled={Boolean(loadingId)}
-            onReRun={() => onOpen(row.id)}
-            onDelete={() => onDeleteGroup(group)}
-          />
-        )
+        <RoomCardActions
+          className="w-auto pt-0"
+          compact={layout === 'table'}
+          reRunLabel="Open"
+          reRunVariant="primary"
+          requireReRunConfirm={false}
+          disabled={Boolean(loadingId)}
+          onReRun={() => onOpen(row.id)}
+          onDelete={() => onDeleteGroup(group)}
+        />
       }
     />
   )
@@ -924,7 +906,13 @@ function RecentScansList({
   const [openVersionsKey, setOpenVersionsKey] = useState<string | null>(null)
 
   if (!loaded) {
-    return <DiscoverHeroBoxLoadingSkeleton count={3} columns="metrics" />
+    return (
+      <DiscoverHeroBoxLoadingSkeleton
+        count={3}
+        columns="metrics"
+        metricColumns={SCAN_WORKSPACE_METRIC_COLUMNS}
+      />
+    )
   }
 
   const groups = groupScansBySite(rows)

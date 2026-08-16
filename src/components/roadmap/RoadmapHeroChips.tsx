@@ -113,7 +113,7 @@ export const RoadmapHeroChips = forwardRef<
   ) : null
 
   if (children) {
-    const historyHasContent = (historyCount ?? 0) > 0
+    const historyHasContent = historyCount !== 0
     return children({ chips: chipsSlot, chipsVisible, history: historySlot, historyHasContent })
   }
 

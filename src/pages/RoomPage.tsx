@@ -7,6 +7,7 @@ import { DiscoverHeroSection } from '@/components/discover/DiscoverHeroSection'
 import { discoverHeroSectionSlotScrollChainClassName } from '@/components/discover/discoverHeroTokens'
 import { DiscoverHeroViewportShell } from '@/components/discover/DiscoverHeroViewportShell'
 import { DiscoverHeroAskAiShell } from '@/components/discover/DiscoverHeroAskAiShell'
+import { DiscoverHeroRoomPageSkeleton } from '@/components/discover/DiscoverHeroBox'
 import { Seo } from '@/components/Seo'
 import { toast } from '@/components/ui/sonner'
 import { useAuth } from '@/contexts/AuthContext'
@@ -97,7 +98,7 @@ const AUTH_MODES = new Set<DiscoverHeroTab>([
 ])
 
 export default function RoomPage() {
-  const { user, profile, isAdmin } = useAuth()
+  const { user, profile, isAdmin, isLoading: authLoading } = useAuth()
   const chrome = useAppChromeHeaderOptional()
   const previewRoomVariant = chrome?.previewRoomVariant ?? 'off'
   const {
@@ -207,6 +208,16 @@ export default function RoomPage() {
     if (!discoverSearchFromNav) return
     navigate(roomPathForMode('search'), { replace: true, state: {} })
   }, [discoverSearchFromNav, navigate])
+
+  if (AUTH_MODES.has(mode) && authLoading) {
+    return (
+      <DiscoverHeroAskAiShell mode={mode}>
+        <DiscoverHeroViewportShell>
+          <DiscoverHeroRoomPageSkeleton />
+        </DiscoverHeroViewportShell>
+      </DiscoverHeroAskAiShell>
+    )
+  }
 
   if (AUTH_MODES.has(mode) && !user) return null
 

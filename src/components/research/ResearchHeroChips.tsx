@@ -64,7 +64,7 @@ export const ResearchHeroChips = forwardRef<
 ) {
   const { user } = useAuth()
   const [historyCount, setHistoryCount] = useState<number | undefined>(undefined)
-  const [hasHistoryContent, setHasHistoryContent] = useState(false)
+  const [hasHistoryContent, setHasHistoryContent] = useState(true)
   const [chipsVisible, setChipsVisible] = useState(false)
   const [searchQuery, setSearchQuery] = useState('')
   const ideaChipsSession = useIdeaChipsSession('research')

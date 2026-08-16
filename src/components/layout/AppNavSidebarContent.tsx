@@ -9,6 +9,7 @@ import {
   X,
 } from '@/lib/icons'
 
+import { AppChromeProfileMenu } from '@/components/layout/AppChromeProfileMenu'
 import { BrandLogoLink } from '@/components/layout/BrandLogoLink'
 import { SidebarNavLabelWithExtension } from '@/components/layout/SidebarNavLabelWithExtension'
 import { withNavIconClass } from '@/lib/iconClassNames'
@@ -388,18 +389,23 @@ export function AppNavSidebarContent({
           </div>
         </nav>
 
-        {collapseEnabled && onToggleCollapsed ? (
-          <div
-            className={cn(
-              'mt-auto shrink-0 border-t border-border-subtle',
-              touchLayout
-                ? 'px-4 py-4'
-                : showCollapsed
-                  ? 'flex items-center justify-center px-2 py-2'
-                  : 'px-2.5 py-3',
-            )}
-          >
-            {showCollapsed ? (
+        <div
+          className={cn(
+            'mt-auto shrink-0 border-t border-border-subtle',
+            touchLayout
+              ? 'px-4 py-3'
+              : showCollapsed
+                ? 'flex flex-col items-center justify-center gap-2 px-2 py-2'
+                : 'px-2.5 py-3',
+          )}
+        >
+          <AppChromeProfileMenu
+            variant="sidebar"
+            collapsed={showCollapsed}
+            onNavigate={onNavigate}
+          />
+          {collapseEnabled && onToggleCollapsed ? (
+            showCollapsed ? (
               <SidebarCollapseButton
                 collapsed
                 onClick={onToggleCollapsed}
@@ -410,7 +416,7 @@ export function AppNavSidebarContent({
                 type="button"
                 onClick={onToggleCollapsed}
                 className={cn(
-                  'inline-flex w-full items-center gap-2 rounded-md px-2 py-1.5',
+                  'mt-1 inline-flex w-full items-center gap-2 rounded-md px-2 py-1.5',
                   'text-[12px] font-medium text-muted-foreground',
                   'transition-colors hover:bg-muted/50 hover:text-foreground focus-visible:outline-none',
                 )}
@@ -418,9 +424,9 @@ export function AppNavSidebarContent({
                 <LayoutLeft className="h-3.5 w-3.5 shrink-0" aria-hidden />
                 <span>Collapse</span>
               </button>
-            )}
-          </div>
-        ) : null}
+            )
+          ) : null}
+        </div>
       </div>
     </>
   )

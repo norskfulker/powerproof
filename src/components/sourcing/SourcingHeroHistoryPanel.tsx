@@ -77,7 +77,7 @@ export function SourcingHeroHistoryPanel({
   const navigate = useNavigate()
   const { layout } = useDiscoverHeroWorkspaceLayoutView()
   const [rows, setRows] = useState<SourcingHistoryRow[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<SourcingHistoryRow | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -119,7 +119,10 @@ export function SourcingHeroHistoryPanel({
       onHasContentChange?.(false)
       return
     }
-    if (loading) return
+    if (loading) {
+      onHasContentChange?.(true)
+      return
+    }
     onHasContentChange?.(hasListContent)
   }, [expanded, user?.id, loading, hasListContent, onHasContentChange])
 
@@ -170,7 +173,12 @@ export function SourcingHeroHistoryPanel({
   return (
     <AnimatePresence initial={false}>
       <motion.div key="history-panel" {...SOURCING_PANEL_MOTION} className="flex flex-col gap-3">
-        {showSkeleton ? <DiscoverHeroBoxLoadingSkeleton /> : null}
+        {showSkeleton ? (
+          <DiscoverHeroBoxLoadingSkeleton
+            columns="metrics"
+            metricColumns={SOURCING_WORKSPACE_METRIC_COLUMNS}
+          />
+        ) : null}
 
         {error ? (
           <p className="px-0.5 text-[11px] text-destructive">{error}</p>

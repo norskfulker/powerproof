@@ -1,7 +1,7 @@
-import { useCallback, useEffect, useMemo, useState, Fragment } from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import { useLocation, useNavigate } from 'react-router-dom'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Target } from '@/lib/icons'
+import { Store2Line } from '@/lib/icons'
 import { useAuth } from '@/contexts/AuthContext'
 import { landingSignInTo } from '@/lib/authLanding'
 import {
@@ -20,13 +20,12 @@ import {
   DiscoverHeroBoxLoadingSkeleton,
   DiscoverHeroWorkspaceTable,
   MARKET_TEST_WORKSPACE_METRIC_COLUMNS,
-  useDiscoverHeroWorkspaceLayoutView,
 } from '@/components/discover/DiscoverHeroBox'
 import {
   discoverHeroButtonPrimaryClassName,
 } from '@/components/discover/discoverHeroTokens'
 import { matchesWorkspaceSearch } from '@/lib/discoverHeroWorkspaceSearch'
-import { SOURCING_GRID_SIMULTANEOUS, SOURCING_ITEM_MOTION, SOURCING_PANEL_MOTION } from '@/lib/sourcingHeroMotion'
+import { SOURCING_PANEL_MOTION } from '@/lib/sourcingHeroMotion'
 import { cn } from '@/lib/utils'
 import { discoverHeroNavState } from '@/lib/roomWorkspaceHeader'
 
@@ -50,10 +49,9 @@ export function MarketTestHeroHistoryPanel({
   const { user } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const { layout } = useDiscoverHeroWorkspaceLayoutView()
   const heroFromState = discoverHeroNavState(location.pathname, location.search)
   const [rows, setRows] = useState<MarketTestListRow[]>([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [pendingDelete, setPendingDelete] = useState<MarketTestListRow | null>(null)
   const [isDeleting, setIsDeleting] = useState(false)
@@ -107,7 +105,10 @@ export function MarketTestHeroHistoryPanel({
       onHasContentChange?.(false)
       return
     }
-    if (loading) return
+    if (loading) {
+      onHasContentChange?.(true)
+      return
+    }
     onHasContentChange?.(hasListContent)
   }, [expanded, user?.id, loading, hasListContent, onHasContentChange])
 
@@ -153,16 +154,24 @@ export function MarketTestHeroHistoryPanel({
   if (loading && !hasListContent) {
     return (
       <motion.div key="market-test-history-loading" {...SOURCING_PANEL_MOTION}>
-        <DiscoverHeroBoxLoadingSkeleton />
+        <DiscoverHeroBoxLoadingSkeleton
+          count={6}
+          columns="metrics"
+          metricColumns={MARKET_TEST_WORKSPACE_METRIC_COLUMNS}
+        />
       </motion.div>
     )
   }
 
   return (
     <AnimatePresence initial={false} mode="wait">
-      <motion.div key="market-test-history-panel" {...SOURCING_PANEL_MOTION} className="flex flex-col gap-3">
+      <motion.div key="market-test-history-panel" {...SOURCING_PANEL_MOTION} className="flex w-full min-w-0 flex-col gap-3">
         {showHistorySkeleton ? (
-          <DiscoverHeroBoxLoadingSkeleton />
+          <DiscoverHeroBoxLoadingSkeleton
+            count={6}
+            columns="metrics"
+            metricColumns={MARKET_TEST_WORKSPACE_METRIC_COLUMNS}
+          />
         ) : error ? (
           <div className="rounded-lg border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
             {error}
@@ -170,7 +179,7 @@ export function MarketTestHeroHistoryPanel({
         ) : !hasListContent ? (
           <DiscoverHeroWorkspaceEmptyState
             accent="primary"
-            icon={Target}
+            icon={Store2Line}
             title="Your market reality checks live here"
             description="Describe an idea above and run a market test — results stay saved permanently."
           />
@@ -181,11 +190,6 @@ export function MarketTestHeroHistoryPanel({
                 No market tests match &ldquo;{searchQuery.trim()}&rdquo;
               </p>
             ) : (
-              <motion.div
-                variants={SOURCING_GRID_SIMULTANEOUS}
-                initial="hidden"
-                animate="visible"
-              >
               <DiscoverHeroWorkspaceTable
                 ariaLabel="Market test workspace"
                 columns="metrics"
@@ -193,58 +197,41 @@ export function MarketTestHeroHistoryPanel({
                 listResetKey={`${refreshKey ?? ''}:${searchQuery}`}
                 expandDisabled={workspaceDisabled}
               >
-                {filteredPendingRows.map((row) => {
-                  const card = (
-                    <MarketTestCard
-                      row={row}
-                      disabled={workspaceDisabled}
-                      onClick={() =>
-                        navigate(MARKET_TEST_ROUTES.detail(String(row.id)), {
-                          state: heroFromState,
-                        })
-                      }
-                    />
-                  )
-                  return layout === 'table' ? (
-                    <Fragment key={row.id}>{card}</Fragment>
-                  ) : (
-                    <motion.div key={row.id} variants={SOURCING_ITEM_MOTION} className="h-full">
-                      {card}
-                    </motion.div>
-                  )
-                })}
-                {visibleCompletedRows.map((row) => {
-                  const card = (
-                    <MarketTestCard
-                      row={row}
-                      disabled={workspaceDisabled}
-                      onClick={() =>
-                        navigate(MARKET_TEST_ROUTES.detail(String(row.id)), {
-                          state: heroFromState,
-                        })
-                      }
-                      onDeleteRequest={() => setPendingDelete(row)}
-                      onReRunRequest={
-                        onReRun
-                          ? () => onReRun(row)
-                          : () => {
-                              const term = row.query?.trim()
-                              if (term)
-                                navigate(MARKET_TEST_ROUTES.new, { state: { query: term } })
-                            }
-                      }
-                    />
-                  )
-                  return layout === 'table' ? (
-                    <Fragment key={row.id}>{card}</Fragment>
-                  ) : (
-                    <motion.div key={row.id} variants={SOURCING_ITEM_MOTION} className="h-full">
-                      {card}
-                    </motion.div>
-                  )
-                })}
+                {filteredPendingRows.map((row) => (
+                  <MarketTestCard
+                    key={row.id}
+                    row={row}
+                    disabled={workspaceDisabled}
+                    onClick={() =>
+                      navigate(MARKET_TEST_ROUTES.detail(String(row.id)), {
+                        state: heroFromState,
+                      })
+                    }
+                  />
+                ))}
+                {visibleCompletedRows.map((row) => (
+                  <MarketTestCard
+                    key={row.id}
+                    row={row}
+                    disabled={workspaceDisabled}
+                    onClick={() =>
+                      navigate(MARKET_TEST_ROUTES.detail(String(row.id)), {
+                        state: heroFromState,
+                      })
+                    }
+                    onDeleteRequest={() => setPendingDelete(row)}
+                    onReRunRequest={
+                      onReRun
+                        ? () => onReRun(row)
+                        : () => {
+                            const term = row.query?.trim()
+                            if (term)
+                              navigate(MARKET_TEST_ROUTES.new, { state: { query: term } })
+                          }
+                    }
+                  />
+                ))}
               </DiscoverHeroWorkspaceTable>
-              </motion.div>
             )}
             <RoomHeroDeleteConfirmDialog
               open={pendingDelete != null}

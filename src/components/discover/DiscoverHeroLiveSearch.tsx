@@ -10,14 +10,18 @@ import {
 import { useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import {
   BookMarked,
-  Briefcase,
+  BookOpen,
   Compass,
+  Crosshair,
   Globe,
   Lock,
   Map,
   PackageSearch,
+  SearchAiLine,
+  SeoLine,
+  Store2Line,
   Swords,
-  Target,
+  Waypoints,
 } from '@/lib/icons'
 
 import { DEFAULT_COUNTRY_NAME } from '@/lib/countries'
@@ -253,7 +257,7 @@ function DiscoverHeroWorkspaceBody({
     >
       {resultsFirst ? resultsBlock : null}
       {chips ? <div className={cn(resultsFirst && 'mt-auto')}>{chips}</div> : null}
-      {!resultsFirst && resultsBlock ? <div>{resultsBlock}</div> : null}
+      {!resultsFirst && resultsBlock ? <div className="w-full min-w-0">{resultsBlock}</div> : null}
     </div>
   )
 }
@@ -1158,17 +1162,17 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
   }
 
   const composerLeadingIcon = isResearchMode ? (
-    <BookMarked className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <SeoLine className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : isPlaybookMode ? (
-    <Swords className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <Crosshair className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : isRoadmapMode ? (
-    <Map className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <Waypoints className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : isSourcingMode ? (
-    <PackageSearch className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <SearchAiLine className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : isMarketTestMode ? (
-    <Target className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <Store2Line className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : isInvestorsBrowseMode ? (
-    <Briefcase className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
+    <BookOpen className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   ) : (
     <Compass className="h-[18px] w-[18px] text-muted-foreground" aria-hidden />
   )
@@ -1368,9 +1372,9 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
           onSuggestLoadingChange={setSuggestIdeasLoading}
           hideChipsDuringWizard={hideRoadmapChipsDuringWizard}
         >
-          {({ chips, chipsVisible, history, historyHasContent }) => {
+          {({ chips, chipsVisible, history }) => {
             const showWorkspace =
-              (!hidePersonalHistory && historyHasContent) ||
+              !hidePersonalHistory ||
               Boolean(roadmapExpansion) ||
               roadmapGenerating
             return (
@@ -1477,9 +1481,9 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
           inputId={inputId ?? 'discover-hero-search-input'}
           refreshKey={sourcing.step === 'done' ? sourcing.data?.keyword : sourcing.step}
         >
-          {({ chips, chipsVisible, history, historyHasContent }) => {
+          {({ chips, chipsVisible, history }) => {
             const showWorkspace =
-              (!hidePersonalHistory && historyHasContent) ||
+              !hidePersonalHistory ||
               Boolean(sourcingExpansion) ||
               sourcingFlowActive
             return (
@@ -1546,9 +1550,9 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
           inputId={inputId ?? 'discover-hero-search-input'}
           refreshKey={`${research.step}-${activeProject?.id ?? ''}`}
         >
-          {({ chips, chipsVisible, history, historyHasContent }) => {
+          {({ chips, chipsVisible, history }) => {
             const showMyResearch =
-              (!hidePersonalHistory && historyHasContent) ||
+              !hidePersonalHistory ||
               Boolean(researchExpansion) ||
               researchFlowActive
             const showPublicCatalog = !previewNil
@@ -1622,8 +1626,8 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
           inputId={inputId ?? 'discover-hero-search-input'}
           refreshKey={`market-test-${user?.id ?? ''}`}
         >
-          {({ chips, chipsVisible, history, historyHasContent }) => {
-            const showWorkspace = !hidePersonalHistory && historyHasContent
+          {({ chips, chipsVisible, history }) => {
+            const showWorkspace = !hidePersonalHistory
             return (
             <DiscoverHeroWorkspaceChipsLayout
               toolsAboveComposer={null}
@@ -1637,12 +1641,12 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
                 <DiscoverHeroWorkspaceBox
                   visible={showWorkspace}
                   ariaLabel="Market Test workspace"
-                  className={cn(stableLayout && 'min-h-0 flex-1 flex-col')}
-                  bodyClassName={cn(discoverModeWorkspaceBoxBody, stableLayout && 'min-h-0 flex-1')}
+                  className={cn(stableLayout && 'min-h-0 w-full min-w-0 flex-1 flex-col')}
+                  bodyClassName={cn(discoverModeWorkspaceBoxBody, stableLayout && 'min-h-0 w-full min-w-0 flex-1')}
                 >
                   <DiscoverHeroWorkspaceSectionTitle
                     label="All Market Tests"
-                    icon={Target}
+                    icon={Store2Line}
                     accent="primary"
                     className="mb-3"
                   />
@@ -1678,9 +1682,9 @@ export function DiscoverHeroLiveSearch(props: DiscoverHeroLiveSearchProps) {
           workspaceDisabled={warRoomWorkspaceDisabled}
           refreshKey={`${warRoom.phase}-${user?.id ?? ''}`}
         >
-          {({ chips, chipsVisible, history, historyHasContent }) => {
+          {({ chips, chipsVisible, history }) => {
             const showWorkspace =
-              (!hidePersonalHistory && historyHasContent) ||
+              !hidePersonalHistory ||
               Boolean(warRoomExpansion) ||
               playbookFlowActive
             return (

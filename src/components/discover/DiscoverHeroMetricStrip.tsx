@@ -104,7 +104,7 @@ export function DiscoverHeroMetricStrip({
   return (
     <div
       className={cn(
-        'grid w-full grid-cols-3 overflow-hidden rounded-xl border border-border-subtle bg-background',
+        'grid w-full min-w-0 grid-cols-3 overflow-hidden rounded-xl border border-border-subtle bg-background',
         className,
       )}
     >

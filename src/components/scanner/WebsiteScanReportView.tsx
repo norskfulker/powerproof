@@ -1,5 +1,6 @@
-﻿import type { ReactNode } from 'react'
+﻿import { useState, type ReactNode } from 'react'
 import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import { Card, cardTopSlotRowClass } from '@/components/ui/card'
 import { detailHeroCardClassName } from '@/components/opportunity/detail/detailSectionClasses'
 import { TabsContent } from '@/components/ui/tabs'
@@ -7,10 +8,15 @@ import {
   InternalPageDataTabs,
   internalPageTabPanelClass,
 } from '@/components/shared/InternalPageDataTabs'
+import { toast } from '@/components/ui/sonner'
+import { useAuth } from '@/contexts/AuthContext'
+import { hostnameFromLooseUrl } from '@/lib/siteFavicon'
 import {
   Activity,
   AlertCircle,
+  Bookmark,
   Building2,
+  Check,
   CheckCircle2,
   ExternalLink,
   Globe,
@@ -887,7 +893,25 @@ function SectionPendingBody({ label }: { label: string }) {
 // ─── Hero ────────────────────────────────────────────────────────
 
 function ScanReportHero({ report }: { report: WebsiteScanReport }) {
+  const { profile, updateProfile } = useAuth()
+  const [savingWebsite, setSavingWebsite] = useState(false)
   const topInsights = report.insights.standoutInsights.slice(0, 3)
+  const siteUrl = report.normalizedUrl || report.url
+  const isOwnWebsite =
+    hostnameFromLooseUrl(profile?.website ?? '') === hostnameFromLooseUrl(siteUrl)
+
+  async function saveAsOwnWebsite() {
+    if (!siteUrl || savingWebsite || isOwnWebsite) return
+    setSavingWebsite(true)
+    const { error } = await updateProfile({ website: siteUrl })
+    setSavingWebsite(false)
+    if (error) {
+      toast.error('Could not save as your website')
+      return
+    }
+    toast.success('Saved as your website')
+  }
+
   return (
     <div className={cn(detailHeroCardClassName, 'w-full overflow-hidden py-4 sm:py-5')}>
       <div className="flex min-w-0 items-start gap-3">
@@ -911,6 +935,27 @@ function ScanReportHero({ report }: { report: WebsiteScanReport }) {
                 <ExternalLink className="h-3 w-3 shrink-0" aria-hidden />
               </Badge>
             </a>
+            {isOwnWebsite ? (
+              <Badge variant="green" size="sm">
+                <Check className="h-3 w-3" aria-hidden /> Your website
+              </Badge>
+            ) : (
+              <Button
+                type="button"
+                variant="secondary"
+                size="sm"
+                className="h-7 min-h-7 gap-1.5 px-2.5 text-[11px] font-semibold"
+                disabled={savingWebsite}
+                onClick={() => void saveAsOwnWebsite()}
+              >
+                {savingWebsite ? (
+                  <Loader2 className="h-3.5 w-3.5" aria-hidden />
+                ) : (
+                  <Bookmark className="h-3.5 w-3.5" aria-hidden />
+                )}
+                Save as my website
+              </Button>
+            )}
           </div>
         </div>
       </div>
