@@ -6,6 +6,8 @@ import type {
   PreviewWebsiteScanCompetitor,
   PreviewWebsiteScanErrorCode,
   PreviewWebsiteScanFinding,
+  PreviewWebsiteScanGetErrorCode,
+  PreviewWebsiteScanGetResponse,
   PreviewWebsiteScanLockedFinding,
   PreviewWebsiteScanPreview,
   PreviewWebsiteScanResponse,
@@ -13,11 +15,16 @@ import type {
 } from '@/types/previewWebsiteScan'
 
 export const PREVIEW_WEBSITE_SCAN_FUNCTION = 'preview-website-scan'
+export const PREVIEW_WEBSITE_SCAN_GET_FUNCTION = 'preview-website-scan-get'
 export const PREVIEW_WEBSITE_TOKEN_PARAM = 'preview_token'
+/** Query param on `/start` so a completed preview survives refresh and is shareable. */
+export const START_SESSION_TOKEN_PARAM = 'session_token'
 export const PREVIEW_WEBSITE_TOKEN_KEY = 'powerproof_website_preview_token'
 
 /** Client wait — the crawl + Gemini pass can take ~15–45s. */
 export const PREVIEW_WEBSITE_SCAN_TIMEOUT_MS = 60_000
+/** Saved-preview lookup is a DB read — fail fast if the function is unreachable. */
+export const PREVIEW_WEBSITE_SCAN_GET_TIMEOUT_MS = 15_000
 
 export const PREVIEW_WEBSITE_URL_PLACEHOLDER = 'yourbusiness.com'
 
@@ -51,6 +58,8 @@ export function previewWebsiteScanLoadingMessage(elapsedMs: number): string {
 }
 
 export const PREVIEW_WEBSITE_EMPTY_URL_MESSAGE = 'Enter your website URL to continue.'
+export const PREVIEW_WEBSITE_EXPIRED_MESSAGE =
+  'This preview has expired — try another URL'
 
 const FETCH_FAILED_MESSAGE =
   "Site is not reachable. Either 404 or JavaScript error."
@@ -65,6 +74,16 @@ const KNOWN_ERROR_CODES = new Set<PreviewWebsiteScanErrorCode>([
   'invalid_url',
   'fetch_failed',
   'misconfigured',
+  'network',
+  'timeout',
+  'unknown',
+])
+
+const KNOWN_GET_ERROR_CODES = new Set<PreviewWebsiteScanGetErrorCode>([
+  'invalid_session_token',
+  'not_found',
+  'expired',
+  'lookup_failed',
   'network',
   'timeout',
   'unknown',
@@ -212,6 +231,26 @@ export function normalizePreviewWebsiteScanResponse(
   }
 }
 
+export function normalizePreviewWebsiteScanGetResponse(
+  payload: unknown,
+  sessionToken: string,
+): PreviewWebsiteScanGetResponse | null {
+  const token = sessionToken.trim()
+  if (!token) return null
+  const scan = normalizePreviewWebsiteScanResponse({
+    preview: asRecord(payload).preview,
+    session_token: token,
+  })
+  if (!scan) return null
+  const data = asRecord(payload)
+  return {
+    ...scan,
+    url: asNonEmptyString(data.url),
+    normalized_url: asNonEmptyString(data.normalized_url),
+    expires_at: asNonEmptyString(data.expires_at),
+  }
+}
+
 export function previewWebsiteScanErrorMessage(
   code: PreviewWebsiteScanErrorCode,
   backendError?: string | null,
@@ -224,6 +263,38 @@ export function previewWebsiteScanErrorMessage(
   if (code === 'timeout') return TIMEOUT_MESSAGE
   if (code === 'network') return NETWORK_MESSAGE
   return asNonEmptyString(backendError) ?? UNKNOWN_MESSAGE
+}
+
+function normalizeGetErrorCode(
+  code: string | undefined,
+  status?: number,
+): PreviewWebsiteScanGetErrorCode {
+  if (code && KNOWN_GET_ERROR_CODES.has(code as PreviewWebsiteScanGetErrorCode)) {
+    return code as PreviewWebsiteScanGetErrorCode
+  }
+  if (status === 400) return 'invalid_session_token'
+  if (status === 404) return 'not_found'
+  if (status === 410) return 'expired'
+  if (status === 500) return 'lookup_failed'
+  return 'unknown'
+}
+
+export function previewWebsiteScanGetErrorMessage(
+  code: PreviewWebsiteScanGetErrorCode,
+  backendError?: string | null,
+): string {
+  if (code === 'expired' || code === 'not_found') return PREVIEW_WEBSITE_EXPIRED_MESSAGE
+  if (code === 'timeout') return TIMEOUT_MESSAGE
+  if (code === 'network') return NETWORK_MESSAGE
+  return asNonEmptyString(backendError) ?? UNKNOWN_MESSAGE
+}
+
+/** Calm copy for restore failures that should return the visitor to the URL form. */
+export function previewRestoreFallbackMessage(
+  code: PreviewWebsiteScanGetErrorCode,
+): string | null {
+  if (code === 'expired' || code === 'not_found') return PREVIEW_WEBSITE_EXPIRED_MESSAGE
+  return null
 }
 
 function normalizeErrorCode(code: string | undefined, status?: number): PreviewWebsiteScanErrorCode {
@@ -270,6 +341,24 @@ export function startSignUpPath(sessionToken: string | null): string {
   if (token) sp.set(PREVIEW_WEBSITE_TOKEN_PARAM, token)
   const qs = sp.toString()
   return qs ? `/sign-in?${qs}` : '/sign-in'
+}
+
+export function readStartSessionToken(search: string): string | null {
+  const sp = new URLSearchParams(search.startsWith('?') ? search.slice(1) : search)
+  return sp.get(START_SESSION_TOKEN_PARAM)?.trim() || null
+}
+
+/** `/start` URL that reloads the saved preview for this session token. */
+export function startPreviewPath(sessionToken: string | null): string {
+  const token = sessionToken?.trim() || null
+  if (!token) return '/start'
+  const sp = new URLSearchParams()
+  sp.set(START_SESSION_TOKEN_PARAM, token)
+  return `/start?${sp.toString()}`
+}
+
+export function displayUrlFromPreviewGet(data: PreviewWebsiteScanGetResponse): string {
+  return data.normalized_url ?? data.url ?? ''
 }
 
 export type FetchPreviewWebsiteScanResult =
@@ -332,6 +421,85 @@ export async function fetchPreviewWebsiteScan(
     }
 
     if (data.session_token) persistWebsitePreviewToken(data.session_token)
+    return { ok: true, data }
+  } catch (error) {
+    if (options.signal?.aborted && !timedOut) {
+      return { ok: false, cancelled: true }
+    }
+    const aborted =
+      timedOut ||
+      controller.signal.aborted ||
+      (error instanceof DOMException && error.name === 'AbortError')
+    if (aborted) {
+      return { ok: false, code: 'timeout', message: TIMEOUT_MESSAGE }
+    }
+    return { ok: false, code: 'network', message: NETWORK_MESSAGE }
+  } finally {
+    clearTimeout(timeoutId)
+    options.signal?.removeEventListener('abort', onExternalAbort)
+  }
+}
+
+export type FetchPreviewWebsiteScanGetResult =
+  | { ok: true; data: PreviewWebsiteScanGetResponse }
+  | { ok: false; cancelled: true }
+  | { ok: false; cancelled?: false; code: PreviewWebsiteScanGetErrorCode; message: string }
+
+export async function fetchPreviewWebsiteScanByToken(
+  sessionToken: string,
+  options: { signal?: AbortSignal } = {},
+): Promise<FetchPreviewWebsiteScanGetResult> {
+  const token = sessionToken.trim()
+  if (!token) {
+    return {
+      ok: false,
+      code: 'invalid_session_token',
+      message: previewWebsiteScanGetErrorMessage('invalid_session_token'),
+    }
+  }
+
+  if (options.signal?.aborted) {
+    return { ok: false, cancelled: true }
+  }
+
+  const controller = new AbortController()
+  let timedOut = false
+  const timeoutId = setTimeout(() => {
+    timedOut = true
+    controller.abort()
+  }, PREVIEW_WEBSITE_SCAN_GET_TIMEOUT_MS)
+  const onExternalAbort = () => controller.abort()
+  options.signal?.addEventListener('abort', onExternalAbort, { once: true })
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/functions/v1/${PREVIEW_WEBSITE_SCAN_GET_FUNCTION}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        apikey: SUPABASE_ANON_KEY,
+      },
+      body: JSON.stringify({ session_token: token }),
+      signal: controller.signal,
+    })
+
+    const payload = await res.json().catch(() => ({}))
+
+    if (!res.ok) {
+      const parsed = edgeApiErrorFromPayload(res.status, payload)
+      const code = normalizeGetErrorCode(parsed.code, res.status)
+      return {
+        ok: false,
+        code,
+        message: previewWebsiteScanGetErrorMessage(code, parsed.displayMessage),
+      }
+    }
+
+    const data = normalizePreviewWebsiteScanGetResponse(payload, token)
+    if (!data) {
+      return { ok: false, code: 'unknown', message: UNKNOWN_MESSAGE }
+    }
+
+    persistWebsitePreviewToken(token)
     return { ok: true, data }
   } catch (error) {
     if (options.signal?.aborted && !timedOut) {

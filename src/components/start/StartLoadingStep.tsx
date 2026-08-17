@@ -75,3 +75,17 @@ export function StartLoadingStep({ url }: { url: string }) {
     </div>
   )
 }
+
+export function StartRestoreStep() {
+  return (
+    <div
+      className="flex w-full flex-col items-center py-6 text-center"
+      role="status"
+      aria-live="polite"
+      aria-busy="true"
+    >
+      <div className="h-6 w-6 animate-spin rounded-full border-2 border-muted-foreground/20 border-t-primary" />
+      <p className="mt-4 text-sm leading-6 text-muted-foreground">Loading your preview…</p>
+    </div>
+  )
+}

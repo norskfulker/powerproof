@@ -213,9 +213,13 @@ function InAppBrowserSignInNotice() {
 
 type SignInCardProps = {
   onSignedIn?: () => void
+  /** Focus the email field on mount. Defaults to true. */
+  autoFocus?: boolean
+  /** Hide the email-step heading when a parent already provides one. */
+  hideHeading?: boolean
 }
 
-export function SignInCard({ onSignedIn }: SignInCardProps) {
+export function SignInCard({ onSignedIn, autoFocus = true, hideHeading = false }: SignInCardProps) {
   const { user, profile, profileLoading, isAdmin, signInWithGoogle, signInWithEmailOtp, verifyEmailOtp } =
     useAuth()
   const navigate = useNavigate()
@@ -296,10 +300,10 @@ export function SignInCard({ onSignedIn }: SignInCardProps) {
   useEffect(() => {
     if (signInView === 'verify-otp') {
       otpRef.current?.focus()
-    } else if (signInView === 'email') {
+    } else if (signInView === 'email' && autoFocus) {
       emailRef.current?.focus()
     }
-  }, [signInView])
+  }, [autoFocus, signInView])
   const waitForEmailPresence = async () => {
     const deadline = Date.now() + 2000
     while (Date.now() < deadline) {
@@ -516,22 +520,24 @@ export function SignInCard({ onSignedIn }: SignInCardProps) {
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <SignInCardHeading
-              title={
-                emailCheckState === 'exists'
-                  ? 'Welcome Back'
-                  : emailCheckState === 'new_email'
-                    ? 'New email'
-                    : 'Start your free trial'
-              }
-              description={
-                emailCheckState === 'exists'
-                  ? 'We’ll email you a sign-in link.'
-                  : emailCheckState === 'new_email'
-                    ? 'We’ll send a magic link to create your account.'
-                    : '3 days free access, cancel anytime.'
-              }
-            />
+            {hideHeading ? null : (
+              <SignInCardHeading
+                title={
+                  emailCheckState === 'exists'
+                    ? 'Welcome Back'
+                    : emailCheckState === 'new_email'
+                      ? 'New email'
+                      : 'Start your free trial'
+                }
+                description={
+                  emailCheckState === 'exists'
+                    ? 'We’ll email you a sign-in link.'
+                    : emailCheckState === 'new_email'
+                      ? 'We’ll send a magic link to create your account.'
+                      : '3 days free access, cancel anytime.'
+                }
+              />
+            )}
 
             <form onSubmit={handleSendEmailLink} className="flex w-full flex-col gap-4">
               <Input

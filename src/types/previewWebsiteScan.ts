@@ -52,6 +52,13 @@ export type PreviewWebsiteScanResponse = {
   session_token: string | null
 }
 
+/** Saved-preview lookup — same `preview` as a fresh scan, plus the URL it was run on. */
+export type PreviewWebsiteScanGetResponse = PreviewWebsiteScanResponse & {
+  url: string | null
+  normalized_url: string | null
+  expires_at: string | null
+}
+
 export type PreviewWebsiteScanErrorCode =
   | 'missing_url'
   | 'invalid_url'
@@ -61,4 +68,13 @@ export type PreviewWebsiteScanErrorCode =
   | 'timeout'
   | 'unknown'
 
-export type PreviewWebsiteScanState = 'idle' | 'loading' | 'result' | 'error'
+export type PreviewWebsiteScanGetErrorCode =
+  | 'invalid_session_token'
+  | 'not_found'
+  | 'expired'
+  | 'lookup_failed'
+  | 'network'
+  | 'timeout'
+  | 'unknown'
+
+export type PreviewWebsiteScanState = 'idle' | 'loading' | 'restoring' | 'result' | 'error'

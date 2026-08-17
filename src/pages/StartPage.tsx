@@ -1,16 +1,24 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
-import { Link, Navigate, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useSearchParams } from 'react-router-dom'
 import { Seo } from '@/components/Seo'
 import { BrandLogoLink } from '@/components/layout/BrandLogoLink'
 import { AppFloatingPageRoot } from '@/components/layout/AppFloatingShell'
-import { StartLoadingStep } from '@/components/start/StartLoadingStep'
+import { StartLoadingStep, StartRestoreStep } from '@/components/start/StartLoadingStep'
 import { StartPreviewResult } from '@/components/start/StartPreviewResult'
+import { StartSignUpSheet, START_SIGNUP_SHEET_DELAY_MS } from '@/components/start/StartSignUpSheet'
 import { StartUrlStep } from '@/components/start/StartUrlStep'
 import { useAuth } from '@/contexts/AuthContext'
 import { DEFAULT_POST_LOGIN_PATH } from '@/lib/authLanding'
 import { cardPadding, cardSurfaceElevated } from '@/lib/cardSurface'
 import { LEGAL_PATHS } from '@/lib/legal'
-import { fetchPreviewWebsiteScan, startSignUpPath } from '@/lib/previewWebsiteScan'
+import {
+  START_SESSION_TOKEN_PARAM,
+  displayUrlFromPreviewGet,
+  fetchPreviewWebsiteScan,
+  fetchPreviewWebsiteScanByToken,
+  persistWebsitePreviewToken,
+  previewRestoreFallbackMessage,
+} from '@/lib/previewWebsiteScan'
 import { validateScannerUrlInput } from '@/lib/websiteScannerConfig'
 import type { PreviewWebsiteScanResponse, PreviewWebsiteScanState } from '@/types/previewWebsiteScan'
 import { cn } from '@/lib/utils'
@@ -26,18 +34,97 @@ const SHADOW_CARD_CLASS = cn(
 
 export function StartPage() {
   const { user, isLoading } = useAuth()
-  const navigate = useNavigate()
+  const [searchParams, setSearchParams] = useSearchParams()
+  const sessionTokenFromUrl = searchParams.get(START_SESSION_TOKEN_PARAM)?.trim() || null
   const [url, setUrl] = useState('')
-  const [state, setState] = useState<PreviewWebsiteScanState>('idle')
+  const [state, setState] = useState<PreviewWebsiteScanState>(
+    sessionTokenFromUrl ? 'restoring' : 'idle',
+  )
   const [error, setError] = useState<string | null>(null)
   const [result, setResult] = useState<PreviewWebsiteScanResponse | null>(null)
+  const [signUpOpen, setSignUpOpen] = useState(false)
+  const [signUpAutoFocus, setSignUpAutoFocus] = useState(false)
   const abortRef = useRef<AbortController | null>(null)
+  const signUpDismissedRef = useRef(false)
+  const loadedTokenRef = useRef<string | null>(null)
+
+  const clearSessionTokenFromUrl = useCallback(() => {
+    if (!searchParams.has(START_SESSION_TOKEN_PARAM)) return
+    const next = new URLSearchParams(searchParams)
+    next.delete(START_SESSION_TOKEN_PARAM)
+    setSearchParams(next, { replace: true })
+  }, [searchParams, setSearchParams])
+
+  const writeSessionTokenToUrl = useCallback(
+    (token: string) => {
+      const current = searchParams.get(START_SESSION_TOKEN_PARAM)?.trim() || null
+      if (current === token) return
+      const next = new URLSearchParams(searchParams)
+      next.set(START_SESSION_TOKEN_PARAM, token)
+      setSearchParams(next, { replace: true })
+    },
+    [searchParams, setSearchParams],
+  )
 
   useEffect(() => {
     return () => {
       abortRef.current?.abort()
     }
   }, [])
+
+  useEffect(() => {
+    if (isLoading || user) return
+    if (!sessionTokenFromUrl) return
+    if (loadedTokenRef.current === sessionTokenFromUrl) return
+
+    abortRef.current?.abort()
+    const controller = new AbortController()
+    abortRef.current = controller
+
+    setError(null)
+    setResult(null)
+    setState('restoring')
+
+    void (async () => {
+      const response = await fetchPreviewWebsiteScanByToken(sessionTokenFromUrl, {
+        signal: controller.signal,
+      })
+      if (controller.signal.aborted) return
+      if (response.ok) {
+        loadedTokenRef.current = sessionTokenFromUrl
+        persistWebsitePreviewToken(sessionTokenFromUrl)
+        const restoredUrl = displayUrlFromPreviewGet(response.data)
+        if (restoredUrl) setUrl(restoredUrl)
+        setResult(response.data)
+        setState('result')
+        return
+      }
+      if ('cancelled' in response && response.cancelled) return
+
+      loadedTokenRef.current = null
+      setResult(null)
+      setError(previewRestoreFallbackMessage(response.code))
+      setState(response.code === 'expired' || response.code === 'not_found' ? 'error' : 'idle')
+      clearSessionTokenFromUrl()
+    })()
+  }, [clearSessionTokenFromUrl, isLoading, sessionTokenFromUrl, user])
+
+  useEffect(() => {
+    if (state !== 'result') {
+      setSignUpOpen(false)
+      setSignUpAutoFocus(false)
+      signUpDismissedRef.current = false
+      return
+    }
+
+    const id = window.setTimeout(() => {
+      if (signUpDismissedRef.current) return
+      setSignUpAutoFocus(false)
+      setSignUpOpen(true)
+    }, START_SIGNUP_SHEET_DELAY_MS)
+
+    return () => window.clearTimeout(id)
+  }, [state])
 
   const runPreview = useCallback(async () => {
     const parsed = validateScannerUrlInput(url)
@@ -60,26 +147,52 @@ export function StartPage() {
     const response = await fetchPreviewWebsiteScan(parsed.url, { signal: controller.signal })
     if (controller.signal.aborted) return
     if (response.ok) {
+      const token = response.data.session_token
+      if (token) {
+        loadedTokenRef.current = token
+        persistWebsitePreviewToken(token)
+        writeSessionTokenToUrl(token)
+      } else {
+        loadedTokenRef.current = null
+        clearSessionTokenFromUrl()
+      }
       setResult(response.data)
       setState('result')
       return
     }
     if ('cancelled' in response && response.cancelled) return
 
+    loadedTokenRef.current = null
     setError(response.message)
     setState('error')
-  }, [url])
+  }, [clearSessionTokenFromUrl, url, writeSessionTokenToUrl])
 
-  const goToSignUp = useCallback(() => {
-    navigate(startSignUpPath(result?.session_token ?? null))
-  }, [navigate, result?.session_token])
+  const openSignUp = useCallback(
+    (opts?: { autoFocus?: boolean }) => {
+      persistWebsitePreviewToken(result?.session_token ?? null)
+      setSignUpAutoFocus(opts?.autoFocus ?? true)
+      setSignUpOpen(true)
+    },
+    [result?.session_token],
+  )
+
+  const handleSignUpOpenChange = useCallback((open: boolean) => {
+    if (!open) signUpDismissedRef.current = true
+    setSignUpOpen(open)
+  }, [])
 
   const scanAnother = useCallback(() => {
     abortRef.current?.abort()
+    loadedTokenRef.current = null
     setState('idle')
     setError(null)
     setResult(null)
-  }, [])
+    setUrl('')
+    setSignUpOpen(false)
+    setSignUpAutoFocus(false)
+    signUpDismissedRef.current = false
+    clearSessionTokenFromUrl()
+  }, [clearSessionTokenFromUrl])
 
   if (isLoading) {
     return (
@@ -94,7 +207,7 @@ export function StartPage() {
   }
 
   const showForm = state === 'idle' || state === 'error'
-  const showHeroCard = showForm || state === 'loading'
+  const showHeroCard = showForm || state === 'loading' || state === 'restoring'
 
   return (
     <AppFloatingPageRoot mainClassName="flex flex-col">
@@ -128,6 +241,8 @@ export function StartPage() {
                 }}
                 onSubmit={() => void runPreview()}
               />
+            ) : state === 'restoring' ? (
+              <StartRestoreStep />
             ) : (
               <StartLoadingStep url={url} />
             )}
@@ -138,10 +253,16 @@ export function StartPage() {
           <StartPreviewResult
             url={url}
             data={result}
-            onSignUp={goToSignUp}
+            onSignUp={() => openSignUp({ autoFocus: true })}
             onScanAnother={scanAnother}
           />
         ) : null}
+
+        <StartSignUpSheet
+          open={signUpOpen}
+          onOpenChange={handleSignUpOpenChange}
+          autoFocus={signUpAutoFocus}
+        />
 
         {showForm ? (
           <p className="mt-6 max-w-xl text-center text-[11px] leading-relaxed text-muted-foreground">
