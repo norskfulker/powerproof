@@ -15,6 +15,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert'
 import { applyPendingReferralIfAny, storePendingReferralCode } from '@/lib/referrals'
 import { cn } from '@/lib/utils'
 import { tryClaimPreviewAndNavigate } from '@/lib/claimPreviewSession'
+import { captureWebsitePreviewTokenFromSearch } from '@/lib/previewWebsiteScan'
 import { useEmailPresenceCheck, type EmailPresenceState } from '@/hooks/useEmailPresenceCheck'
 import {
   copyPageUrlToClipboard,
@@ -250,6 +251,10 @@ export function SignInCard({ onSignedIn }: SignInCardProps) {
     const fromUrl = searchParams.get('ref')?.trim()
     if (fromUrl) storePendingReferralCode(fromUrl)
   }, [searchParams])
+
+  useEffect(() => {
+    captureWebsitePreviewTokenFromSearch(location.search)
+  }, [location.search])
 
   useEffect(() => {
     if (!user?.id) return

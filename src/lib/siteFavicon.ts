@@ -8,8 +8,8 @@ export function hostnameFromLooseUrl(raw: string): string | null {
 
   const candidate = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
   try {
-    const host = new URL(candidate).hostname.replace(/^www\./i, '').toLowerCase()
-    // Wait for a real-looking domain (needs a dot) so "ht" / "https" don't flash icons.
+    const host = new URL(candidate).hostname.replace(/^www\./i, '').replace(/\.$/, '').toLowerCase()
+    // Wait for a real-looking domain (needs a dot) so "ht" / "https" / "netflix." don't flash icons.
     if (!host || !host.includes('.') || !/^[a-z0-9.-]+$/i.test(host)) return null
     return host
   } catch {

@@ -69,6 +69,7 @@ import type { WebsiteScanHistorySummary } from '@/lib/websiteScannerApi'
 import {
   SCANNER_URL_MAX_LENGTH,
   SCANNER_URL_PLACEHOLDER,
+  clampWebsiteUrlToSite,
   scannerInputModerationError,
   validateScannerUrlInput,
 } from '@/lib/websiteScannerConfig'
@@ -476,7 +477,7 @@ export function WebsiteScannerPage() {
       <HeroInput
         value={input}
         onChange={(next) => {
-          setInput(next)
+          setInput(clampWebsiteUrlToSite(next))
           if (inputError) setInputError(null)
         }}
         onSubmit={runScan}

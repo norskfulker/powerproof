@@ -239,7 +239,7 @@ export type ModerationStatus = {
   message: string
 }
 
-const OFFENSIVE_INPUT_MESSAGE = 'Please remove offensive or restricted language.'
+const OFFENSIVE_INPUT_MESSAGE = 'Offensive Sites/Languages not allowed.'
 
 /**
  * Substring terms checked inside URL hostname/path segments (pornhub, bestgore, …).
@@ -268,6 +268,10 @@ const SCANNER_URL_SUBSTRING_TERMS = [
   'motherless',
   'liveleak',
   'ogrish',
+  'girlsdoporn',
+  'porn',
+  'kama',
+  'desi',
 ] as const
 
 function scannerUrlSegments(raw: string): string[] {

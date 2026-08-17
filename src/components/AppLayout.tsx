@@ -141,6 +141,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
   const showAppChrome = !location.pathname.startsWith('/admin')
     && location.pathname !== '/'
     && location.pathname !== '/sign-in'
+    && location.pathname !== '/start'
 
   const isOppDetail = isOpportunityDetailPath(location.pathname)
   const isScanDetail = isScannerDetailPath(location.pathname)

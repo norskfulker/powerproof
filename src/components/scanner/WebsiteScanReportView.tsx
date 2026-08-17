@@ -1,7 +1,13 @@
 ﻿import { useState, type ReactNode } from 'react'
+import { EffortLevelMeter } from '@/components/discover/EffortLevelDashes'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, cardTopSlotRowClass } from '@/components/ui/card'
+import {
+  Card,
+  cardTopSlotBandClassName,
+  cardTopSlotRowClass,
+  cardTopSlotTitleClass,
+} from '@/components/ui/card'
 import { detailHeroCardClassName } from '@/components/opportunity/detail/detailSectionClasses'
 import { TabsContent } from '@/components/ui/tabs'
 import {
@@ -10,6 +16,7 @@ import {
 } from '@/components/shared/InternalPageDataTabs'
 import { toast } from '@/components/ui/sonner'
 import { useAuth } from '@/contexts/AuthContext'
+import { EFFORT_DASH_COUNT } from '@/lib/opportunityLabels'
 import { hostnameFromLooseUrl } from '@/lib/siteFavicon'
 import {
   Activity,
@@ -172,12 +179,6 @@ const FIELD_STATUS_META: Record<
   },
 }
 
-function effortVariant(effort: RoadmapStep['effort']): ScoreTone {
-  if (effort === 'low') return 'green'
-  if (effort === 'medium') return 'amber'
-  return 'red'
-}
-
 function stageVariant(stage: Stage | null): ScoreTone {
   if (stage === 'mature' || stage === 'growth') return 'green'
   if (stage === 'seed') return 'amber'
@@ -240,6 +241,67 @@ function formatCharCount(n: number): string {
   if (!Number.isFinite(n) || n <= 0) return '0 chars'
   if (n >= 1000) return `${(n / 1000).toFixed(1)}k chars`
   return `${n} chars`
+}
+
+function countNoun(count: number, singular: string, plural?: string): string {
+  return `${count} ${count === 1 ? singular : (plural ?? `${singular}s`)}`
+}
+
+function scoreFilledDashes(score: number): number {
+  if (!Number.isFinite(score)) return 0
+  return Math.max(0, Math.min(EFFORT_DASH_COUNT, Math.round(score / 10)))
+}
+
+function scoreDashFillClass(tone: ScoreTone): string {
+  if (tone === 'green') return 'bg-[hsl(var(--success))]'
+  if (tone === 'amber') return 'bg-[hsl(var(--saffron-600))]'
+  if (tone === 'red') return 'bg-destructive'
+  return 'bg-muted-foreground/20'
+}
+
+/** 10-dash meter + numeric badge — same layout as research-card effort. */
+function ScanScoreMeter({
+  score,
+  size = 'sm',
+  className,
+}: {
+  score: number
+  size?: 'sm' | 'md'
+  className?: string
+}) {
+  const tone = scoreToneVariant(score)
+  const filled = scoreFilledDashes(score)
+
+  return (
+    <div className={cn('inline-flex min-w-0 flex-wrap items-center gap-1.5', className)}>
+      <div
+        role="meter"
+        aria-label={`Score ${score}`}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-valuenow={score}
+        className={cn(
+          'inline-flex max-w-full shrink-0 items-stretch gap-[2px]',
+          size === 'md'
+            ? 'h-4 w-[3.5rem] layout-sm:h-[1.125rem] layout-sm:w-16'
+            : 'h-3.5 w-11 max-layout-sm:w-10 layout-sm:h-4 layout-sm:w-[3.25rem]',
+        )}
+      >
+        {Array.from({ length: EFFORT_DASH_COUNT }, (_, index) => (
+          <span
+            key={index}
+            className={cn(
+              'min-w-0 flex-1 rounded-full',
+              index < filled ? scoreDashFillClass(tone) : 'bg-muted-foreground/20',
+            )}
+          />
+        ))}
+      </div>
+      <Badge variant={scoreBadgeVariant(tone)} size="xs" className="shrink-0 font-semibold tabular-nums">
+        {score}
+      </Badge>
+    </div>
+  )
 }
 
 function splitUrlParts(raw: string): { host: string; path: string } {
@@ -347,10 +409,20 @@ function linkifyText(text: string, linkClassName?: string): ReactNode {
   return parts.length === 1 ? parts[0] : parts
 }
 
+type FieldRow = {
+  label: string
+  value?: ReactNode
+  items?: string[]
+  status?: FieldStatus
+  mono?: boolean
+  badge?: ReactNode
+  hint?: string
+}
+
 // ─── Table primitives ────────────────────────────────────────────
 
 const scanTableHeadClass =
-  'border-b border-border-subtle px-3 py-2.5 text-left font-display text-[13px] font-semibold leading-tight tracking-tight text-muted-foreground'
+  'px-3 py-2.5 text-left font-display text-[13px] font-semibold leading-tight tracking-tight text-muted-foreground'
 
 const scanTableRowClass =
   'group border-b border-border-subtle/50 transition-colors last:border-0 hover:bg-muted/30'
@@ -364,18 +436,141 @@ function ScanTableStat({ dotClass, children }: { dotClass?: string; children: Re
   )
 }
 
-function ScanTableShell({ summary, children }: { summary?: ReactNode; children: ReactNode }) {
+function ScanCountBadge({ children }: { children: ReactNode }) {
+  return (
+    <span className="shrink-0 text-[11.5px] font-semibold tabular-nums text-foreground">
+      {children}
+    </span>
+  )
+}
+
+function ScanBadgeCluster({ children }: { children: ReactNode }) {
+  return (
+    <span className="inline-flex max-w-full shrink-0 flex-wrap items-center gap-x-2 gap-y-0.5 rounded-full border border-border-subtle bg-background/80 px-2.5 py-1">
+      {children}
+    </span>
+  )
+}
+
+function FieldRowsBadge({
+  rows,
+  singular,
+  plural,
+  showStatus = false,
+}: {
+  rows: FieldRow[]
+  singular: string
+  plural?: string
+  showStatus?: boolean
+}) {
+  if (rows.length === 0) return null
+
+  const counts = rows.reduce<Record<FieldStatus, number>>(
+    (acc, row) => {
+      if (row.status) acc[row.status] += 1
+      return acc
+    },
+    { good: 0, warn: 0, bad: 0 },
+  )
+
+  return (
+    <ScanBadgeCluster>
+      <ScanCountBadge>{countNoun(rows.length, singular, plural)}</ScanCountBadge>
+      {showStatus
+        ? (['good', 'warn', 'bad'] as const)
+            .filter((status) => counts[status] > 0)
+            .map((status) => (
+              <ScanTableStat key={status} dotClass={FIELD_STATUS_META[status].dotClass}>
+                {counts[status]} {FIELD_STATUS_META[status].label.toLowerCase()}
+              </ScanTableStat>
+            ))
+        : null}
+    </ScanBadgeCluster>
+  )
+}
+
+function FindingsBadge({ findings }: { findings: SeoAuditFinding[] }) {
+  const source = Array.isArray(findings) ? findings : []
+  if (source.length === 0) return null
+
+  const counts = source.reduce<Record<FindingKind, number>>(
+    (acc, finding) => {
+      acc[findingKind(finding.severity)] += 1
+      return acc
+    },
+    { bad: 0, warn: 0, good: 0 },
+  )
+
+  return (
+    <ScanBadgeCluster>
+      <ScanCountBadge>{countNoun(source.length, 'finding')}</ScanCountBadge>
+      {(['bad', 'warn', 'good'] as const)
+        .filter((kind) => counts[kind] > 0)
+        .map((kind) => (
+          <ScanTableStat key={kind} dotClass={FINDING_KIND_META[kind].dotClass}>
+            {counts[kind]} {FINDING_KIND_META[kind].label.toLowerCase()}
+          </ScanTableStat>
+        ))}
+    </ScanBadgeCluster>
+  )
+}
+
+function PagesBadge({ pages }: { pages: CrawledPageSummary[] }) {
+  if (pages.length === 0) return null
+  const okCount = pages.filter((page) => page.status >= 200 && page.status < 400).length
+  const issueCount = pages.length - okCount
+
+  return (
+    <ScanBadgeCluster>
+      <ScanCountBadge>{countNoun(pages.length, 'page')} crawled</ScanCountBadge>
+      <ScanTableStat dotClass="bg-emerald-500">{okCount} reachable</ScanTableStat>
+      {issueCount > 0 ? (
+        <ScanTableStat dotClass="bg-amber-500">
+          {issueCount} need{issueCount === 1 ? 's' : ''} a look
+        </ScanTableStat>
+      ) : null}
+    </ScanBadgeCluster>
+  )
+}
+
+/** Nested table label when a ScanBlock contains more than one table. */
+function ScanTableLabel({ title, badge }: { title: string; badge?: ReactNode }) {
+  return (
+    <div className="flex items-center gap-3">
+      <h4 className="min-w-0 flex-1 text-[12.5px] font-bold tracking-tight text-foreground">
+        {title}
+      </h4>
+      {badge}
+    </div>
+  )
+}
+
+function ScanTableShell({
+  colGroup,
+  header,
+  children,
+}: {
+  colGroup?: ReactNode
+  header: ReactNode
+  children: ReactNode
+}) {
   return (
     <Card
       padding="none"
       radius="lg"
+      className="shadow-sm"
+      topSlotClassName="p-0"
       topSlot={
-        summary ? (
-          <div className={cn(cardTopSlotRowClass, 'flex-wrap gap-x-3 gap-y-1.5')}>{summary}</div>
-        ) : undefined
+        <table className="w-full min-w-0 table-fixed border-collapse">
+          {colGroup}
+          {header}
+        </table>
       }
     >
-      <table className="w-full border-collapse">{children}</table>
+      <table className="w-full min-w-0 table-fixed border-collapse">
+        {colGroup}
+        {children}
+      </table>
     </Card>
   )
 }
@@ -385,26 +580,31 @@ function ScanBlock({
   icon: Icon,
   title,
   caption,
+  badge,
   children,
 }: {
   icon: typeof Search
   title: string
   caption?: string
+  badge?: ReactNode
   children: ReactNode
 }) {
   return (
     <section className="min-w-0 space-y-2.5">
-      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-        <span
-          className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
-          aria-hidden
-        >
-          <Icon className="h-3.5 w-3.5" />
-        </span>
-        <h3 className="text-[13.5px] font-bold tracking-tight text-foreground">{title}</h3>
-        {caption ? (
-          <span className="text-[12px] text-muted-foreground">{caption}</span>
-        ) : null}
+      <div className="flex items-center gap-3">
+        <div className="flex min-w-0 flex-1 flex-wrap items-center gap-x-2 gap-y-1">
+          <span
+            className="inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary"
+            aria-hidden
+          >
+            <Icon className="h-3.5 w-3.5" />
+          </span>
+          <h3 className="text-[13.5px] font-bold tracking-tight text-foreground">{title}</h3>
+          {caption ? (
+            <span className="text-[12px] text-muted-foreground">{caption}</span>
+          ) : null}
+        </div>
+        {badge}
       </div>
       {children}
     </section>
@@ -442,16 +642,6 @@ function ItemList({ items, dotClass }: { items: string[]; dotClass?: string }) {
 
 // ─── Field table (replaces the meta / list cards) ────────────────
 
-type FieldRow = {
-  label: string
-  value?: ReactNode
-  items?: string[]
-  status?: FieldStatus
-  mono?: boolean
-  badge?: ReactNode
-  hint?: string
-}
-
 function fieldRowHasContent(row: FieldRow): boolean {
   if (row.items && cleanItems(row.items).length > 0) return true
   if (row.badge) return true
@@ -470,63 +660,46 @@ function FieldsTable({
   showStatus = false,
   labelHeader = 'Field',
   valueHeader = 'Value',
-  summary,
 }: {
   rows: FieldRow[]
   showStatus?: boolean
   labelHeader?: string
   valueHeader?: string
-  summary?: ReactNode
 }) {
   if (rows.length === 0) return <EmptyNote>Nothing was captured for this section.</EmptyNote>
 
-  const counts = rows.reduce<Record<FieldStatus, number>>(
-    (acc, row) => {
-      if (row.status) acc[row.status] += 1
-      return acc
-    },
-    { good: 0, warn: 0, bad: 0 },
+  const colGroup = (
+    <colgroup>
+      {showStatus ? <col className="w-11" /> : null}
+      <col className="w-[12rem] sm:w-[14rem]" />
+      <col />
+    </colgroup>
   )
 
-  const resolvedSummary =
-    summary ??
-    (showStatus ? (
-      <>
-        <span className="text-[12px] font-semibold text-foreground">
-          {rows.length} check{rows.length === 1 ? '' : 's'}
-        </span>
-        <span className="text-muted-foreground/40" aria-hidden>
-          ·
-        </span>
-        {(['good', 'warn', 'bad'] as const)
-          .filter((status) => counts[status] > 0)
-          .map((status) => (
-            <ScanTableStat key={status} dotClass={FIELD_STATUS_META[status].dotClass}>
-              {counts[status]} {FIELD_STATUS_META[status].label.toLowerCase()}
-            </ScanTableStat>
-          ))}
-      </>
-    ) : (
-      <span className="text-[12px] font-semibold text-foreground">
-        {rows.length} field{rows.length === 1 ? '' : 's'}
-      </span>
-    ))
-
   return (
-    <ScanTableShell summary={resolvedSummary}>
-      <thead>
-        <tr>
-          {showStatus ? (
-            <th className={cn(scanTableHeadClass, 'w-11 pl-4')}>
-              <span className="sr-only">Status</span>
+    <ScanTableShell
+      colGroup={colGroup}
+      header={
+        <thead>
+          <tr>
+            {showStatus ? (
+              <th scope="col" className={cn(scanTableHeadClass, 'w-11 pl-4')}>
+                <span className="sr-only">Status</span>
+              </th>
+            ) : null}
+            <th
+              scope="col"
+              className={cn(scanTableHeadClass, 'w-[12rem] sm:w-[14rem]', !showStatus && 'pl-4')}
+            >
+              {labelHeader}
             </th>
-          ) : null}
-          <th className={cn(scanTableHeadClass, 'w-[12rem] sm:w-[14rem]', !showStatus && 'pl-4')}>
-            {labelHeader}
-          </th>
-          <th className={scanTableHeadClass}>{valueHeader}</th>
-        </tr>
-      </thead>
+            <th scope="col" className={scanTableHeadClass}>
+              {valueHeader}
+            </th>
+          </tr>
+        </thead>
+      }
+    >
       <tbody>
         {rows.map((row) => {
           const meta = row.status ? FIELD_STATUS_META[row.status] : null
@@ -603,34 +776,47 @@ function NamedRowsTable({
   rows,
   nameHeader,
   detailHeader,
-  summary,
 }: {
   rows: NamedRow[]
   nameHeader: string
   detailHeader: string
-  summary?: ReactNode
 }) {
   if (rows.length === 0) return null
   const hasBadge = rows.some((row) => Boolean(row.badge))
 
+  const colGroup = (
+    <colgroup>
+      <col className="w-10" />
+      <col className="w-[13rem]" />
+      {hasBadge ? <col className="w-28" /> : null}
+      <col />
+    </colgroup>
+  )
+
   return (
     <ScanTableShell
-      summary={
-        summary ?? (
-          <span className="text-[12px] font-semibold text-foreground">
-            {rows.length} entr{rows.length === 1 ? 'y' : 'ies'}
-          </span>
-        )
+      colGroup={colGroup}
+      header={
+        <thead>
+          <tr>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+              #
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-[13rem]')}>
+              {nameHeader}
+            </th>
+            {hasBadge ? (
+              <th scope="col" className={cn(scanTableHeadClass, 'w-28')}>
+                Type
+              </th>
+            ) : null}
+            <th scope="col" className={scanTableHeadClass}>
+              {detailHeader}
+            </th>
+          </tr>
+        </thead>
       }
     >
-      <thead>
-        <tr>
-          <th className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>#</th>
-          <th className={cn(scanTableHeadClass, 'w-[13rem]')}>{nameHeader}</th>
-          {hasBadge ? <th className={cn(scanTableHeadClass, 'w-28')}>Type</th> : null}
-          <th className={scanTableHeadClass}>{detailHeader}</th>
-        </tr>
-      </thead>
       <tbody>
         {rows.map((row, index) => (
           <tr key={`${row.name}-${index}`} className={scanTableRowClass}>
@@ -668,41 +854,33 @@ function FindingsTable({ findings }: { findings: SeoAuditFinding[] }) {
       return byRank !== 0 ? byRank : a.index - b.index
     })
 
-  const counts = rows.reduce<Record<FindingKind, number>>(
-    (acc, row) => {
-      acc[row.kind] += 1
-      return acc
-    },
-    { bad: 0, warn: 0, good: 0 },
+  const colGroup = (
+    <colgroup>
+      <col className="w-40" />
+      <col />
+      <col className="hidden md:table-column" />
+    </colgroup>
   )
 
   return (
     <ScanTableShell
-      summary={
-        <>
-          <span className="text-[12px] font-semibold text-foreground">
-            {rows.length} finding{rows.length === 1 ? '' : 's'}
-          </span>
-          <span className="text-muted-foreground/40" aria-hidden>
-            ·
-          </span>
-          {(['bad', 'warn', 'good'] as const)
-            .filter((kind) => counts[kind] > 0)
-            .map((kind) => (
-              <ScanTableStat key={kind} dotClass={FINDING_KIND_META[kind].dotClass}>
-                {counts[kind]} {FINDING_KIND_META[kind].label.toLowerCase()}
-              </ScanTableStat>
-            ))}
-        </>
+      colGroup={colGroup}
+      header={
+        <thead>
+          <tr>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-40 pl-4')}>
+              Severity
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'md:w-[18rem]')}>
+              Finding
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'hidden md:table-cell')}>
+              What we saw
+            </th>
+          </tr>
+        </thead>
       }
     >
-      <thead>
-        <tr>
-          <th className={cn(scanTableHeadClass, 'w-40 pl-4')}>Severity</th>
-          <th className={cn(scanTableHeadClass, 'md:w-[18rem]')}>Finding</th>
-          <th className={cn(scanTableHeadClass, 'hidden md:table-cell')}>What we saw</th>
-        </tr>
-      </thead>
       <tbody>
         {rows.map(({ finding, index, kind }) => {
           const meta = FINDING_KIND_META[kind]
@@ -748,43 +926,46 @@ function FindingsTable({ findings }: { findings: SeoAuditFinding[] }) {
 function CrawledPagesTable({ pages }: { pages: CrawledPageSummary[] }) {
   if (pages.length === 0) return <EmptyNote>No pages were crawled for this scan.</EmptyNote>
 
-  const okCount = pages.filter((page) => page.status >= 200 && page.status < 400).length
-  const issueCount = pages.length - okCount
   const maxChars = pages.reduce(
     (max, page) => (Number.isFinite(page.charCount) ? Math.max(max, page.charCount) : max),
     0,
   )
 
+  const colGroup = (
+    <colgroup>
+      <col className="w-10" />
+      <col />
+      <col className="w-24" />
+      <col className="hidden w-32 sm:table-column" />
+      <col className="w-14" />
+    </colgroup>
+  )
+
   return (
     <ScanTableShell
-      summary={
-        <>
-          <span className="text-[12px] font-semibold text-foreground">
-            {pages.length} page{pages.length === 1 ? '' : 's'} crawled
-          </span>
-          <span className="text-muted-foreground/40" aria-hidden>
-            ·
-          </span>
-          <ScanTableStat dotClass="bg-emerald-500">{okCount} reachable</ScanTableStat>
-          {issueCount > 0 ? (
-            <ScanTableStat dotClass="bg-amber-500">
-              {issueCount} need{issueCount === 1 ? 's' : ''} a look
-            </ScanTableStat>
-          ) : null}
-        </>
+      colGroup={colGroup}
+      header={
+        <thead>
+          <tr>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+              #
+            </th>
+            <th scope="col" className={scanTableHeadClass}>
+              Page
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-24')}>
+              Status
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'hidden w-32 text-right sm:table-cell')}>
+              Content
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-14')}>
+              <span className="sr-only">Open</span>
+            </th>
+          </tr>
+        </thead>
       }
     >
-      <thead>
-        <tr>
-          <th className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>#</th>
-          <th className={scanTableHeadClass}>Page</th>
-          <th className={cn(scanTableHeadClass, 'w-24')}>Status</th>
-          <th className={cn(scanTableHeadClass, 'hidden w-32 text-right sm:table-cell')}>Content</th>
-          <th className={cn(scanTableHeadClass, 'w-14')}>
-            <span className="sr-only">Open</span>
-          </th>
-        </tr>
-      </thead>
       <tbody>
         {pages.map((page, index) => {
           const label = page.title?.trim() || page.url
@@ -899,6 +1080,8 @@ function ScanReportHero({ report }: { report: WebsiteScanReport }) {
   const siteUrl = report.normalizedUrl || report.url
   const isOwnWebsite =
     hostnameFromLooseUrl(profile?.website ?? '') === hostnameFromLooseUrl(siteUrl)
+  const pending = new Set(report.pendingSections ?? [])
+  const isRunning = report.scanStatus === 'running'
 
   async function saveAsOwnWebsite() {
     if (!siteUrl || savingWebsite || isOwnWebsite) return
@@ -987,6 +1170,32 @@ function ScanReportHero({ report }: { report: WebsiteScanReport }) {
           </ul>
         </div>
       ) : null}
+
+      <div className="mt-4 grid grid-cols-1 gap-2 layout-sm:grid-cols-2">
+        {SCAN_REPORT_SECTIONS.map((section) => {
+          const busy = isRunning && pending.has(section.key)
+          return (
+            <div
+              key={section.key}
+              className="overflow-hidden rounded-[16px] border border-border-subtle"
+              style={{ background: 'hsl(var(--muted) / 0.35)' }}
+            >
+              <div className={cardTopSlotBandClassName}>
+                <div className={cn(cardTopSlotRowClass, 'justify-between gap-2 layout-sm:gap-3')}>
+                  <span className={cn(cardTopSlotTitleClass, 'text-muted-foreground')}>
+                    {section.label}
+                  </span>
+                  {busy ? (
+                    <Loader2 className="h-4 w-4 shrink-0 animate-spin text-primary" aria-hidden />
+                  ) : (
+                    <ScanScoreMeter score={report[section.key].score} size="md" />
+                  )}
+                </div>
+              </div>
+            </div>
+          )
+        })}
+      </div>
     </div>
   )
 }
@@ -1143,19 +1352,38 @@ function SeoTab({ seo }: { seo: SeoAudit }) {
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      <ScanBlock icon={Search} title="Meta & technical" caption="Head tags, content, and link signals">
+      <ScanBlock
+        icon={Search}
+        title="Meta & technical"
+        caption="Head tags, content, and link signals"
+        badge={<FieldRowsBadge rows={metaRows} singular="check" showStatus />}
+      >
         <FieldsTable rows={metaRows} showStatus />
       </ScanBlock>
 
-      <ScanBlock icon={Globe} title="Social previews" caption="How the page unfurls when shared">
+      <ScanBlock
+        icon={Globe}
+        title="Social previews"
+        caption="How the page unfurls when shared"
+        badge={<FieldRowsBadge rows={socialRows} singular="check" showStatus />}
+      >
         <FieldsTable rows={socialRows} showStatus />
       </ScanBlock>
 
-      <ScanBlock icon={Layers} title="Structured data & tech" caption="Schema, verification, and tooling">
+      <ScanBlock
+        icon={Layers}
+        title="Structured data & tech"
+        caption="Schema, verification, and tooling"
+        badge={<FieldRowsBadge rows={structuredRows} singular="check" showStatus />}
+      >
         <FieldsTable rows={structuredRows} showStatus valueHeader="Detected" />
       </ScanBlock>
 
-      <ScanBlock icon={AlertCircle} title="On-page findings">
+      <ScanBlock
+        icon={AlertCircle}
+        title="On-page findings"
+        badge={<FindingsBadge findings={seo.findings} />}
+      >
         <FindingsTable findings={seo.findings} />
       </ScanBlock>
     </div>
@@ -1217,7 +1445,12 @@ function BusinessTab({
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      <ScanBlock icon={Building2} title="Overview" caption="What the site says it does">
+      <ScanBlock
+        icon={Building2}
+        title="Overview"
+        caption="What the site says it does"
+        badge={<FieldRowsBadge rows={overviewRows} singular="signal" />}
+      >
         {overviewRows.length ? (
           <FieldsTable rows={overviewRows} labelHeader="Signal" valueHeader="What we found" />
         ) : (
@@ -1225,7 +1458,16 @@ function BusinessTab({
         )}
       </ScanBlock>
 
-      <ScanBlock icon={Radar} title="Deeper insights" caption="Model read of the underlying business">
+      <ScanBlock
+        icon={Radar}
+        title="Deeper insights"
+        caption="Model read of the underlying business"
+        badge={
+          insightsPending || isBusinessInsightsEmpty(insights) ? undefined : (
+            <FieldRowsBadge rows={insightRows} singular="insight" />
+          )
+        }
+      >
         {insightsPending ? (
           <SectionPendingBody label="Deeper insights" />
         ) : isBusinessInsightsEmpty(insights) || insightRows.length === 0 ? (
@@ -1238,7 +1480,11 @@ function BusinessTab({
         )}
       </ScanBlock>
 
-      <ScanBlock icon={AlertCircle} title="Business findings">
+      <ScanBlock
+        icon={AlertCircle}
+        title="Business findings"
+        badge={<FindingsBadge findings={business.findings} />}
+      >
         <FindingsTable findings={business.findings} />
       </ScanBlock>
     </div>
@@ -1317,7 +1563,12 @@ function CompetitorTab({
 
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      <ScanBlock icon={TrendingUp} title="Positioning" caption="How the site frames itself">
+      <ScanBlock
+        icon={TrendingUp}
+        title="Positioning"
+        caption="How the site frames itself"
+        badge={<FieldRowsBadge rows={positioningRows} singular="signal" />}
+      >
         {positioningRows.length ? (
           <FieldsTable rows={positioningRows} labelHeader="Signal" valueHeader="What we found" />
         ) : (
@@ -1326,12 +1577,29 @@ function CompetitorTab({
       </ScanBlock>
 
       {mentionRows.length > 0 ? (
-        <ScanBlock icon={Layers} title="Competitors might be named or physically mentioned">
+        <ScanBlock
+          icon={Layers}
+          title="Competitors might be named or physically mentioned"
+          badge={
+            <ScanBadgeCluster>
+              <ScanCountBadge>{countNoun(mentionRows.length, 'mention')}</ScanCountBadge>
+            </ScanBadgeCluster>
+          }
+        >
           <NamedRowsTable rows={mentionRows} nameHeader="Competitor" detailHeader="Context" />
         </ScanBlock>
       ) : null}
 
-      <ScanBlock icon={Radar} title="Competitive Landscape" caption="Found by Reddit Marketing research">
+      <ScanBlock
+        icon={Radar}
+        title="Competitive Landscape"
+        caption="Found by Reddit Marketing research"
+        badge={
+          insightsPending || landscapeEmpty
+            ? undefined
+            : <FieldRowsBadge rows={landscapeRows} singular="insight" />
+        }
+      >
         {insightsPending ? (
           <SectionPendingBody label="Competitive Landscape" />
         ) : landscapeEmpty ? (
@@ -1345,40 +1613,54 @@ function CompetitorTab({
               <FieldsTable rows={landscapeRows} labelHeader="Insight" valueHeader="Read" />
             ) : null}
             {rivalRows.length ? (
-              <NamedRowsTable
-                rows={rivalRows}
-                nameHeader="Rival"
-                detailHeader="Why it's a threat"
-                summary={
-                  <>
-                    <span className="text-[12px] font-semibold text-foreground">
-                      {rivalRows.length} rival{rivalRows.length === 1 ? '' : 's'}
-                    </span>
-                    <span className="text-muted-foreground/40" aria-hidden>
-                      ·
-                    </span>
-                    <ScanTableStat dotClass="bg-red-500">
-                      {insights.directCompetitors.length} direct
-                    </ScanTableStat>
-                    <ScanTableStat dotClass="bg-amber-500">
-                      {insights.indirectCompetitors.length} indirect
-                    </ScanTableStat>
-                  </>
-                }
-              />
+              <div className="space-y-2.5">
+                <ScanTableLabel
+                  title="Rivals"
+                  badge={
+                    <ScanBadgeCluster>
+                      <ScanCountBadge>{countNoun(rivalRows.length, 'rival')}</ScanCountBadge>
+                      <ScanTableStat dotClass="bg-red-500">
+                        {insights.directCompetitors.length} direct
+                      </ScanTableStat>
+                      <ScanTableStat dotClass="bg-amber-500">
+                        {insights.indirectCompetitors.length} indirect
+                      </ScanTableStat>
+                    </ScanBadgeCluster>
+                  }
+                />
+                <NamedRowsTable
+                  rows={rivalRows}
+                  nameHeader="Rival"
+                  detailHeader="Why it's a threat"
+                />
+              </div>
             ) : null}
             {angleRows.length ? (
-              <NamedRowsTable
-                rows={angleRows}
-                nameHeader="Angle"
-                detailHeader="What the site says"
-              />
+              <div className="space-y-2.5">
+                <ScanTableLabel
+                  title="Angles"
+                  badge={
+                    <ScanBadgeCluster>
+                      <ScanCountBadge>{countNoun(angleRows.length, 'angle')}</ScanCountBadge>
+                    </ScanBadgeCluster>
+                  }
+                />
+                <NamedRowsTable
+                  rows={angleRows}
+                  nameHeader="Angle"
+                  detailHeader="What the site says"
+                />
+              </div>
             ) : null}
           </div>
         )}
       </ScanBlock>
 
-      <ScanBlock icon={AlertCircle} title="Competitive findings">
+      <ScanBlock
+        icon={AlertCircle}
+        title="Competitive findings"
+        badge={<FindingsBadge findings={competitor.findings} />}
+      >
         <FindingsTable findings={competitor.findings} />
       </ScanBlock>
     </div>
@@ -1423,36 +1705,38 @@ function RoadmapStepsTable({ steps }: { steps: RoadmapStep[] }) {
   if (steps.length === 0) return <EmptyNote>No steps were returned for this audit.</EmptyNote>
 
   const grouped = groupRoadmapSteps(steps)
-  const totalSteps = grouped.reduce((sum, group) => sum + group.items.length, 0)
+
+  const colGroup = (
+    <colgroup>
+      <col className="w-10" />
+      <col className="w-[16rem]" />
+      <col className="w-36" />
+      <col className="hidden md:table-column" />
+    </colgroup>
+  )
 
   return (
     <ScanTableShell
-      summary={
-        <>
-          <span className="text-[12px] font-semibold text-foreground">
-            {totalSteps} step{totalSteps === 1 ? '' : 's'}
-          </span>
-          {grouped.some((group) => group.phase) ? (
-            <>
-              <span className="text-muted-foreground/40" aria-hidden>
-                ·
-              </span>
-              <ScanTableStat>
-                {grouped.filter((group) => group.phase).length} phases
-              </ScanTableStat>
-            </>
-          ) : null}
-        </>
+      colGroup={colGroup}
+      header={
+        <thead>
+          <tr>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+              #
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-[16rem]')}>
+              Step
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'w-36')}>
+              Effort
+            </th>
+            <th scope="col" className={cn(scanTableHeadClass, 'hidden md:table-cell')}>
+              What to do
+            </th>
+          </tr>
+        </thead>
       }
     >
-      <thead>
-        <tr>
-          <th className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>#</th>
-          <th className={cn(scanTableHeadClass, 'w-[16rem]')}>Step</th>
-          <th className={cn(scanTableHeadClass, 'w-32')}>Effort</th>
-          <th className={cn(scanTableHeadClass, 'hidden md:table-cell')}>What to do</th>
-        </tr>
-      </thead>
       {grouped.map((group, groupIndex) => (
         <tbody key={group.phase ?? `ungrouped-${groupIndex}`}>
           {group.phase ? (
@@ -1490,9 +1774,7 @@ function RoadmapStepsTable({ steps }: { steps: RoadmapStep[] }) {
                   ) : null}
                 </td>
                 <td className="px-3.5 py-3 align-top">
-                  <Badge variant={scoreBadgeVariant(effortVariant(effort))} size="xs">
-                    {effort} effort
-                  </Badge>
+                  <EffortLevelMeter effort={effort} />
                 </td>
                 <td className="hidden px-3.5 py-3 align-top md:table-cell">
                   <p className="text-[12.5px] leading-relaxed text-muted-foreground">
@@ -1535,9 +1817,18 @@ function RoadmapTab({ roadmap }: { roadmap: RoadmapAudit }) {
     { label: 'Big bets', items: bigBets },
   ])
 
+  const groupedSteps = groupRoadmapSteps(steps)
+  const totalSteps = groupedSteps.reduce((sum, group) => sum + group.items.length, 0)
+  const phaseCount = groupedSteps.filter((group) => group.phase).length
+
   return (
     <div className="flex w-full min-w-0 flex-col gap-6">
-      <ScanBlock icon={Map} title="Plan" caption={`${horizonDays}-day horizon`}>
+      <ScanBlock
+        icon={Map}
+        title="Plan"
+        caption={`${horizonDays}-day horizon`}
+        badge={<FieldRowsBadge rows={planRows} singular="item" />}
+      >
         {planRows.length ? (
           <FieldsTable rows={planRows} labelHeader="Plan" valueHeader="Detail" />
         ) : (
@@ -1545,11 +1836,28 @@ function RoadmapTab({ roadmap }: { roadmap: RoadmapAudit }) {
         )}
       </ScanBlock>
 
-      <ScanBlock icon={Rocket} title="Step-by-step">
+      <ScanBlock
+        icon={Rocket}
+        title="Step-by-step"
+        badge={
+          totalSteps > 0 ? (
+            <ScanBadgeCluster>
+              <ScanCountBadge>{countNoun(totalSteps, 'step')}</ScanCountBadge>
+              {phaseCount > 0 ? (
+                <ScanTableStat>{countNoun(phaseCount, 'phase')}</ScanTableStat>
+              ) : null}
+            </ScanBadgeCluster>
+          ) : undefined
+        }
+      >
         <RoadmapStepsTable steps={steps} />
       </ScanBlock>
 
-      <ScanBlock icon={AlertCircle} title="Roadmap findings">
+      <ScanBlock
+        icon={AlertCircle}
+        title="Roadmap findings"
+        badge={<FindingsBadge findings={roadmap.findings} />}
+      >
         <FindingsTable findings={roadmap.findings} />
       </ScanBlock>
     </div>
@@ -1557,22 +1865,6 @@ function RoadmapTab({ roadmap }: { roadmap: RoadmapAudit }) {
 }
 
 // ─── Root ────────────────────────────────────────────────────────
-
-function TabScoreChip({ score }: { score: number }) {
-  const tone = scoreToneVariant(score)
-  return (
-    <span
-      className={cn(
-        'rounded-full px-1.5 py-px text-[10px] font-bold tabular-nums',
-        tone === 'green' && 'bg-emerald-500/15 text-emerald-600',
-        tone === 'amber' && 'bg-amber-500/15 text-amber-600',
-        tone === 'red' && 'bg-red-500/15 text-red-600',
-      )}
-    >
-      {score}
-    </span>
-  )
-}
 
 export function WebsiteScanReportView({ report }: { report: WebsiteScanReport }) {
   const pending = new Set(report.pendingSections ?? [])
@@ -1606,9 +1898,7 @@ export function WebsiteScanReportView({ report }: { report: WebsiteScanReport })
                 icon: <Icon aria-hidden />,
                 extra: busy ? (
                   <Loader2 className="h-3 w-3 animate-spin text-primary" aria-hidden />
-                ) : (
-                  <TabScoreChip score={report[section.key].score} />
-                ),
+                ) : undefined,
               }
             }),
             {
@@ -1660,7 +1950,12 @@ export function WebsiteScanReportView({ report }: { report: WebsiteScanReport })
             </TabsContent>
 
             <TabsContent value="pages" className={internalPageTabPanelClass}>
-              <ScanBlock icon={Layers} title="Pages scanned" caption="Everything the crawler reached">
+              <ScanBlock
+                icon={Layers}
+                title="Pages scanned"
+                caption="Everything the crawler reached"
+                badge={<PagesBadge pages={report.crawl.pages} />}
+              >
                 <CrawledPagesTable pages={report.crawl.pages} />
               </ScanBlock>
             </TabsContent>

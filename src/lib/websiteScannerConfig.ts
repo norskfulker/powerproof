@@ -10,8 +10,6 @@ export const SCANNER_URL_PLACEHOLDER = 'https://example.com'
 const SCANNER_BLOCKED_HOST_MESSAGE =
   'Localhost, IP addresses, and internal hosts cannot be scanned.'
 
-const SCANNER_SCHEME_MESSAGE = 'URL must start with http:// or https://.'
-
 const SCANNER_NSFW_MESSAGE =
   'Adult, porn, or gore sites cannot be scanned.'
 
@@ -197,14 +195,12 @@ export function parseScannerUrl(raw: string):
     return { ok: false, message: foulMessage }
   }
 
-  if (!/^https?:\/\//i.test(trimmed)) {
-    return { ok: false, message: SCANNER_SCHEME_MESSAGE }
-  }
+  const normalized = ensureHttpsScheme(trimmed)
 
   try {
-    const parsed = new URL(trimmed)
+    const parsed = new URL(normalized)
     if (parsed.protocol !== 'http:' && parsed.protocol !== 'https:') {
-      return { ok: false, message: SCANNER_SCHEME_MESSAGE }
+      return { ok: false, message: 'Enter a valid URL like https://powerproof.live' }
     }
     if (parsed.username || parsed.password || parsed.href.includes('@')) {
       return { ok: false, message: SCANNER_CHARS_MESSAGE }
@@ -219,7 +215,7 @@ export function parseScannerUrl(raw: string):
     if (foulAfterParse) {
       return { ok: false, message: foulAfterParse }
     }
-    return { ok: true, url: parsed.toString() }
+    return { ok: true, url: scannerSiteOrigin(parsed) }
   } catch {
     return { ok: false, message: 'Enter a valid URL like https://powerproof.live' }
   }
@@ -259,3 +255,54 @@ export function scannerInputModerationError(raw: string): string | null {
 }
 
 export type { ModerationStatus }
+
+function ensureHttpsScheme(raw: string): string {
+  const trimmed = raw.trim()
+  if (/^https?:\/\//i.test(trimmed)) return trimmed
+  if (/^https?:\/?\/?$/i.test(trimmed) || /^https?:/i.test(trimmed)) return trimmed
+  if (/^[a-z][a-z0-9+.-]*:/i.test(trimmed)) return trimmed
+  return `https://${trimmed}`
+}
+
+function scannerSiteOrigin(parsed: URL): string {
+  return `${parsed.protocol}//${parsed.host}`
+}
+
+function websiteUrlHasSiteHost(hostname: string): boolean {
+  return Boolean(hostname) && hostname.includes('.') && !hostname.startsWith('.') && !hostname.endsWith('.')
+}
+
+function cutTypedUrlAtSiteBoundary(trimmed: string): string {
+  const schemeMatch = trimmed.match(/^(https?:\/\/)/i)
+  const rest = schemeMatch ? trimmed.slice(schemeMatch[1].length) : trimmed
+  const cut = rest.search(/[/?#]/)
+  if (cut <= 0) return trimmed
+  const hostPart = rest.slice(0, cut)
+  if (!websiteUrlHasSiteHost(hostPart.split(':')[0] ?? '')) return trimmed
+  return `${schemeMatch ? schemeMatch[1] : ''}${hostPart}`
+}
+
+/**
+ * Live input clamp — keep scheme + host only.
+ * Paths, query strings, and hashes are cut as the user types or pastes.
+ */
+export function clampWebsiteUrlToSite(raw: string): string {
+  const trimmed = raw.trim()
+  if (!trimmed) return ''
+
+  const hadScheme = /^https?:\/\//i.test(trimmed)
+  const candidate = ensureHttpsScheme(trimmed)
+
+  try {
+    const parsed = new URL(candidate)
+    if (!websiteUrlHasSiteHost(parsed.hostname)) return trimmed
+
+    const afterScheme = hadScheme ? trimmed.replace(/^https?:\/\//i, '') : trimmed
+    if (/[/?#]/.test(afterScheme) || !hadScheme) {
+      return scannerSiteOrigin(parsed)
+    }
+    return trimmed
+  } catch {
+    return cutTypedUrlAtSiteBoundary(trimmed)
+  }
+}

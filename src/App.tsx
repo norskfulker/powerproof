@@ -103,6 +103,7 @@ const RoadmapView = lazy(() => import("./pages/roadmap/RoadmapView"));
 const SignInPage = lazy(() =>
   import("./pages/SignInPage").then((m) => ({ default: m.SignInPage })),
 );
+const StartPage = lazy(() => import("./pages/StartPage"));
 const PrivacyPolicyPage = lazy(() =>
   import("./pages/legal/PrivacyPolicyPage").then((m) => ({ default: m.PrivacyPolicyPage })),
 );
@@ -223,7 +224,13 @@ const AppInner = () => {
       <AuthCallbackRedirect />
       <WarRoomThemeSync />
       <ScrollAppMainToTopOnNavigate />
-      <Suspense fallback={<div />}>
+      <Suspense
+        fallback={
+          <div className="flex min-h-dvh items-center justify-center bg-background">
+            <Loader2 className="h-6 w-6 animate-spin text-primary" aria-hidden />
+          </div>
+        }
+      >
       <Routes>
         <Route path="/blog" element={<BlogIndex />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
@@ -234,6 +241,7 @@ const AppInner = () => {
         <Route path="/auth/callback" element={<AuthCallbackPage />} />
         <Route path="/" element={<SignInPage />} />
         <Route path="/sign-in" element={<SignInPage />} />
+        <Route path="/start" element={<StartPage />} />
         <Route element={<AppShell />}>
             <Route path="/room" element={<RoomPage />} />
             <Route

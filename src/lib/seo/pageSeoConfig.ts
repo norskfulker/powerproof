@@ -39,6 +39,15 @@ export const PAGE_SEO_ENTRIES: PageSeoEntry[] = [
     prerender: true,
   },
   {
+    path: '/start',
+    pageKey: 'start_preview',
+    title: 'Free website preview | PowerProof',
+    description:
+      'Drop in your URL for a free SEO and market snapshot — then sign up for the full website audit.',
+    keywords: 'website preview, SEO audit, competitor snapshot, PowerProof',
+    canonicalPath: '/start',
+  },
+  {
     path: '/auth/callback',
     pageKey: 'auth_callback',
     title: 'Signing in — PowerProof',

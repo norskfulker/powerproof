@@ -9,6 +9,7 @@ const AUTH_RECOVERY_PATHS = new Set([
   '/sign-in',
   '/login',
   '/sign-up',
+  '/start',
 ])
 
 /**
@@ -16,6 +17,7 @@ const AUTH_RECOVERY_PATHS = new Set([
  * Marketing/landing surfaces plus the OAuth callback only.
  */
 export function isAuthExemptPath(pathname: string): boolean {
-  if (AUTH_RECOVERY_PATHS.has(pathname)) return true
+  const normalized = pathname.length > 1 ? pathname.replace(/\/+$/, '') : pathname
+  if (AUTH_RECOVERY_PATHS.has(pathname) || AUTH_RECOVERY_PATHS.has(normalized)) return true
   return isPublicMarketingPath(pathname)
 }
