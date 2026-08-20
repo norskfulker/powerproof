@@ -144,24 +144,24 @@ const Tabs = React.forwardRef<
   React.ElementRef<typeof TabsPrimitive.Root>,
   React.ComponentPropsWithoutRef<typeof TabsPrimitive.Root> & { variant?: TabsVariant }
 >(({ variant = "default", value, defaultValue, onValueChange, ...props }, ref) => {
-  const [activeValue, setActiveValue] = React.useState(defaultValue ?? "");
+  const [uncontrolledValue, setUncontrolledValue] = React.useState(defaultValue ?? "");
+  const isControlled = value !== undefined;
+  const activeValue = isControlled ? String(value) : uncontrolledValue;
 
   const handleChange = React.useCallback(
     (v: string) => {
-      setActiveValue(v);
+      if (!isControlled) setUncontrolledValue(v);
       onValueChange?.(v);
     },
-    [onValueChange],
+    [isControlled, onValueChange],
   );
 
-  const resolvedValue = value ?? activeValue;
-
   return (
-    <TabsContext.Provider value={{ variant, activeValue: resolvedValue }}>
+    <TabsContext.Provider value={{ variant, activeValue }}>
       <TabsPrimitive.Root
         ref={ref}
-        value={resolvedValue}
-        defaultValue={defaultValue}
+        value={isControlled ? value : undefined}
+        defaultValue={isControlled ? undefined : defaultValue}
         onValueChange={handleChange}
         {...props}
       />

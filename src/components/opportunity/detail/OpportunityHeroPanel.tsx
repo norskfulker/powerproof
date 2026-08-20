@@ -34,7 +34,9 @@ export type OpportunityHeroPanelProps = {
   fullDetail: boolean
   user: { id: string } | null | undefined
   isMobile: boolean
-  categoryLabel: string
+  categoryLabel: string | null
+  /** Secondary text beside category (status chip / research date). */
+  metaText?: string | null
   statusChip: { label: string; color: string; bg: string } | null
   interestedHero: number
   showInterestCount?: boolean
@@ -205,6 +207,9 @@ export function OpportunityHeroPanel(props: OpportunityHeroPanelProps) {
     fullDetail,
     user,
     isMobile,
+    categoryLabel,
+    metaText,
+    showPreviewBadge = false,
     bp,
     twScroll,
     handleExport,
@@ -224,6 +229,34 @@ export function OpportunityHeroPanel(props: OpportunityHeroPanelProps) {
   const { localizeText } = useCurrency()
   const subtitleRaw = opp.tagline ?? null
   const subtitle = subtitleRaw ? localizeText(String(subtitleRaw)) : null
+  const category = String(categoryLabel ?? '').trim()
+  const secondaryMeta = String(metaText ?? '').trim()
+
+  const heroMeta =
+    category || secondaryMeta || showPreviewBadge ? (
+      <div className="flex min-w-0 flex-wrap items-center gap-2">
+        {category ? (
+          <span className="inline-flex shrink-0 items-center rounded-md border border-primary/25 bg-primary/10 px-2 py-0.5 font-sans text-[11px] font-semibold text-primary">
+            {category}
+          </span>
+        ) : null}
+        {category && secondaryMeta ? (
+          <span className="shrink-0 text-[12px] text-muted-foreground/60" aria-hidden>
+            ·
+          </span>
+        ) : null}
+        {secondaryMeta ? (
+          <span className="min-w-0 truncate font-sans text-[12px] font-medium text-muted-foreground">
+            {secondaryMeta}
+          </span>
+        ) : null}
+        {showPreviewBadge ? (
+          <span className="inline-flex shrink-0 items-center rounded-md border border-border-subtle bg-muted/40 px-2 py-0.5 font-sans text-[11px] font-semibold text-muted-foreground">
+            Preview
+          </span>
+        ) : null}
+      </div>
+    ) : null
 
   const overviewText = useMemo(() => {
     const raw = String(overviewMarkdown ?? opp.full_desc ?? '').trim()
@@ -305,6 +338,7 @@ export function OpportunityHeroPanel(props: OpportunityHeroPanelProps) {
       id="od-hero"
       title={String(opp.title ?? '')}
       subtitle={subtitle}
+      meta={heroMeta}
       overview={overview}
       metrics={metrics}
       footer={footer}

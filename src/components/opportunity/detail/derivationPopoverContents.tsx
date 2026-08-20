@@ -1,5 +1,4 @@
 import type { ReactNode } from 'react'
-import { ArrowDown, Gauge, Minus, TrendingUp, TrendingDown, Wallet } from '@/lib/icons'
 import type {
   EffortScorecard,
   ProfitDerivation,
@@ -7,15 +6,21 @@ import type {
 } from '@/types/database'
 import { localizeUsdAmountsInText } from '@/lib/opportunityDetailUtils'
 import { cn } from '@/lib/utils'
-import { iconClassName } from '@/lib/iconClassNames'
 import { Badge } from '@/components/ui/badge'
 import { OpportunityProgressBar } from '@/components/opportunity/detail/OpportunityProgressBar'
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table'
 
 import {
   opportunityDetailCardClass,
 } from '@/lib/opportunityCardClasses'
-
-const bodyClass = 'font-sans text-[13px] leading-relaxed text-foreground/90'
 
 function formatUsd(amount: number, formatMoney: (n: number) => string) {
   return formatMoney(amount)
@@ -50,78 +55,68 @@ export function SetupCostDerivationContent({
   const subtotal = derivation.subtotal > 0 ? derivation.subtotal : 1
 
   return (
-    <div className="space-y-3.5">
-      <div className="overflow-hidden rounded-xl border border-border-subtle/60">
-        <div className="flex items-center gap-2 border-b border-border-subtle/50 bg-muted/25 px-3 py-2">
-          <Wallet className="h-3.5 w-3.5 text-primary" strokeWidth={2.25} />
-          <span className="font-sans text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-            Cost line-items
-          </span>
-          <span className="ml-auto font-sans text-[11px] font-medium text-muted-foreground/70">
-            {derivation.items.length} items
-          </span>
-        </div>
-
-        <ul className="divide-y divide-border-subtle/40">
+    <div className="space-y-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Line item</TableHead>
+            <TableHead className="w-[5.5rem] text-right">Share</TableHead>
+            <TableHead className="w-[7.5rem] pr-4 text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
           {derivation.items.map((item, i) => {
             const share = Math.min(100, Math.round((item.amount_usd / subtotal) * 100))
             return (
-              <li key={`${item.label}-${i}`} className="px-3 py-2.5">
-                <div className="flex items-start justify-between gap-3">
-                  <span className="min-w-0 flex-1 font-sans text-[12px] font-medium leading-snug text-foreground">
-                    {item.label}
-                  </span>
-                  <span className="shrink-0 font-sans text-[12px] font-semibold tabular-nums text-foreground">
-                    {fmt(item.amount_usd)}
-                  </span>
-                </div>
-                <div className="mt-1.5 h-1 overflow-hidden rounded-full bg-muted/40">
-                  <div
-                    className="h-full rounded-full bg-primary/55"
-                    style={{ width: `${share}%` }}
-                    role="presentation"
-                  />
-                </div>
-              </li>
+              <TableRow key={`${item.label}-${i}`}>
+                <TableCell className="pl-4 font-medium">{item.label}</TableCell>
+                <TableCell className="text-right tabular-nums text-muted-foreground">
+                  {share}%
+                </TableCell>
+                <TableCell className="pr-4 text-right font-semibold tabular-nums">
+                  {fmt(item.amount_usd)}
+                </TableCell>
+              </TableRow>
             )
           })}
-        </ul>
+        </TableBody>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={2} className="pl-4 font-semibold">
+              Subtotal
+            </TableCell>
+            <TableCell className="pr-4 text-right font-bold tabular-nums">
+              {fmt(derivation.subtotal)}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
+      </Table>
 
-        <div className="flex items-center justify-between border-t border-border-subtle/60 bg-muted/35 px-3 py-2.5">
-          <span className="font-sans text-[13px] font-semibold text-foreground">Subtotal</span>
-          <span className="font-sans text-[13px] font-bold tabular-nums text-foreground">
-            {fmt(derivation.subtotal)}
-          </span>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-2 gap-2">
-        <div className="rounded-xl border border-success/25 bg-success/[0.06] p-3">
-          <div className="mb-1 flex items-center gap-1.5">
-            <TrendingDown className="h-3.5 w-3.5 text-success" strokeWidth={2.25} />
-            <span className="font-sans text-[10px] font-bold uppercase tracking-wide text-success">
-              Optimistic
-            </span>
-          </div>
-          <p className="font-sans text-[14px] font-bold tabular-nums text-foreground">
-            {fmt(derivation.optimistic)}
-          </p>
-          <p className="mt-0.5 font-sans text-[10px] font-medium text-muted-foreground">Subtotal × 0.85</p>
-        </div>
-
-        <div className="rounded-xl border border-warning/30 bg-warning/[0.06] p-3">
-          <div className="mb-1 flex items-center gap-1.5">
-            <TrendingUp className="h-3.5 w-3.5 text-warning" strokeWidth={2.25} />
-            <span className="font-sans text-[10px] font-bold uppercase tracking-wide text-warning">
-              With buffer
-            </span>
-          </div>
-          <p className="font-sans text-[14px] font-bold tabular-nums text-foreground">
-            {fmt(derivation.buffer)}
-          </p>
-          <p className="mt-0.5 font-sans text-[10px] font-medium text-muted-foreground">Subtotal × 1.20</p>
-        </div>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Scenario</TableHead>
+            <TableHead>Basis</TableHead>
+            <TableHead className="w-[7.5rem] pr-4 text-right">Amount</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="pl-4 font-medium text-success">Optimistic</TableCell>
+            <TableCell className="text-muted-foreground">Subtotal × 0.85</TableCell>
+            <TableCell className="pr-4 text-right font-semibold tabular-nums">
+              {fmt(derivation.optimistic)}
+            </TableCell>
+          </TableRow>
+          <TableRow>
+            <TableCell className="pl-4 font-medium text-warning">With buffer</TableCell>
+            <TableCell className="text-muted-foreground">Subtotal × 1.20</TableCell>
+            <TableCell className="pr-4 text-right font-semibold tabular-nums">
+              {fmt(derivation.buffer)}
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
     </div>
   )
 }
@@ -134,57 +129,6 @@ function profitRevenueLine(d: ProfitDerivation, formatMoney: (n: number) => stri
     return `${d.units_low}–${d.units_high} subscribers × ${bill}/mo`
   }
   return `${d.units_low}–${d.units_high} ${d.driver_label}/day × ${bill} × 30 days`
-}
-
-function ProfitFlowStep({
-  label,
-  detail,
-  result,
-  accent = 'default',
-  isFinal = false,
-}: {
-  label: string
-  detail: string
-  result: string
-  accent?: 'default' | 'revenue' | 'gross' | 'net'
-  isFinal?: boolean
-}) {
-  const accentStyles = {
-    default: 'border-border-subtle/60 bg-card',
-    revenue: 'border-primary/20 bg-primary/[0.04]',
-    gross: 'border-success/20 bg-success/[0.04]',
-    net: 'border-primary/30 bg-primary/[0.07]',
-  }
-
-  const labelStyles = {
-    default: 'text-muted-foreground',
-    revenue: 'text-primary',
-    gross: 'text-success',
-    net: 'text-primary',
-  }
-
-  return (
-    <div
-      className={cn(
-        'rounded-xl border px-3 py-2.5',
-        accentStyles[accent],
-        isFinal && 'ring-1 ring-primary/15',
-      )}
-    >
-      <p className={cn('font-sans text-[10px] font-bold uppercase tracking-wide', labelStyles[accent])}>
-        {label}
-      </p>
-      <p className="mt-1 font-sans text-[11px] leading-snug text-muted-foreground">{detail}</p>
-      <p
-        className={cn(
-          'mt-1.5 font-sans tabular-nums text-foreground',
-          isFinal ? 'text-[15px] font-bold text-primary' : 'text-[13px] font-semibold',
-        )}
-      >
-        {result}
-      </p>
-    </div>
-  )
 }
 
 export function ProfitDerivationContent({
@@ -203,55 +147,79 @@ export function ProfitDerivationContent({
   const yearlyMax = profitMaxAbs * 12
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {derivation ? (
-        <div className="space-y-1.5">
-          <ProfitFlowStep
-            label="Revenue"
-            detail={profitRevenueLine(derivation, formatMoney)}
-            result={`${fmt(derivation.rev_low)} – ${fmt(derivation.rev_high)}`}
-            accent="revenue"
-          />
-
-          <div className="flex justify-center py-0.5" aria-hidden>
-            <div className="flex flex-col items-center gap-0.5 text-muted-foreground/50">
-              <Minus className="h-3 w-3 rotate-90" strokeWidth={2} />
-              <span className="font-sans text-[10px] font-medium">{derivation.cogs_pct}% COGS</span>
-              <ArrowDown className="h-3.5 w-3.5" strokeWidth={2.25} />
-            </div>
-          </div>
-
-          <ProfitFlowStep
-            label="Gross profit"
-            detail={`After ${derivation.cogs_pct}% cost of goods`}
-            result={`${fmt(derivation.gross_low)} – ${fmt(derivation.gross_high)}`}
-            accent="gross"
-          />
-
-          <div className="flex justify-center py-0.5" aria-hidden>
-            <div className="flex flex-col items-center gap-0.5 text-muted-foreground/50">
-              <Minus className="h-3 w-3 rotate-90" strokeWidth={2} />
-              <span className="font-sans text-[10px] font-medium">{fmt(derivation.opex)} fixed opex</span>
-              <ArrowDown className="h-3.5 w-3.5" strokeWidth={2.25} />
-            </div>
-          </div>
-
-          <ProfitFlowStep
-            label="Net profit (monthly)"
-            detail="After fixed operating costs"
-            result={`${fmt(profitMinAbs)} – ${fmt(profitMaxAbs)}`}
-            accent="net"
-          />
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Step</TableHead>
+              <TableHead>Detail</TableHead>
+              <TableHead className="w-[9rem] pr-4 text-right">Amount</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="pl-4 font-medium text-primary">Revenue</TableCell>
+              <TableCell className="text-muted-foreground">
+                {profitRevenueLine(derivation, formatMoney)}
+              </TableCell>
+              <TableCell className="pr-4 text-right font-semibold tabular-nums">
+                {fmt(derivation.rev_low)} – {fmt(derivation.rev_high)}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="pl-4 font-medium">COGS</TableCell>
+              <TableCell className="text-muted-foreground">
+                {derivation.cogs_pct}% cost of goods
+              </TableCell>
+              <TableCell className="pr-4 text-right tabular-nums text-muted-foreground">
+                −{derivation.cogs_pct}%
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="pl-4 font-medium text-success">Gross profit</TableCell>
+              <TableCell className="text-muted-foreground">
+                After {derivation.cogs_pct}% cost of goods
+              </TableCell>
+              <TableCell className="pr-4 text-right font-semibold tabular-nums">
+                {fmt(derivation.gross_low)} – {fmt(derivation.gross_high)}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="pl-4 font-medium">Fixed opex</TableCell>
+              <TableCell className="text-muted-foreground">Operating costs</TableCell>
+              <TableCell className="pr-4 text-right tabular-nums text-muted-foreground">
+                −{fmt(derivation.opex)}
+              </TableCell>
+            </TableRow>
+            <TableRow>
+              <TableCell className="pl-4 font-semibold text-primary">Net profit (monthly)</TableCell>
+              <TableCell className="text-muted-foreground">After fixed operating costs</TableCell>
+              <TableCell className="pr-4 text-right font-bold tabular-nums text-primary">
+                {fmt(profitMinAbs)} – {fmt(profitMaxAbs)}
+              </TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       ) : null}
 
-      <div className="rounded-xl border border-primary/20 bg-primary/[0.04] px-3 py-2.5">
-        <p className="font-sans text-[10px] font-bold uppercase tracking-wide text-primary">Annual profit</p>
-        <p className="mt-1 font-sans text-[14px] font-bold tabular-nums text-foreground">
-          {fmt(yearlyMin)} – {fmt(yearlyMax)}
-          <span className="ml-1 text-[12px] font-medium text-muted-foreground">/yr</span>
-        </p>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Period</TableHead>
+            <TableHead className="pr-4 text-right">Profit</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="pl-4 font-medium">Annual</TableCell>
+            <TableCell className="pr-4 text-right font-semibold tabular-nums">
+              {fmt(yearlyMin)} – {fmt(yearlyMax)}
+              <span className="ml-1 text-[12px] font-medium text-muted-foreground">/yr</span>
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
 
       {derivation?.formula ? (
         <DerivationFormulaFooter>
@@ -342,55 +310,13 @@ function EffortScoreBar({ score, color }: { score: number; color: string }) {
   const normalized = normalizeEffortScore(score)
   const widthPct = Math.min(100, Math.max(0, (normalized / 5) * 100))
 
-  return <OpportunityProgressBar value={widthPct} color={color} trackClassName="bg-muted/40" />
-}
-
-function EffortDimensionRow({
-  label,
-  score,
-  weight,
-  isPrimary,
-  ink,
-}: {
-  label: string
-  score: number
-  weight: string
-  isPrimary: boolean
-  ink: string
-}) {
-  const normalized = normalizeEffortScore(score)
-  const displayScore = Number.isInteger(normalized) ? normalized : normalized.toFixed(1)
-
   return (
-    <div
-      className={cn(
-        opportunityDetailCardClass,
-        'px-3 py-2.5',
-        isPrimary ? 'border-primary/25 bg-primary/[0.05]' : 'bg-card',
-      )}
-    >
-      <div className="flex items-start justify-between gap-2">
-        <div className="min-w-0 flex-1">
-          <div className="flex flex-wrap items-center gap-1.5">
-            <span className="font-sans text-[12px] font-semibold leading-snug text-foreground">
-              {label}
-            </span>
-            {isPrimary ? (
-              <Badge size="sm" variant="blue" className="font-semibold px-1.5 py-0.5 text-[9px] uppercase tracking-wide">
-                Primary driver
-              </Badge>
-            ) : null}
-          </div>
-          <p className="mt-0.5 font-sans text-[10px] font-medium text-muted-foreground">Weight {weight}</p>
-        </div>
-        <span className="shrink-0 font-sans text-[13px] font-bold tabular-nums" style={{ color: ink }}>
-          {displayScore}/5
-        </span>
-      </div>
-      <div className="mt-2">
-        <EffortScoreBar score={score} color={ink} />
-      </div>
-    </div>
+    <OpportunityProgressBar
+      value={widthPct}
+      color={color}
+      size="sm"
+      aria-label={`Effort ${normalized} of 5`}
+    />
   )
 }
 
@@ -412,63 +338,95 @@ export function EffortScorecardDerivationContent({
   const primaryScore = normalizeEffortScore(scorecard[primary.key])
 
   return (
-    <div className="space-y-3.5">
-      <div className={cn(opportunityDetailCardClass, "overflow-hidden p-0")} style={{
-          borderColor: `color-mix(in srgb, ${ink} 28%, transparent)`,
-          background: `color-mix(in srgb, ${ink} 6%, transparent)`,
-        }}>
-        <div className="flex items-start gap-2.5 px-3.5 py-3">
-          <Gauge className={iconClassName({ tone: 'primary', size: 'md', active: true })} strokeWidth={2.25} aria-hidden />
-          <div className="min-w-0 flex-1">
-            <div className="flex flex-wrap items-center gap-2">
-              <Badge size="sm" variant={effortLevelVariant(level)} className="font-semibold text-[13px]">
+    <div className="space-y-4">
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Summary</TableHead>
+            <TableHead>Detail</TableHead>
+            <TableHead className="pr-4 text-right">Value</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          <TableRow>
+            <TableCell className="pl-4 font-medium">Effort level</TableCell>
+            <TableCell className="text-muted-foreground">Overall difficulty band</TableCell>
+            <TableCell className="pr-4 text-right">
+              <Badge size="sm" variant={effortLevelVariant(level)} className="font-semibold">
                 {level}
               </Badge>
-              {ease != null ? (
-                <span className="font-sans text-[12px] font-medium tabular-nums text-muted-foreground">
-                  Score {ease}/100
-                </span>
-              ) : null}
-            </div>
-            {avg ? (
-              <p className="mt-1.5 font-sans text-[12px] font-medium text-muted-foreground">
-                Weighted avg effort {avg}/5
-              </p>
-            ) : null}
-            <p className="mt-1 font-sans text-[11px] leading-snug text-muted-foreground">
-              Primary driver:{' '}
-              <span className="font-semibold text-foreground">
-                {primary.label} ({primaryScore}/5)
-              </span>
-            </p>
-          </div>
-        </div>
-        {summary ? (
-          <p className="border-t border-border-subtle/40 px-3.5 py-2.5 font-sans text-[11px] leading-relaxed text-muted-foreground">
-            {summary}
-          </p>
-        ) : null}
-      </div>
+            </TableCell>
+          </TableRow>
+          {ease != null ? (
+            <TableRow>
+              <TableCell className="pl-4 font-medium">Ease score</TableCell>
+              <TableCell className="text-muted-foreground">0–100 composite</TableCell>
+              <TableCell className="pr-4 text-right font-semibold tabular-nums">{ease}/100</TableCell>
+            </TableRow>
+          ) : null}
+          {avg ? (
+            <TableRow>
+              <TableCell className="pl-4 font-medium">Weighted average</TableCell>
+              <TableCell className="text-muted-foreground">Across effort dimensions</TableCell>
+              <TableCell className="pr-4 text-right font-semibold tabular-nums">{avg}/5</TableCell>
+            </TableRow>
+          ) : null}
+          <TableRow>
+            <TableCell className="pl-4 font-medium">Primary driver</TableCell>
+            <TableCell className="text-muted-foreground">{primary.label}</TableCell>
+            <TableCell className="pr-4 text-right font-semibold tabular-nums" style={{ color: ink }}>
+              {primaryScore}/5
+            </TableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
 
-      <div>
-        <p className="mb-2 font-sans text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
-          Effort dimensions
-        </p>
-        <ul className="space-y-2">
-          {EFFORT_DIMENSIONS.map((row) => (
-            <li key={row.key}>
-              <EffortDimensionRow
-                label={row.label}
-                score={scorecard[row.key]}
-                weight={weightPct(scorecard, row.key, row.defaultWeightPct)}
-                isPrimary={row.key === primary.key}
-                ink={row.key === primary.key ? ink : 'hsl(var(--primary))'}
-              />
-            </li>
-          ))}
-        </ul>
-      </div>
+      <Table>
+        <TableHeader>
+          <TableRow>
+            <TableHead className="pl-4">Dimension</TableHead>
+            <TableHead className="w-[4.5rem] text-right">Weight</TableHead>
+            <TableHead className="min-w-[5.5rem]">Signal</TableHead>
+            <TableHead className="w-[4rem] pr-4 text-right">Score</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody>
+          {EFFORT_DIMENSIONS.map((row) => {
+            const score = scorecard[row.key]
+            const normalized = normalizeEffortScore(score)
+            const displayScore = Number.isInteger(normalized) ? normalized : normalized.toFixed(1)
+            const isPrimary = row.key === primary.key
+            return (
+              <TableRow key={row.key} className={isPrimary ? 'bg-primary/[0.04]' : undefined}>
+                <TableCell className="pl-4">
+                  <div className="flex flex-wrap items-center gap-1.5">
+                    <span className="font-medium">{row.label}</span>
+                    {isPrimary ? (
+                      <Badge size="sm" variant="blue" className="px-1.5 py-0 text-[9px] font-semibold uppercase tracking-wide">
+                        Primary
+                      </Badge>
+                    ) : null}
+                  </div>
+                </TableCell>
+                <TableCell className="text-right tabular-nums text-muted-foreground">
+                  {weightPct(scorecard, row.key, row.defaultWeightPct)}
+                </TableCell>
+                <TableCell>
+                  <EffortScoreBar score={score} color={isPrimary ? ink : 'hsl(var(--primary))'} />
+                </TableCell>
+                <TableCell
+                  className="pr-4 text-right font-semibold tabular-nums"
+                  style={{ color: isPrimary ? ink : undefined }}
+                >
+                  {displayScore}/5
+                </TableCell>
+              </TableRow>
+            )
+          })}
+        </TableBody>
+      </Table>
 
+      {summary ? <DerivationNote>{summary}</DerivationNote> : null}
       {detail ? <DerivationNote>{detail}</DerivationNote> : null}
     </div>
   )
@@ -513,24 +471,34 @@ export function SetupCostFallbackContent({
           : null
 
   return (
-    <div className="space-y-3">
+    <div className="space-y-4">
       {rangeLabel ? (
-        <div className="rounded-xl border border-primary/20 bg-primary/[0.04] px-3.5 py-3">
-          <p className="font-sans text-[10px] font-bold uppercase tracking-wide text-primary">
-            Estimated setup range
-          </p>
-          <p className="mt-1 font-sans text-[16px] font-bold tabular-nums text-foreground">{rangeLabel}</p>
-        </div>
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Estimate</TableHead>
+              <TableHead className="pr-4 text-right">Range</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            <TableRow>
+              <TableCell className="pl-4 font-medium">Setup cost</TableCell>
+              <TableCell className="pr-4 text-right font-semibold tabular-nums">{rangeLabel}</TableCell>
+            </TableRow>
+          </TableBody>
+        </Table>
       ) : null}
 
       {rows.length > 0 ? (
-        <div className="overflow-hidden rounded-xl border border-border-subtle/60">
-          <div className="border-b border-border-subtle/50 bg-muted/25 px-3 py-2">
-            <span className="font-sans text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
-              Cost breakdown
-            </span>
-          </div>
-          <ul className="divide-y divide-border-subtle/40">
+        <Table>
+          <TableHeader>
+            <TableRow>
+              <TableHead className="pl-4">Line item</TableHead>
+              <TableHead>Notes</TableHead>
+              <TableHead className="w-[8rem] pr-4 text-right">Cost</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {rows.slice(0, 10).map((row, i) => {
               const label = String(row.item ?? row.label ?? 'Item').trim()
               const rowMin = row.min != null ? Number(row.min) : null
@@ -544,23 +512,15 @@ export function SetupCostFallbackContent({
                       ? fmt(rowMin)
                       : '—'
               return (
-                <li key={`${label}-${i}`} className="px-3 py-2.5">
-                  <div className="flex items-start justify-between gap-3">
-                    <span className="min-w-0 flex-1 font-sans text-[12px] font-medium leading-snug text-foreground">
-                      {label}
-                    </span>
-                    <span className="shrink-0 font-sans text-[12px] font-semibold tabular-nums text-foreground">
-                      {cost}
-                    </span>
-                  </div>
-                  {row.notes ? (
-                    <p className="mt-1 font-sans text-[11px] leading-snug text-muted-foreground">{row.notes}</p>
-                  ) : null}
-                </li>
+                <TableRow key={`${label}-${i}`}>
+                  <TableCell className="pl-4 font-medium">{label}</TableCell>
+                  <TableCell className="text-muted-foreground">{row.notes?.trim() || '—'}</TableCell>
+                  <TableCell className="pr-4 text-right font-semibold tabular-nums">{cost}</TableCell>
+                </TableRow>
               )
             })}
-          </ul>
-        </div>
+          </TableBody>
+        </Table>
       ) : (
         <DerivationNote>
           Setup cost covers plant, equipment, working capital, and pre-operative expenses for this opportunity.

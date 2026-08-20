@@ -1,4 +1,4 @@
-import { useMemo, type ReactNode } from 'react'
+import { useMemo } from 'react'
 import * as React from 'react'
 import { useCurrency } from '@/hooks/useCurrency'
 import { Badge } from '@/components/ui/badge'
@@ -13,11 +13,8 @@ import { OpportunityAccordionHeaderRow } from '@/components/opportunity/detail/O
 import { OpportunityTermLabel } from '@/components/opportunity/detail/OpportunityTermLabel'
 import { opportunitySectionWrapClass } from '@/components/opportunity/detail/detailSectionClasses'
 import {
-  opportunityCardTopSlotMetaClass,
   opportunityCardTopSlotRowClass,
   opportunityCardTopSlotTitleClass,
-  opportunityCardTopSlotTone,
-  opportunityCardTopSlotToneStyle,
   opportunityDetailCardClass,
   opportunityDetailCardGlowClass,
 } from '@/lib/opportunityCardClasses'
@@ -26,7 +23,6 @@ import {
   TrendingUp,
   Layers,
   Repeat,
-  Receipt,
   ShoppingCart,
   Coins,
   ArrowUpRight,
@@ -37,8 +33,6 @@ import {
   PieChart,
   Activity,
   Sparkles,
-  Link2,
-  Rocket,
 } from '@/lib/icons'
 
 // ─── Color System ────────────────────────────────────────────────
@@ -130,34 +124,6 @@ function getStreamTheme(index: number, model: string): StreamTheme {
 
 function streamColor(index: number, model: string) {
   return getStreamTheme(index, model).solid
-}
-
-// ─── Enhanced Visual Components ────────────────────────────────────
-
-function MetricBadge({ 
-  children, 
-  variant = 'default',
-}: { 
-  children: ReactNode
-  variant?: 'default' | 'success' | 'warning' | 'danger' | 'primary'
-  size?: 'sm' | 'md'
-}) {
-  const variantMap = {
-    default: 'gray',
-    success: 'green',
-    warning: 'amber',
-    danger: 'red',
-    primary: 'blue',
-  } as const
-
-  return (
-    <Badge
-      variant={variantMap[variant]}
-      className="font-semibold font-black uppercase tracking-wider"
-    >
-      {children}
-    </Badge>
-  )
 }
 
 // ─── Revenue mix composition ─────────────────────────────────────
@@ -400,52 +366,6 @@ function RevenueMixComposition({ streams }: { streams: RevenueStream[] }) {
 
 // ─── Stream Detail Card ──────────────────────────────────────────
 
-function StreamMetaTile({
-  label,
-  value,
-  icon: Icon,
-  tone = 'default',
-}: {
-  label: string
-  value: ReactNode
-  icon: React.ElementType
-  tone?: 'default' | 'caution'
-}) {
-  return (
-    <Card
-      padding="sm"
-      radius="lg"
-      className="h-full min-w-0"
-      topSlotStyle={tone === 'caution' ? opportunityCardTopSlotToneStyle.warning : undefined}
-      topSlot={
-        <div className={opportunityCardTopSlotRowClass}>
-          <Icon
-            className={iconClassName({
-              tone: tone === 'caution' ? 'amber' : 'muted',
-              size: 'sm',
-              active: true,
-            })}
-            strokeWidth={2.25}
-            aria-hidden
-          />
-          <span
-            className={cn(
-              opportunityCardTopSlotTitleClass,
-              tone === 'caution'
-                ? opportunityCardTopSlotTone.warning.title
-                : 'text-xs font-medium uppercase tracking-wider text-muted-foreground',
-            )}
-          >
-            {label}
-          </span>
-        </div>
-      }
-    >
-      <div className="font-sans text-[13px] font-semibold leading-snug text-foreground">{value}</div>
-    </Card>
-  )
-}
-
 function StreamDetailCard({
   stream,
   index,
@@ -463,11 +383,6 @@ function StreamDetailCard({
   const ModelIcon = MODEL_ICONS[stream.model] ?? Coins
   const hasMeta =
     stream.avg_ticket_usd > 0 || Boolean(stream.dependency?.trim()) || Boolean(stream.unlock_at?.trim())
-  const metaCount = [
-    stream.avg_ticket_usd > 0,
-    Boolean(stream.dependency?.trim()),
-    Boolean(stream.unlock_at?.trim()),
-  ].filter(Boolean).length
 
   return (
     <Card
@@ -494,9 +409,9 @@ function StreamDetailCard({
       }
     >
       <div className="flex h-full min-h-0 flex-col gap-3">
-        <div className="flex flex-wrap items-center gap-1.5">
+        <div className="flex flex-wrap items-center gap-2">
           {pct > 0 ? (
-            <span className={opportunityCardTopSlotMetaClass} style={{ color }}>
+            <span className="font-display text-[18px] font-bold tabular-nums" style={{ color }}>
               {pct}%
             </span>
           ) : null}
@@ -504,23 +419,23 @@ function StreamDetailCard({
             {MODEL_LABELS[stream.model] ?? stream.model}
           </Badge>
           {stream.frequency ? (
-            <span className="font-sans text-[10px] font-medium capitalize text-muted-foreground">
-              · {stream.frequency.replace(/_/g, ' ')}
+            <span className="font-sans text-[12px] capitalize text-muted-foreground">
+              {stream.frequency.replace(/_/g, ' ')}
             </span>
           ) : null}
           {growth ? (
-            <MetricBadge
-              variant={
-                growth.variant === 'green'
-                  ? 'success'
-                  : growth.variant === 'amber'
-                    ? 'warning'
-                    : 'default'
-              }
-              size="sm"
+            <span
+              className={cn(
+                'font-sans text-[12px] font-medium',
+                growth.tone === 'success'
+                  ? 'text-success'
+                  : growth.tone === 'warning'
+                    ? 'text-warning'
+                    : 'text-muted-foreground',
+              )}
             >
               {growth.label}
-            </MetricBadge>
+            </span>
           ) : null}
         </div>
 
@@ -531,29 +446,30 @@ function StreamDetailCard({
         ) : null}
 
         {hasMeta ? (
-          <div
-            className={cn(
-              'mt-auto grid gap-2',
-              metaCount >= 3 ? 'grid-cols-1 sm:grid-cols-3' : metaCount === 2 ? 'grid-cols-2' : 'grid-cols-1',
-            )}
-          >
+          <div className="mt-auto grid grid-cols-1 gap-2 border-t border-border-subtle/50 pt-3 sm:grid-cols-3">
             {stream.avg_ticket_usd > 0 ? (
-              <StreamMetaTile
-                label="Average order value"
-                value={<span className="tabular-nums">{formatMoney(stream.avg_ticket_usd)}</span>}
-                icon={Receipt}
-              />
+              <div>
+                <p className="font-sans text-[11px] font-medium text-muted-foreground">Avg ticket</p>
+                <p className="mt-0.5 font-sans text-[13px] font-semibold tabular-nums">
+                  {formatMoney(stream.avg_ticket_usd)}
+                </p>
+              </div>
             ) : null}
             {stream.dependency?.trim() ? (
-              <StreamMetaTile label="Key dependencies" value={localizeText(stream.dependency.trim())} icon={Link2} />
+              <div>
+                <p className="font-sans text-[11px] font-medium text-muted-foreground">Depends on</p>
+                <p className="mt-0.5 font-sans text-[13px] font-semibold leading-snug">
+                  {localizeText(stream.dependency.trim())}
+                </p>
+              </div>
             ) : null}
             {stream.unlock_at?.trim() ? (
-              <StreamMetaTile
-                label="Goes live"
-                value={stream.unlock_at.trim()}
-                icon={Rocket}
-                tone="caution"
-              />
+              <div>
+                <p className="font-sans text-[11px] font-medium text-muted-foreground">Unlocks at</p>
+                <p className="mt-0.5 font-sans text-[13px] font-semibold leading-snug">
+                  {localizeText(stream.unlock_at.trim())}
+                </p>
+              </div>
             ) : null}
           </div>
         ) : null}

@@ -40,10 +40,13 @@ export function InternalPageDataTabs({
 }) {
   if (tabs.length === 0) return null
 
+  const controlled = value !== undefined
+  const fallback = defaultValue ?? tabs[0]?.id
+
   return (
     <Tabs
-      value={value}
-      defaultValue={defaultValue ?? tabs[0]?.id}
+      value={controlled ? value : undefined}
+      defaultValue={controlled ? undefined : fallback}
       onValueChange={onValueChange}
       className={cn('w-full min-w-0', className)}
     >

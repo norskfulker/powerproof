@@ -25,8 +25,7 @@ export {
   SelectTrigger,
   SelectValue,
 } from './select';
-export { TableCard } from './TableCard';
-export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption } from './table';
+export { Table, TableHeader, TableBody, TableFooter, TableHead, TableRow, TableCell, TableCaption, tableHeadClassName, tableRowClassName, tableCellClassName } from './table';
 export { CustomScroll } from './custom-scroll';
 
 // Navigation

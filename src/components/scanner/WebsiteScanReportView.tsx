@@ -3,7 +3,11 @@ import { EffortLevelMeter } from '@/components/discover/EffortLevelDashes'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
-  Card,
+  Table,
+  tableHeadClassName,
+  tableRowClassName,
+} from '@/components/ui/table'
+import {
   cardTopSlotBandClassName,
   cardTopSlotRowClass,
   cardTopSlotTitleClass,
@@ -421,12 +425,6 @@ type FieldRow = {
 
 // ─── Table primitives ────────────────────────────────────────────
 
-const scanTableHeadClass =
-  'px-3 py-2.5 text-left font-display text-[13px] font-semibold leading-tight tracking-tight text-muted-foreground'
-
-const scanTableRowClass =
-  'group border-b border-border-subtle/50 transition-colors last:border-0 hover:bg-muted/30'
-
 function ScanTableStat({ dotClass, children }: { dotClass?: string; children: ReactNode }) {
   return (
     <span className="inline-flex items-center gap-1.5 text-[11.5px] font-medium text-muted-foreground">
@@ -545,36 +543,6 @@ function ScanTableLabel({ title, badge }: { title: string; badge?: ReactNode }) 
   )
 }
 
-function ScanTableShell({
-  colGroup,
-  header,
-  children,
-}: {
-  colGroup?: ReactNode
-  header: ReactNode
-  children: ReactNode
-}) {
-  return (
-    <Card
-      padding="none"
-      radius="lg"
-      className="shadow-sm"
-      topSlotClassName="p-0"
-      topSlot={
-        <table className="w-full min-w-0 table-fixed border-collapse">
-          {colGroup}
-          {header}
-        </table>
-      }
-    >
-      <table className="w-full min-w-0 table-fixed border-collapse">
-        {colGroup}
-        {children}
-      </table>
-    </Card>
-  )
-}
-
 /** Section heading that replaces the old accordion header row. */
 function ScanBlock({
   icon: Icon,
@@ -677,23 +645,23 @@ function FieldsTable({
   )
 
   return (
-    <ScanTableShell
+    <Table
       colGroup={colGroup}
       header={
         <thead>
           <tr>
             {showStatus ? (
-              <th scope="col" className={cn(scanTableHeadClass, 'w-11 pl-4')}>
+              <th scope="col" className={cn(tableHeadClassName, 'w-11 pl-4')}>
                 <span className="sr-only">Status</span>
               </th>
             ) : null}
             <th
               scope="col"
-              className={cn(scanTableHeadClass, 'w-[12rem] sm:w-[14rem]', !showStatus && 'pl-4')}
+              className={cn(tableHeadClassName, 'w-[12rem] sm:w-[14rem]', !showStatus && 'pl-4')}
             >
               {labelHeader}
             </th>
-            <th scope="col" className={scanTableHeadClass}>
+            <th scope="col" className={tableHeadClassName}>
               {valueHeader}
             </th>
           </tr>
@@ -711,7 +679,7 @@ function FieldsTable({
               : row.value ?? (items && items.length ? null : '—')
 
           return (
-            <tr key={row.label} className={scanTableRowClass}>
+            <tr key={row.label} className={tableRowClassName}>
               {showStatus && meta && StatusIcon ? (
                 <td className={cn('border-l-2 px-3.5 py-2.5 align-top', meta.accentClass)}>
                   <StatusIcon
@@ -760,7 +728,7 @@ function FieldsTable({
           )
         })}
       </tbody>
-    </ScanTableShell>
+    </Table>
   )
 }
 
@@ -794,23 +762,23 @@ function NamedRowsTable({
   )
 
   return (
-    <ScanTableShell
+    <Table
       colGroup={colGroup}
       header={
         <thead>
           <tr>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-10 pl-4 text-right')}>
               #
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-[13rem]')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-[13rem]')}>
               {nameHeader}
             </th>
             {hasBadge ? (
-              <th scope="col" className={cn(scanTableHeadClass, 'w-28')}>
+              <th scope="col" className={cn(tableHeadClassName, 'w-28')}>
                 Type
               </th>
             ) : null}
-            <th scope="col" className={scanTableHeadClass}>
+            <th scope="col" className={tableHeadClassName}>
               {detailHeader}
             </th>
           </tr>
@@ -819,7 +787,7 @@ function NamedRowsTable({
     >
       <tbody>
         {rows.map((row, index) => (
-          <tr key={`${row.name}-${index}`} className={scanTableRowClass}>
+          <tr key={`${row.name}-${index}`} className={tableRowClassName}>
             <td className="pl-4 pr-2 py-2.5 text-right align-top text-[11.5px] tabular-nums text-muted-foreground/60">
               {index + 1}
             </td>
@@ -837,7 +805,7 @@ function NamedRowsTable({
           </tr>
         ))}
       </tbody>
-    </ScanTableShell>
+    </Table>
   )
 }
 
@@ -863,18 +831,18 @@ function FindingsTable({ findings }: { findings: SeoAuditFinding[] }) {
   )
 
   return (
-    <ScanTableShell
+    <Table
       colGroup={colGroup}
       header={
         <thead>
           <tr>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-40 pl-4')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-40 pl-4')}>
               Severity
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'md:w-[18rem]')}>
+            <th scope="col" className={cn(tableHeadClassName, 'md:w-[18rem]')}>
               Finding
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'hidden md:table-cell')}>
+            <th scope="col" className={cn(tableHeadClassName, 'hidden md:table-cell')}>
               What we saw
             </th>
           </tr>
@@ -886,7 +854,7 @@ function FindingsTable({ findings }: { findings: SeoAuditFinding[] }) {
           const meta = FINDING_KIND_META[kind]
           const Icon = meta.icon
           return (
-            <tr key={`${finding.title}-${index}`} className={scanTableRowClass}>
+            <tr key={`${finding.title}-${index}`} className={tableRowClassName}>
               <td className={cn('border-l-2 px-3.5 py-3 align-top', meta.accentClass)}>
                 <span
                   className={cn(
@@ -917,7 +885,7 @@ function FindingsTable({ findings }: { findings: SeoAuditFinding[] }) {
           )
         })}
       </tbody>
-    </ScanTableShell>
+    </Table>
   )
 }
 
@@ -942,24 +910,24 @@ function CrawledPagesTable({ pages }: { pages: CrawledPageSummary[] }) {
   )
 
   return (
-    <ScanTableShell
+    <Table
       colGroup={colGroup}
       header={
         <thead>
           <tr>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-10 pl-4 text-right')}>
               #
             </th>
-            <th scope="col" className={scanTableHeadClass}>
+            <th scope="col" className={tableHeadClassName}>
               Page
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-24')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-24')}>
               Status
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'hidden w-32 text-right sm:table-cell')}>
+            <th scope="col" className={cn(tableHeadClassName, 'hidden w-32 text-right sm:table-cell')}>
               Content
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-14')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-14')}>
               <span className="sr-only">Open</span>
             </th>
           </tr>
@@ -975,7 +943,7 @@ function CrawledPagesTable({ pages }: { pages: CrawledPageSummary[] }) {
           const fillPct = maxChars > 0 ? Math.max(4, Math.round((charCount / maxChars) * 100)) : 0
 
           return (
-            <tr key={page.url} className={scanTableRowClass}>
+            <tr key={page.url} className={tableRowClassName}>
               <td className="pl-4 pr-2 py-3 text-right align-top text-[11.5px] tabular-nums text-muted-foreground/60">
                 {index + 1}
               </td>
@@ -1053,7 +1021,7 @@ function CrawledPagesTable({ pages }: { pages: CrawledPageSummary[] }) {
           )
         })}
       </tbody>
-    </ScanTableShell>
+    </Table>
   )
 }
 
@@ -1716,21 +1684,21 @@ function RoadmapStepsTable({ steps }: { steps: RoadmapStep[] }) {
   )
 
   return (
-    <ScanTableShell
+    <Table
       colGroup={colGroup}
       header={
         <thead>
           <tr>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-10 pl-4 text-right')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-10 pl-4 text-right')}>
               #
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-[16rem]')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-[16rem]')}>
               Step
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'w-36')}>
+            <th scope="col" className={cn(tableHeadClassName, 'w-36')}>
               Effort
             </th>
-            <th scope="col" className={cn(scanTableHeadClass, 'hidden md:table-cell')}>
+            <th scope="col" className={cn(tableHeadClassName, 'hidden md:table-cell')}>
               What to do
             </th>
           </tr>
@@ -1761,7 +1729,7 @@ function RoadmapStepsTable({ steps }: { steps: RoadmapStep[] }) {
             const title = step?.title?.trim() || `Step ${index + 1}`
             const detail = step?.detail ?? ''
             return (
-              <tr key={`${title}-${index}`} className={scanTableRowClass}>
+              <tr key={`${title}-${index}`} className={tableRowClassName}>
                 <td className="pl-4 pr-2 py-3 text-right align-top text-[11.5px] tabular-nums text-muted-foreground/60">
                   {index + 1}
                 </td>
@@ -1786,7 +1754,7 @@ function RoadmapStepsTable({ steps }: { steps: RoadmapStep[] }) {
           })}
         </tbody>
       ))}
-    </ScanTableShell>
+    </Table>
   )
 }
 

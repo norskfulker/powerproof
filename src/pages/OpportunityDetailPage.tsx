@@ -459,10 +459,10 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
     [opp],
   )
 
-  const chromePrimaryBadge = isUserResearch
+  const heroCategoryLabel = isUserResearch
     ? modelLabel
     : categoryLabel || null
-  const chromeGhostBadge = isUserResearch
+  const heroMetaText = isUserResearch
     ? researchDateLabel
     : statusChip?.label ?? null
 
@@ -568,13 +568,7 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
               'h-full w-full',
             )
           : null,
-    badges:
-      onboardingRevealRequested && onboardingRevealPhase !== 'ready'
-        ? null
-        : {
-            primary: chromePrimaryBadge,
-            ghost: chromeGhostBadge,
-          },
+    badges: null,
     endActions:
       onboardingRevealRequested && onboardingRevealPhase !== 'ready' ? null : chromeEndActions,
     tabs: null,
@@ -833,7 +827,8 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
               fullDetail={fullDetail}
               user={user}
               isMobile={isCompact}
-              categoryLabel={categoryLabel}
+              categoryLabel={heroCategoryLabel}
+              metaText={heroMetaText}
               statusChip={statusChip}
               interestedHero={interestedHero}
               bp={bp}
@@ -884,7 +879,7 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
             {researchTabs.length > 0 ? (
             <InternalPageDataTabs
               tabs={researchTabs}
-              value={researchDataTab || defaultResearchDataTab}
+              value={researchDataTab || defaultResearchDataTab || undefined}
               onValueChange={setResearchDataTab}
               flush
             >

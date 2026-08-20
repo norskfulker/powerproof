@@ -471,24 +471,27 @@ function MarketingSubsectionShell({
   children: ReactNode
 }) {
   return (
-    <Card padding="sm" radius="lg" className="w-full">
-      <div className="flex w-full min-w-0 items-center gap-2">
-        <span
-          aria-hidden
-          className="inline-flex h-7 w-7 shrink-0 items-center justify-center rounded-lg bg-primary/12 text-primary [&_svg]:h-4 [&_svg]:w-4"
-        >
-          <Icon />
-        </span>
-        <h4 className="font-sans text-[15px] font-semibold tracking-tight text-foreground sm:text-base">
-          {title}
-        </h4>
-        {count != null && count > 0 ? (
-          <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-md border border-border-subtle bg-muted/40 px-2 py-0.5 font-sans text-[10px] font-bold tabular-nums text-muted-foreground">
-            {count}
+    <Card
+      padding="sm"
+      radius="lg"
+      className="w-full overflow-hidden"
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <span className={opportunityCardTopSlotIconClass}>
+            <Icon aria-hidden />
           </span>
-        ) : null}
-      </div>
-      <div className="mt-3">{children}</div>
+          <h4 className={cn(opportunityCardTopSlotTitleClass, 'font-sans text-[15px] sm:text-base')}>
+            {title}
+          </h4>
+          {count != null && count > 0 ? (
+            <span className="ml-auto inline-flex shrink-0 items-center gap-1 rounded-md border border-border-subtle bg-muted/40 px-2 py-0.5 font-sans text-[10px] font-bold tabular-nums text-muted-foreground">
+              {count}
+            </span>
+          ) : null}
+        </div>
+      }
+    >
+      {children}
     </Card>
   )
 }
@@ -1349,39 +1352,50 @@ function ChannelAccordionItem({
           : 'default'
 
   return (
-    <Card padding="sm" radius="lg" className="w-full">
-      <div className="flex w-full flex-col gap-3 pr-1 sm:flex-row sm:items-start sm:justify-between">
-        <div className="flex min-w-0 gap-3">
+    <Card
+      padding="sm"
+      radius="lg"
+      className="w-full overflow-hidden"
+      topSlot={
+        <div className={cn(opportunityCardTopSlotRowClass, 'flex-wrap gap-y-2')}>
           <div
-            className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl shadow-sm"
-            style={{
-              background: colors.solid,
-            }}
+            className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg shadow-sm"
+            style={{ background: colors.solid }}
           >
-            <Icon className="h-5 w-5 text-white" strokeWidth={2.25} aria-hidden />
+            <Icon className="h-4 w-4 text-white" strokeWidth={2.25} aria-hidden />
           </div>
-          <div className="min-w-0">
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="font-sans text-sm font-bold text-foreground">{channel.name}</span>
-              {priority ? (
-                <MetricBadge
-                  variant={
-                    priority.variant === 'primary'
-                      ? 'primary'
-                      : priority.variant === 'warning'
-                        ? 'warning'
-                        : 'default'
-                  }
-                  size="lg"
-                >
-                  {priority.label}
-                </MetricBadge>
-              ) : null}
-            </div>
-            <p className="mt-1 line-clamp-2 font-sans text-[12px] leading-relaxed text-muted-foreground">
-              {channel.rationale}
+          <span className={cn(opportunityCardTopSlotTitleClass, 'min-w-0 flex-1')}>
+            {channel.name}
+          </span>
+          {priority ? (
+            <MetricBadge
+              variant={
+                priority.variant === 'primary'
+                  ? 'primary'
+                  : priority.variant === 'warning'
+                    ? 'warning'
+                    : 'default'
+              }
+              size="sm"
+            >
+              {priority.label}
+            </MetricBadge>
+          ) : null}
+          <div className="ml-auto shrink-0 text-right">
+            <p
+              className="font-sans text-sm font-black tabular-nums tracking-tight"
+              style={{ color: channel.budget_usd > 0 ? colors.text : undefined }}
+            >
+              {budgetLabel.replace('/mo', '')}
             </p>
-            <div className="mt-2.5 flex flex-wrap gap-1.5">
+            <p className="font-sans text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              {channel.budget_usd > 0 ? 'per month' : 'no spend'}
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <div className="flex flex-wrap gap-1.5">
               {success ? (
                 <span
                   className={cn(
@@ -1410,24 +1424,6 @@ function ChannelAccordionItem({
                 </span>
               ) : null}
             </div>
-          </div>
-        </div>
-        <div className="shrink-0 sm:text-right">
-          <p
-            className="font-sans text-xl font-black tabular-nums tracking-tight"
-            style={{ color: channel.budget_usd > 0 ? colors.text : undefined }}
-          >
-            {budgetLabel.replace('/mo', '')}
-          </p>
-          {channel.budget_usd > 0 ? (
-            <p className="font-sans text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-              per month
-            </p>
-          ) : (
-            <p className="font-sans text-[10px] font-semibold uppercase tracking-wider text-success">no spend</p>
-          )}
-        </div>
-      </div>
 
       <div className="mt-3 space-y-5 border-t border-border-subtle/60 pt-5">
         <p className="font-sans text-[14px] font-medium leading-relaxed text-foreground/90">

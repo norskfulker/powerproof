@@ -3,6 +3,7 @@ import { trendLabel, type TrendKind } from '@/lib/opportunityTrendChart'
 import { cn } from '@/lib/utils'
 
 import { OpportunityTermLabel } from '@/components/opportunity/detail/OpportunityTermLabel'
+import { MetricDerivationDialog } from '@/components/opportunity/detail/MetricDerivationDialog'
 import { MetricDerivationSheet } from '@/components/opportunity/detail/MetricDerivationSheet'
 import {
   EffortScorecardDerivationContent,
@@ -11,6 +12,7 @@ import {
   SetupCostDerivationContent,
   SetupCostFallbackContent,
 } from '@/components/opportunity/detail/derivationPopoverContents'
+import { dottedTermTriggerClassName } from '@/components/opportunity/detail/DottedTermTooltip'
 import { formatSetupBounds } from '@/lib/opportunityFormatters'
 import type { OpportunityTermKey } from '@/lib/opportunityTermDefinitions'
 import type {
@@ -47,9 +49,10 @@ const metricLabelClass =
 const metricValueClass =
   'font-sans text-[18px] font-semibold tracking-tight tabular-nums text-foreground sm:text-[22px] lg:text-[24px]'
 
-/** Quiet click target — numbers stay numbers, not underlined links. */
+/** Clickable score — dotted tooltip underline signals more detail on click. */
 const derivationValueTriggerClass = cn(
   metricValueClass,
+  dottedTermTriggerClassName,
   'cursor-pointer rounded-sm transition-colors hover:text-primary focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2',
 )
 
@@ -162,7 +165,7 @@ export function OpportunityMetricsBar(props: OpportunityMetricsBarProps) {
       <div className={opportunityMetricsGridFourClass}>
         <GlanceMetric label="Setup Cost" term="setup_cost">
           {hasSetup ? (
-            <MetricDerivationSheet
+            <MetricDerivationDialog
               label={setupCostDerivation ? 'Setup cost derivation' : 'Setup cost breakdown'}
               trigger={setupValueNode}
               triggerClassName={derivationValueTriggerClass}
@@ -177,7 +180,7 @@ export function OpportunityMetricsBar(props: OpportunityMetricsBarProps) {
                   formatMoney={formatMoney}
                 />
               )}
-            </MetricDerivationSheet>
+            </MetricDerivationDialog>
           ) : (
             <MetricValue className="text-muted-foreground">—</MetricValue>
           )}
@@ -185,7 +188,7 @@ export function OpportunityMetricsBar(props: OpportunityMetricsBarProps) {
 
         <GlanceMetric label="Monthly Profit" term="monthly_profit">
           {hasProfit ? (
-            <MetricDerivationSheet
+            <MetricDerivationDialog
               label="Profit derivation"
               trigger={profitValueNode}
               triggerClassName={cn(derivationValueTriggerClass, 'text-success hover:text-success/80')}
@@ -196,7 +199,7 @@ export function OpportunityMetricsBar(props: OpportunityMetricsBarProps) {
                 profitMinAbs={profitMinAbs}
                 profitMaxAbs={profitMaxAbs}
               />
-            </MetricDerivationSheet>
+            </MetricDerivationDialog>
           ) : (
             <MetricValue className="text-muted-foreground">—</MetricValue>
           )}

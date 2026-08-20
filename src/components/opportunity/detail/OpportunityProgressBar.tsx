@@ -1,5 +1,4 @@
 import type { CSSProperties } from 'react'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 export type OpportunityProgressBarProps = {
@@ -10,23 +9,20 @@ export type OpportunityProgressBarProps = {
   className?: string
   trackClassName?: string
   fillClassName?: string
-  /** `sm` = 6px (metrics), `md` = 8px (score cards). */
+  /** @deprecated Size maps to stick height; kept for call-site compat. */
   size?: 'sm' | 'md'
-  /** Animate fill width on mount. */
+  /** @deprecated Continuous animation removed — discrete sticks match CAGR / scanner meters. */
   animated?: boolean
   animationDelay?: number
   style?: CSSProperties
   'aria-label'?: string
-}
-
-const SIZE_TRACK: Record<NonNullable<OpportunityProgressBarProps['size']>, string> = {
-  sm: 'h-1.5',
-  md: 'h-2',
+  /** Number of sticks (default 5 — same as Growth Pace CAGR). */
+  stickCount?: number
 }
 
 /**
- * Shared continuous progress track used across opportunity detail
- * (metrics bar, score breakdown, revenue estimator, effort popovers).
+ * Discrete network sticks — same visual language as Growth Pace (CAGR)
+ * and scanner effort meters (not a continuous fill track).
  */
 export function OpportunityProgressBar({
   value,
@@ -35,58 +31,43 @@ export function OpportunityProgressBar({
   trackClassName,
   fillClassName,
   size = 'sm',
-  animated = false,
-  animationDelay = 0,
   style,
   'aria-label': ariaLabel,
+  stickCount = 5,
 }: OpportunityProgressBarProps) {
   const widthPct = Math.min(100, Math.max(0, Number.isFinite(value) ? value : 0))
-
-  const fillStyle: CSSProperties = {
-    width: `${widthPct}%`,
-    ...(color ? { background: color } : null),
-  }
-
-  const track = cn(
-    'overflow-hidden rounded-full bg-muted/30',
-    SIZE_TRACK[size],
-    trackClassName,
-    className,
-  )
-
-  if (animated) {
-    return (
-      <div
-        className={track}
-        style={style}
-        role="progressbar"
-        aria-valuenow={Math.round(widthPct)}
-        aria-valuemin={0}
-        aria-valuemax={100}
-        aria-label={ariaLabel}
-      >
-        <motion.div
-          className={cn('h-full rounded-full', fillClassName)}
-          initial={{ width: 0 }}
-          animate={{ width: `${widthPct}%` }}
-          transition={{ type: 'spring', stiffness: 60, damping: 12, delay: animationDelay }}
-          style={color ? { background: color } : undefined}
-        />
-      </div>
-    )
-  }
+  const filled = Math.round((widthPct / 100) * stickCount)
+  const tall = size === 'md'
 
   return (
     <div
-      className={track}
+      className={cn(
+        'flex items-end gap-1',
+        tall ? 'h-8' : 'h-6',
+        trackClassName,
+        className,
+      )}
       style={style}
-      role="progressbar"
+      role="meter"
       aria-valuenow={Math.round(widthPct)}
       aria-valuemin={0}
       aria-valuemax={100}
       aria-label={ariaLabel}
     >
-      <div className={cn('h-full rounded-full transition-all', fillClassName)} style={fillStyle} />
+      {Array.from({ length: stickCount }, (_, i) => {
+        const on = i < filled
+        const height = tall ? 12 + i * 4 : 10 + i * 3
+        return (
+          <span
+            key={i}
+            className={cn(
+              'w-1.5 rounded-sm transition-colors sm:w-2',
+              on ? fillClassName || 'bg-primary' : 'bg-muted/45',
+            )}
+            style={on && color ? { background: color, height } : { height }}
+          />
+        )
+      })}
     </div>
   )
 }

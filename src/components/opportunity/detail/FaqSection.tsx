@@ -1,11 +1,16 @@
 import { useMemo } from 'react'
+import { HelpCircle } from '@/lib/icons'
 import { OpportunityAccordionHeaderRow } from '@/components/opportunity/detail/OpportunityAccordionHeaderRow'
 import { OpportunityDetailSectionShell } from '@/components/opportunity/detail/OpportunityDetailAccordion'
-import { Card } from '@/components/ui/card'
-import { HelpCircle } from '@/lib/icons'
 import { OpportunityTermLabel } from '@/components/opportunity/detail/OpportunityTermLabel'
 import { useOpportunityEditSectionAccordion } from '@/hooks/useOpportunityEditSectionAccordion'
 import { useCurrency } from '@/hooks/useCurrency'
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
 import { cn } from '@/lib/utils'
 
 export type FaqSectionProps = {
@@ -14,7 +19,7 @@ export type FaqSectionProps = {
   twScroll: { startWhenInView: true; inViewResetKey: string }
 }
 
-export function FaqSection({ opp, isMobile }: FaqSectionProps) {
+export function FaqSection({ opp }: FaqSectionProps) {
   const { localizeText } = useCurrency()
   const faqs = useMemo(() => {
     return Array.isArray(opp.faqs)
@@ -24,7 +29,8 @@ export function FaqSection({ opp, isMobile }: FaqSectionProps) {
         )
       : []
   }, [opp.faqs])
-  const { accordionValue, onAccordionValueChange, wrapperClassName } = useOpportunityEditSectionAccordion('faqs', 'faq-section')
+  const { accordionValue, onAccordionValueChange, wrapperClassName } =
+    useOpportunityEditSectionAccordion('faqs', 'faq-section')
 
   if (faqs.length === 0) return null
 
@@ -40,24 +46,21 @@ export function FaqSection({ opp, isMobile }: FaqSectionProps) {
             title={<OpportunityTermLabel term="faq" label="Frequently Asked Questions" />}
           />
         }
-        description={`${faqs.length} question${faqs.length === 1 ? '' : 's'}`}
       >
-        <div className="flex w-full flex-col gap-3">
+        <Accordion type="multiple" className="w-full divide-y divide-border-subtle border-y border-border-subtle">
           {faqs.map((faq: any, i: number) => {
             const question = localizeText(faq.question ?? faq.q ?? '')
             const answer = localizeText(faq.answer ?? faq.a ?? '')
             return (
-              <Card key={i} className="w-full p-4">
-                <p className="font-sans text-[13px] font-semibold leading-relaxed text-foreground sm:text-[14px]">
-                  {question}
-                </p>
-                <p className="mt-2 font-sans text-[13px] leading-relaxed text-muted-foreground sm:text-[14px]">
+              <AccordionItem key={i} value={`faq-${i}`}>
+                <AccordionTrigger className="px-0 sm:px-1">{question}</AccordionTrigger>
+                <AccordionContent className="px-0 pb-4 text-[13px] leading-relaxed text-muted-foreground sm:px-1 sm:text-[14px]">
                   {answer}
-                </p>
-              </Card>
+                </AccordionContent>
+              </AccordionItem>
             )
           })}
-        </div>
+        </Accordion>
       </OpportunityDetailSectionShell>
     </section>
   )

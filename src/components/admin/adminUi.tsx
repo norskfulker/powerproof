@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react'
-import { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ArrowDown, ArrowUp, ArrowUpDown, Search } from '@/lib/icons'
 import { NotFoundState } from '@/components/NotFoundState'
 import { Card } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
-import { TableHead } from '@/components/ui/table'
+import { Table, TableHead } from '@/components/ui/table'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { cn } from '@/lib/utils'
 import type { AdminOwnerProfile } from '@/hooks/useAdminOwnerProfiles'
@@ -285,7 +285,7 @@ export function AdminSortTableHead({
       <button
         type="button"
         onClick={() => onSort(sortKey)}
-        className="inline-flex items-center gap-1 font-semibold uppercase tracking-[0.06em] text-foreground hover:text-primary"
+        className="inline-flex items-center gap-1 font-display text-[13px] font-semibold tracking-tight text-foreground hover:text-primary"
       >
         {label}
         {active ? (
@@ -299,17 +299,30 @@ export function AdminSortTableHead({
 }
 
 export function AdminTableWrap({ children, className }: { children: ReactNode; className?: string }) {
-  return (
-    <Card padding="none" radius="lg" accent="none" className={cn('overflow-hidden', className)}>
-      <div className="overflow-x-auto [-webkit-overflow-scrolling:touch]">{children}</div>
-    </Card>
-  )
+  const only = React.Children.count(children) === 1 ? React.Children.only(children) : null
+
+  // Raw <table> → shared Card-shelled Table (scanner style).
+  if (React.isValidElement(only) && only.type === 'table') {
+    const tableProps = only.props as { className?: string; children?: ReactNode }
+    const parts = React.Children.toArray(tableProps.children)
+    let header: ReactNode = null
+    const body: ReactNode[] = []
+    for (const part of parts) {
+      if (React.isValidElement(part) && part.type === 'thead') header = part
+      else body.push(part)
+    }
+    return (
+      <Table className={cn(className, tableProps.className)} header={header}>
+        {body}
+      </Table>
+    )
+  }
+
+  // Already a `Table` (or other shell) — no second Card.
+  return <div className={cn('min-w-0 w-full', className)}>{children}</div>
 }
 
-export const adminThClass =
-  'px-3.5 py-2.5 text-left text-[11px] font-semibold uppercase tracking-[0.06em] text-muted-foreground'
-
-export const adminTdClass = 'px-3.5 py-3 text-sm text-foreground'
+export { tableHeadClassName as adminThClass, tableCellClassName as adminTdClass } from '@/components/ui/table'
 
 export function AdminUserAvatar({ name }: { name: string }) {
   return (

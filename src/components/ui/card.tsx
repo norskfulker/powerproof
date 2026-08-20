@@ -118,7 +118,12 @@ export function Card({
   };
 
   return (
-    <div style={base} className={className} onClick={onClick} {...rest}>
+    <div
+      style={base}
+      className={cn(hasTopSlot && 'flex min-h-0 flex-col', className)}
+      onClick={onClick}
+      {...rest}
+    >
       {topSlot ? (
         <div
           className={cn(cardTopSlotBandClassName, topSlotClassName)}
@@ -127,7 +132,10 @@ export function Card({
           {topSlot}
         </div>
       ) : null}
-      <div style={contentStyleMerged}>
+      <div
+        style={contentStyleMerged}
+        className={hasTopSlot ? 'min-h-0 min-w-0 flex-1' : undefined}
+      >
         {children}
       </div>
     </div>

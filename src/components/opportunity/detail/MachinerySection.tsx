@@ -53,7 +53,6 @@ export function MachinerySection(props: MachinerySectionProps) {
             title={<OpportunityTermLabel term="machinery_equipment" label="Machinery & Equipment" />}
           />
         }
-        description={`${machineryList.length} ${machineryList.length === 1 ? 'item' : 'items'}${isLocked ? ' · preview' : ''}`}
         contentMeta={
           showTotal ? (
             <>

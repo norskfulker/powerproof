@@ -14,12 +14,11 @@ import { OpportunityTermLabel } from '@/components/opportunity/detail/Opportunit
 
 import { OpportunityDetailSectionShell } from '@/components/opportunity/detail/OpportunityDetailAccordion'
 import { OpportunityAccordionHeaderRow } from '@/components/opportunity/detail/OpportunityAccordionHeaderRow'
-import { Badge } from '@/components/ui/badge'
-import type { BadgeVariant } from '@/components/ui/badge'
 import { OpportunityProgressBar } from '@/components/opportunity/detail/OpportunityProgressBar'
 import { Card } from '@/components/ui/card'
-import { ShieldCheck, Sparkles, Flame, Wallet, ArrowUpRight, BarChart3, Info, Percent, Calculator } from '@/lib/icons'
+import { ShieldCheck, Sparkles, Flame, Wallet, ArrowUpRight, Percent, Calculator, Gauge } from '@/lib/icons'
 import { iconClassName } from '@/lib/iconClassNames'
+import { EffortLevelMeter } from '@/components/discover/EffortLevelDashes'
 
 import {
   opportunityCardTopSlotRowClass,
@@ -48,9 +47,8 @@ export type RevenueScenarioOpportunity = Pick<
 type Scenario = {
   key: 'conservative' | 'realistic' | 'optimistic'
   label: string
-  sublabel: string
+  hint: string
   colorClass: string
-  badgeVariant: BadgeVariant
   progressClass: string
   topSlotTone: 'destructive' | 'primary' | 'success'
   icon: React.ComponentType<{ className?: string }>
@@ -87,7 +85,7 @@ export function RevenueScenarioCards({
   const unitsHigh = rev?.units_per_day_high ?? 0
   const unitsMid = Math.round((unitsLow + unitsHigh) / 2)
   const driverLabel = rev?.driver_label ?? 'units'
-  const cogsLabel = config?.cogs_label ?? 'Cost of Goods'
+  const cogsLabel = config?.cogs_label ?? 'Cost of goods'
   const avgBill = rev?.avg_bill ?? 0
   const billingModel = getCalculatorBillingModel(config)
   const isSubscription = isSubscriptionBilling(config)
@@ -109,10 +107,9 @@ export function RevenueScenarioCards({
   const scenarios: Scenario[] = [
     {
       key: 'conservative',
-      label: 'Conservative Model',
-      sublabel: 'Minimum operational baseline iteration threshold.',
+      label: 'Conservative',
+      hint: 'Lower end of expected demand.',
       colorClass: 'text-rose-500',
-      badgeVariant: 'red',
       progressClass: 'bg-rose-500',
       topSlotTone: 'destructive',
       icon: ShieldCheck,
@@ -124,10 +121,9 @@ export function RevenueScenarioCards({
     },
     {
       key: 'realistic',
-      label: 'Realistic Projection',
-      sublabel: 'Standard operational run-rate capability target.',
+      label: 'Realistic',
+      hint: 'Most likely steady-state run rate.',
       colorClass: 'text-primary',
-      badgeVariant: 'blue',
       progressClass: 'bg-primary',
       topSlotTone: 'primary',
       icon: Sparkles,
@@ -142,10 +138,9 @@ export function RevenueScenarioCards({
     },
     {
       key: 'optimistic',
-      label: 'Optimistic Horizon',
-      sublabel: 'Maximum systemic scale capability saturation.',
+      label: 'Optimistic',
+      hint: 'Upper end if demand holds.',
       colorClass: 'text-success',
-      badgeVariant: 'green',
       progressClass: 'bg-success',
       topSlotTone: 'success',
       icon: Flame,
@@ -163,6 +158,45 @@ export function RevenueScenarioCards({
 
   if (!revMin && !revMax) return null
 
+  const baselineItems = [
+    {
+      key: 'setup',
+      icon: Wallet,
+      label: 'Setup capital',
+      value: `${formatMoney(opportunity.setup_min ?? 0)} – ${formatMoney(opportunity.setup_max ?? 0)}`,
+    },
+    avgBill > 0
+      ? {
+          key: 'ticket',
+          icon: ArrowUpRight,
+          label: 'Average ticket',
+          value: formatMoney(avgBill),
+        }
+      : null,
+    cogsLabel
+      ? {
+          key: 'cogs',
+          icon: Percent,
+          label: cogsLabel,
+          value: `${config?.cogs_slider_min ?? '—'}–${config?.cogs_slider_max ?? '—'}%`,
+        }
+      : null,
+    easeLabel
+      ? {
+          key: 'effort',
+          icon: Gauge,
+          label: 'Effort level',
+          valueNode: <EffortLevelMeter effort={easeLabel} size="sm" />,
+        }
+      : null,
+  ].filter(Boolean) as Array<{
+    key: string
+    icon: React.ElementType
+    label: string
+    value?: string
+    valueNode?: React.ReactNode
+  }>
+
   return (
     <OpportunityDetailSectionShell
       id="od-scenarios"
@@ -177,159 +211,130 @@ export function RevenueScenarioCards({
         />
       }
     >
-            <div className="space-y-5">
-              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-                {scenarios.map((s) => {
-                  const Icon = s.icon
-                  return (
-                    <Card
-                      key={s.key}
-                      padding="sm"
-                      radius="lg"
-                      className={cn(opportunityDetailCardClass, 'flex h-full flex-col justify-between overflow-hidden')}
-                      topSlotStyle={opportunityCardTopSlotToneStyle[s.topSlotTone]}
-                      topSlot={
-                        <div className={opportunityCardTopSlotRowClass}>
-                          <Icon
-                            className={iconClassName({
-                              tone:
-                                s.topSlotTone === 'success'
-                                  ? 'success'
-                                  : s.topSlotTone === 'destructive'
-                                    ? 'destructive'
-                                    : 'primary',
-                              size: 'sm',
-                              active: true,
-                            })}
-                            aria-hidden
-                          />
-                          <span
-                            className={cn(
-                              opportunityCardTopSlotTitleClass,
-                              opportunityCardTopSlotTone[s.topSlotTone].title,
-                              'min-w-0 flex-1',
-                            )}
-                          >
-                            {s.label}
-                          </span>
-                        </div>
-                      }
+      <div className="space-y-5">
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          {scenarios.map((s) => {
+            const Icon = s.icon
+            return (
+              <Card
+                key={s.key}
+                padding="sm"
+                radius="lg"
+                className={cn(opportunityDetailCardClass, 'flex h-full flex-col overflow-hidden')}
+                topSlotStyle={opportunityCardTopSlotToneStyle[s.topSlotTone]}
+                topSlot={
+                  <div className={opportunityCardTopSlotRowClass}>
+                    <Icon
+                      className={iconClassName({
+                        tone:
+                          s.topSlotTone === 'success'
+                            ? 'success'
+                            : s.topSlotTone === 'destructive'
+                              ? 'destructive'
+                              : 'primary',
+                        size: 'sm',
+                        active: true,
+                      })}
+                      aria-hidden
+                    />
+                    <span
+                      className={cn(
+                        opportunityCardTopSlotTitleClass,
+                        opportunityCardTopSlotTone[s.topSlotTone].title,
+                      )}
                     >
-                      <div className="flex min-h-0 flex-1 flex-col justify-between gap-4">
-                        <div className="space-y-3">
-                          <div
-                            className={cn(
-                              'inline-flex flex-wrap items-baseline gap-x-2 font-sans text-[28px] font-black tracking-tight leading-none tabular-nums antialiased',
-                              s.colorClass,
-                            )}
-                          >
-                            <span>{formatMoney(s.revenue)}</span>
-                            <span className="text-[15px] font-bold text-muted-foreground/60">/mo</span>
-                          </div>
-
-                          <div className="space-y-1">
-                            <div className="flex items-baseline justify-between gap-4 font-sans text-[15px] text-muted-foreground/90">
-                              <span>Expected Monthly Profit</span>
-                              <span className="font-black tabular-nums text-foreground">{formatMoney(s.profit)}</span>
-                            </div>
-                            <OpportunityProgressBar
-                              value={s.margin}
-                              fillClassName={cn('opacity-85', s.progressClass)}
-                              trackClassName="bg-muted"
-                              aria-label={`${s.label} margin`}
-                            />
-                          </div>
-
-                          <div className="flex items-center justify-between border-t border-border-subtle/40 pt-2.5 font-sans text-[13px] font-medium leading-none">
-                            <span className="flex items-center gap-1 text-text-tertiary">
-                              <Percent className="h-3 w-3" /> Net Margin
-                            </span>
-                            <span className={cn('font-black tabular-nums', s.colorClass)}>{s.margin}%</span>
-                          </div>
-
-                          {s.paybackMonths != null ? (
-                            <div className="flex items-center justify-between border-t border-border-subtle/40 pt-2.5 font-sans text-[13px] font-medium leading-none">
-                              <span className="text-text-tertiary">Expected Payback Period</span>
-                              <span className="font-bold tabular-nums text-foreground">
-                                {s.paybackMonths === 1 ? '1 Month' : `${s.paybackMonths} Months`}
-                              </span>
-                            </div>
-                          ) : null}
-
-                          {s.driverLabel ? (
-                            <div className="flex items-center justify-between border-t border-border-subtle/40 pt-2.5 font-sans text-[13px] font-medium leading-none">
-                              <span className="text-text-tertiary">Min. Customers Required</span>
-                              <span className="max-w-[130px] truncate text-right font-bold text-text-secondary">
-                                {s.driverLabel}
-                              </span>
-                            </div>
-                          ) : null}
-                        </div>
-
-                        <div className="flex items-start gap-1.5 border-t border-border-subtle/30 pt-3 text-[11px] font-semibold leading-relaxed tracking-tight text-text-tertiary">
-                          <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-foreground opacity-60" />
-                          <span>{s.sublabel}</span>
-                        </div>
-                      </div>
-                    </Card>
-                  )
-                })}
-              </div>
-
-              <div className="rounded-2xl border-0 bg-muted/20 px-5 py-4 flex flex-col gap-3.5 shadow-none">
-                <div className="flex items-center gap-1.5 font-sans text-[10px] font-black text-muted-foreground uppercase tracking-wider">
-                  <BarChart3 className="h-3.5 w-3.5 text-text-tertiary" />
-                  <span>Underlying Operational Driving Baseline Weights</span>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-x-6 gap-y-3">
-                  <div className="space-y-0.5">
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary">
-                      Setup Capital Bounds
+                      {s.label}
                     </span>
-                    <div className="text-[13px] font-black text-foreground tracking-tight tabular-nums flex items-center gap-1">
-                      <Wallet className="h-3 w-3 text-text-tertiary shrink-0" />
-                      <span>
-                        {formatMoney(opportunity.setup_min ?? 0)} – {formatMoney(opportunity.setup_max ?? 0)}
-                      </span>
-                    </div>
+                  </div>
+                }
+              >
+                <div className="flex min-h-0 flex-1 flex-col gap-4">
+                  <div>
+                    <p
+                      className={cn(
+                        'font-display text-[28px] font-black leading-none tracking-tight tabular-nums',
+                        s.colorClass,
+                      )}
+                    >
+                      {formatMoney(s.revenue)}
+                      <span className="ml-1 text-[14px] font-semibold text-muted-foreground">/mo</span>
+                    </p>
+                    <p className="mt-1.5 font-sans text-[12px] text-muted-foreground">{s.hint}</p>
                   </div>
 
-                  {avgBill > 0 ? (
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary block">
-                        Average Ticket Bill
+                  <div className="space-y-2">
+                    <div className="flex items-center justify-between gap-3 font-sans text-[13px]">
+                      <span className="text-muted-foreground">Monthly profit</span>
+                      <span className="font-semibold tabular-nums text-foreground">
+                        {formatMoney(s.profit)}
                       </span>
-                      <div className="text-[13px] font-black text-foreground tracking-tight tabular-nums flex items-center gap-1">
-                        <ArrowUpRight className="h-3 w-3 text-text-tertiary shrink-0" />
-                        <span>{formatMoney(avgBill)}</span>
+                    </div>
+                    <div className="flex items-center justify-between gap-3">
+                      <span className="font-sans text-[13px] text-muted-foreground">Net margin</span>
+                      <div className="flex items-center gap-2">
+                        <OpportunityProgressBar
+                          value={s.margin}
+                          fillClassName={s.progressClass}
+                          aria-label={`${s.label} margin`}
+                        />
+                        <span className={cn('min-w-[2.5rem] text-right font-semibold tabular-nums', s.colorClass)}>
+                          {s.margin}%
+                        </span>
                       </div>
                     </div>
-                  ) : null}
-
-                  {cogsLabel ? (
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary block truncate max-w-full">
-                        {cogsLabel} Limits
-                      </span>
-                      <div className="text-[13px] font-black text-foreground tracking-tight tabular-nums pl-0.5">
-                        {config?.cogs_slider_min ?? '—'}–{config?.cogs_slider_max ?? '—'}%
+                    {s.paybackMonths != null ? (
+                      <div className="flex items-center justify-between gap-3 border-t border-border-subtle/50 pt-2 font-sans text-[13px]">
+                        <span className="text-muted-foreground">Payback</span>
+                        <span className="font-semibold tabular-nums text-foreground">
+                          {s.paybackMonths === 1 ? '1 month' : `${s.paybackMonths} months`}
+                        </span>
                       </div>
-                    </div>
-                  ) : null}
-
-                  {easeLabel ? (
-                    <div className="space-y-0.5">
-                      <span className="text-[10px] font-bold uppercase tracking-wider text-text-tertiary block">
-                        Friction Index Complexity
-                      </span>
-                      <div className="text-[13px] font-black text-foreground tracking-tight pl-0.5">{easeLabel}</div>
-                    </div>
-                  ) : null}
+                    ) : null}
+                    {s.driverLabel ? (
+                      <div className="flex items-center justify-between gap-3 border-t border-border-subtle/50 pt-2 font-sans text-[13px]">
+                        <span className="text-muted-foreground">Customers needed</span>
+                        <span className="max-w-[9rem] truncate text-right font-semibold text-foreground">
+                          {s.driverLabel}
+                        </span>
+                      </div>
+                    ) : null}
+                  </div>
                 </div>
-              </div>
-      </div>
-      </OpportunityDetailSectionShell>
-  )
+              </Card>
+            )
+          })}
+        </div>
 
+        {baselineItems.length > 0 ? (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {baselineItems.map((item) => {
+              const Icon = item.icon
+              return (
+                <Card
+                  key={item.key}
+                  padding="sm"
+                  radius="lg"
+                  className="overflow-hidden"
+                  topSlot={
+                    <div className={opportunityCardTopSlotRowClass}>
+                      <Icon className={iconClassName({ tone: 'muted', size: 'sm' })} aria-hidden />
+                      <span className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}>
+                        {item.label}
+                      </span>
+                    </div>
+                  }
+                >
+                  {item.valueNode ?? (
+                    <p className="m-0 font-sans text-[14px] font-semibold tabular-nums text-foreground">
+                      {item.value}
+                    </p>
+                  )}
+                </Card>
+              )
+            })}
+          </div>
+        ) : null}
+      </div>
+    </OpportunityDetailSectionShell>
+  )
 }

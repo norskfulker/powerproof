@@ -36,9 +36,16 @@ import { useCurrency } from '@/hooks/useCurrency'
 import { useIsMobile } from '@/hooks/useBreakpoint'
 import { iconClassName } from '@/lib/iconClassNames'
 import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
 import { OpportunityProgressBar } from '@/components/opportunity/detail/OpportunityProgressBar'
 import { OpportunityDetailSectionShell } from '@/components/opportunity/detail/OpportunityDetailAccordion'
 import { OpportunityAccordionHeaderRow } from '@/components/opportunity/detail/OpportunityAccordionHeaderRow'
+import {
+  opportunityCardTopSlotRowClass,
+  opportunityCardTopSlotTitleClass,
+  opportunityCardTopSlotTone,
+  opportunityDetailCardClass,
+} from '@/lib/opportunityCardClasses'
 
 const FIT_KEY_TERM: Record<(typeof FIT_SCORE_KEYS)[number], OpportunityTermKey> = {
   profitability: 'profitability',
@@ -86,25 +93,31 @@ function FitIndexBadge({
 
 function FitScoreSkeleton() {
   return (
-    <div className="space-y-4" aria-busy="true" aria-label="Fit score loading">
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-        {FIT_SCORE_KEYS.map((key) => (
-          <div key={key} className="space-y-2 border-b border-border-subtle/50 pb-4 last:border-b-0 sm:border-b-0 sm:pb-0">
-            <span className="block h-3.5 w-28 animate-pulse rounded bg-muted/40" />
-            <span className="block h-2 w-full animate-pulse rounded-full bg-muted/30" />
-            <span className="block h-3 w-full animate-pulse rounded bg-muted/25" />
-          </div>
-        ))}
-      </div>
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2" aria-busy="true" aria-label="Fit score loading">
+      {FIT_SCORE_KEYS.map((key) => (
+        <Card
+          key={key}
+          padding="sm"
+          radius="lg"
+          className={cn(opportunityDetailCardClass, 'overflow-hidden')}
+          topSlot={
+            <div className={opportunityCardTopSlotRowClass}>
+              <span className="block h-3.5 w-28 animate-pulse rounded bg-muted/40" />
+            </div>
+          }
+        >
+          <span className="block h-2 w-full animate-pulse rounded-full bg-muted/30" />
+          <span className="mt-2 block h-3 w-full animate-pulse rounded bg-muted/25" />
+        </Card>
+      ))}
     </div>
   )
 }
 
 function ScoreBreakdownSection({
   rawBreakdown,
-  fitScore,
-  fitScoreUnavailable,
   fitScoreValid,
+  fitScoreUnavailable,
   pros,
   cons,
 }: {
@@ -123,7 +136,7 @@ function ScoreBreakdownSection({
   if (!showScoreCards && !hasProsCons && !showUnavailableMessage) return null
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4">
       {showUnavailableMessage ? (
         <p className="text-sm font-medium leading-relaxed text-muted-foreground">
           Fit score was not saved for this report. Other sections are still available.
@@ -131,7 +144,7 @@ function ScoreBreakdownSection({
       ) : null}
 
       {showScoreCards ? (
-        <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 sm:gap-x-8 sm:gap-y-5">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {FIT_SCORE_KEYS.map((key, index) => {
             const meta = SCORE_DIMENSION_META[key]
             const val = getFitDimensionValue(rawBreakdown, key)
@@ -150,10 +163,7 @@ function ScoreBreakdownSection({
       ) : null}
 
       {hasProsCons ? (
-        <div
-          id="od-pros-cons"
-          className="grid grid-cols-1 gap-6 border-t border-border-subtle/60 pt-6 sm:grid-cols-2 sm:gap-8"
-        >
+        <div id="od-pros-cons" className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {pros.length > 0 ? (
             <ProsConsBreakdownList
               title="Benefits of starting this business"
@@ -191,21 +201,24 @@ function ScoreBreakdownItem({
   const badgeVariant = getFitScoreTierBadgeVariant(tier)
 
   return (
-    <div className="min-w-0 space-y-2">
-      <div className="flex min-w-0 items-center gap-2">
-        <Icon
-          className={iconClassName({ tone: 'muted', size: 'sm' })}
-          aria-hidden
-        />
-        <OpportunityTermLabel
-          term={term}
-          label={meta.label}
-          className="min-w-0 flex-1 truncate font-sans text-[13px] font-medium text-foreground"
-        />
-        <Badge variant={badgeVariant} size="sm" className="shrink-0 font-semibold">
-          {FIT_SCORE_TIER_LABEL[tier]}
-        </Badge>
-      </div>
+    <Card
+      padding="sm"
+      radius="lg"
+      className={cn(opportunityDetailCardClass, 'h-full min-w-0 overflow-hidden')}
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <Icon className={iconClassName({ tone: 'muted', size: 'sm' })} aria-hidden />
+          <OpportunityTermLabel
+            term={term}
+            label={meta.label}
+            className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}
+          />
+          <Badge variant={badgeVariant} size="sm" className="shrink-0 font-semibold">
+            {FIT_SCORE_TIER_LABEL[tier]}
+          </Badge>
+        </div>
+      }
+    >
       <OpportunityProgressBar
         value={val}
         color={barColor}
@@ -213,10 +226,10 @@ function ScoreBreakdownItem({
         className="min-w-0 w-full"
         aria-label={`${meta.label} score`}
       />
-      <p className="font-sans text-[12px] font-normal leading-relaxed text-muted-foreground">
+      <p className="mt-2 font-sans text-[12px] font-normal leading-relaxed text-muted-foreground">
         {meta.desc}
       </p>
-    </div>
+    </Card>
   )
 }
 
@@ -224,12 +237,14 @@ const PROS_CONS_CONFIG = {
   pro: {
     ItemIcon: Check,
     itemIconClass: 'text-success',
-    titleClass: 'text-success',
+    TitleIcon: Check,
+    titleTone: opportunityCardTopSlotTone.success.title,
   },
   con: {
     ItemIcon: AlertCircle,
     itemIconClass: 'text-destructive',
-    titleClass: 'text-destructive',
+    TitleIcon: AlertTriangle,
+    titleTone: opportunityCardTopSlotTone.destructive.title,
   },
 }
 
@@ -244,14 +259,23 @@ function ProsConsBreakdownList({
 }) {
   const config = PROS_CONS_CONFIG[variant]
   const ItemIcon = config.ItemIcon
-  const TitleIcon = variant === 'pro' ? Check : AlertTriangle
+  const TitleIcon = config.TitleIcon
 
   return (
-    <div className="min-w-0 space-y-3">
-      <div className={cn('flex items-center gap-2 font-sans text-[13px] font-semibold', config.titleClass)}>
-        <TitleIcon className="h-3.5 w-3.5 shrink-0" aria-hidden />
-        {title}
-      </div>
+    <Card
+      padding="sm"
+      radius="lg"
+      className={cn(opportunityDetailCardClass, 'h-full min-w-0 overflow-hidden')}
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <TitleIcon
+            className={cn('h-3.5 w-3.5 shrink-0', config.itemIconClass)}
+            aria-hidden
+          />
+          <span className={cn(opportunityCardTopSlotTitleClass, config.titleTone)}>{title}</span>
+        </div>
+      }
+    >
       <ul className="m-0 list-none space-y-2.5 p-0">
         {items.map((item, i) => (
           <li
@@ -266,7 +290,7 @@ function ProsConsBreakdownList({
           </li>
         ))}
       </ul>
-    </div>
+    </Card>
   )
 }
 
@@ -285,15 +309,27 @@ function PillRail({
   variant?: 'default' | 'primary'
 }) {
   return (
-    <div className="space-y-2.5">
-      <div className="flex items-center gap-2 font-sans text-[13px] font-medium text-foreground">
-        <Icon className={iconClassName({ tone: 'muted', size: 'sm' })} strokeWidth={2.5} aria-hidden />
-        {term ?? opportunityTermKeyForTitle(title) ? (
-          <OpportunityTermLabel term={(term ?? opportunityTermKeyForTitle(title))!} label={title} />
-        ) : (
-          <span>{title}</span>
-        )}
-      </div>
+    <Card
+      padding="sm"
+      radius="lg"
+      className={cn(opportunityDetailCardClass, 'min-w-0 overflow-hidden')}
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <Icon className={iconClassName({ tone: 'muted', size: 'sm' })} strokeWidth={2.5} aria-hidden />
+          {term ?? opportunityTermKeyForTitle(title) ? (
+            <OpportunityTermLabel
+              term={(term ?? opportunityTermKeyForTitle(title))!}
+              label={title}
+              className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}
+            />
+          ) : (
+            <span className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}>
+              {title}
+            </span>
+          )}
+        </div>
+      }
+    >
       <div ref={pillsRef} className="flex flex-wrap gap-1.5">
         {pills.map((pill) => (
           <span
@@ -304,7 +340,7 @@ function PillRail({
           </span>
         ))}
       </div>
-    </div>
+    </Card>
   )
 }
 
@@ -325,18 +361,31 @@ export function ResearchSaturationIndicator({ opp }: { opp: Record<string, unkno
   if (!(opp as { is_saturated?: boolean }).is_saturated) return null
   const note = (opp as { saturation_note?: string }).saturation_note
   return (
-    <div className="flex flex-col gap-1.5 rounded-lg border border-orange-200 bg-orange-50 px-4 py-3 dark:border-orange-900/40 dark:bg-orange-950/30">
-      <div className="flex items-center gap-2">
-        <OpportunityTermLabel
-          term="research_saturation"
-          label="Market Saturation Warning"
-          className="text-[13px] font-semibold text-orange-700 dark:text-orange-400"
-        />
-      </div>
+    <Card
+      padding="sm"
+      radius="lg"
+      className="overflow-hidden border-orange-200 dark:border-orange-900/40"
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <AlertTriangle
+            className="h-3.5 w-3.5 shrink-0 text-orange-700 dark:text-orange-400"
+            aria-hidden
+          />
+          <OpportunityTermLabel
+            term="research_saturation"
+            label="Market Saturation Warning"
+            className={cn(
+              opportunityCardTopSlotTitleClass,
+              'text-orange-700 dark:text-orange-400',
+            )}
+          />
+        </div>
+      }
+    >
       {note ? (
         <p className="text-[12px] leading-relaxed text-orange-600/80 dark:text-orange-400/70">{note}</p>
       ) : null}
-    </div>
+    </Card>
   )
 }
 
@@ -399,7 +448,7 @@ export function FitScoreSidebar({
       contentMeta={summaryBadge || undefined}
       contentClassName="text-foreground"
     >
-      <div className="space-y-6">
+      <div className="space-y-4">
         {showScoreBreakdown ? (
           fitScorePending ? (
             <FitScoreSkeleton />
@@ -416,29 +465,24 @@ export function FitScoreSidebar({
         ) : null}
 
         {hasGuidelinesChips ? (
-          <div
-            className={cn(
-              'space-y-5',
-              showScoreBreakdown && 'border-t border-border-subtle/60 pt-5',
-            )}
-          >
-            {targetCustomerPills.length > 0 && (
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+            {targetCustomerPills.length > 0 ? (
               <PillRail
                 title="Day One Ideal Customers"
                 icon={Megaphone}
                 pills={targetCustomerPills}
                 pillsRef={customerPillsRef}
               />
-            )}
+            ) : null}
 
-            {Array.isArray((opp as any)?.state_tags) && (opp as any).state_tags.length > 0 && (
+            {Array.isArray((opp as any)?.state_tags) && (opp as any).state_tags.length > 0 ? (
               <PillRail
                 title="Best Place to Start this Business"
                 icon={MapPin}
                 pills={(opp as any).state_tags}
                 pillsRef={statePillsRef}
               />
-            )}
+            ) : null}
           </div>
         ) : null}
       </div>

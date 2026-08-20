@@ -13,7 +13,6 @@ import { useMemo } from 'react'
 import type { ElementType, ReactNode } from 'react'
 import { Card } from '@/components/ui/card'
 import { OpportunityAccordionHeaderRow } from '@/components/opportunity/detail/OpportunityAccordionHeaderRow'
-import { opportunityAccordionDescriptionClass } from '@/components/opportunity/detail/OpportunityAccordionHeaderRow'
 import { OpportunityDetailSectionShell } from '@/components/opportunity/detail/OpportunityDetailAccordion'
 import { Badge } from '@/components/ui/badge'
 import { OpportunityTermLabel } from '@/components/opportunity/detail/OpportunityTermLabel'
@@ -105,12 +104,21 @@ function DemographicSlotCard({
 }
 
 function DemographicDescription({ children }: { children: ReactNode }) {
-  return <p className={cn(opportunityAccordionDescriptionClass, 'text-[13px] leading-relaxed')}>{children}</p>
+  return (
+    <p className="m-0 font-sans text-[13px] font-normal leading-relaxed text-muted-foreground">
+      {children}
+    </p>
+  )
 }
 
 function DemographicLead({ children, className }: { children: ReactNode; className?: string }) {
   return (
-    <p className={cn('font-sans text-[15px] font-semibold leading-snug tracking-normal text-foreground', className)}>
+    <p
+      className={cn(
+        'm-0 font-sans text-[13px] font-normal leading-relaxed text-muted-foreground',
+        className,
+      )}
+    >
       {children}
     </p>
   )

@@ -144,14 +144,14 @@ export function DetailHeroPanel({
   return (
     <div id={id} data-tour={id === 'od-hero' ? 'od-hero' : undefined} className="relative min-w-0 w-full scroll-mt-[7.5rem] overflow-visible">
       <div className={cn(detailHeroCardClassName, 'overflow-visible')}>
-        {meta || actions ? (
-          <div className="mb-4 flex flex-wrap items-start justify-between gap-2 selection:bg-transparent sm:mb-5 lg:mb-6">
-            {meta ? <div className="flex flex-wrap items-center gap-2">{meta}</div> : <span />}
-            {actions ? <div className="ml-auto flex shrink-0 items-center gap-1.5">{actions}</div> : null}
-          </div>
-        ) : null}
-
         <div className="space-y-3 sm:space-y-4">
+          {meta || actions ? (
+            <div className="flex flex-wrap items-start justify-between gap-2 selection:bg-transparent">
+              {meta ? <div className="flex flex-wrap items-center gap-2">{meta}</div> : <span />}
+              {actions ? <div className="ml-auto flex shrink-0 items-center gap-1.5">{actions}</div> : null}
+            </div>
+          ) : null}
+
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}

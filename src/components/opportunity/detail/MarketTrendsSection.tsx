@@ -169,9 +169,26 @@ export function MarketTrendsSection(props: MarketTrendsSectionProps) {
       />
 
       {opportunityNote ? (
-        <div className={cn(opportunityDetailCardClass, "px-5 py-4 font-sans text-[15px] leading-relaxed text-muted-foreground")}>
-          {opportunityNote}
-        </div>
+        <Card
+          padding="sm"
+          radius="lg"
+          className={cn(opportunityDetailCardClass, 'overflow-hidden')}
+          topSlot={
+            <div className={opportunityCardTopSlotRowClass}>
+              <Users
+                className={iconClassName({ tone: 'muted', size: 'sm', active: true })}
+                aria-hidden
+              />
+              <span className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}>
+                Market opportunity note
+              </span>
+            </div>
+          }
+        >
+          <p className="m-0 font-sans text-[15px] leading-relaxed text-muted-foreground">
+            {opportunityNote}
+          </p>
+        </Card>
       ) : null}
 
       {showEmbeddedCompetitors ? (

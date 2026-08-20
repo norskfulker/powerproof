@@ -386,20 +386,39 @@ function MarketSizingFunnel({
   ]
 
   return (
-    <div className="overflow-hidden rounded-xl border-0 bg-card">
-      <div className="flex items-center gap-2 border-b border-border-subtle/60 px-4 py-3">
-        <Layers
-          className={iconClassName({ tone: 'muted', size: 'sm' })}
-          strokeWidth={2.5}
+    <Card
+      padding="sm"
+      radius="xl"
+      className={cn(
+        opportunityDetailCardClass,
+        'relative h-full min-w-0 overflow-hidden',
+        'shadow-[0_18px_40px_-24px_rgba(37,99,235,0.45)]',
+        'ring-1 ring-primary/20',
+      )}
+      topSlotClassName="bg-gradient-to-r from-primary/15 via-primary/8 to-transparent"
+      topSlot={
+        <div className={opportunityCardTopSlotRowClass}>
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-primary-foreground shadow-sm">
+            <Layers className="h-4 w-4" strokeWidth={2.5} aria-hidden />
+          </span>
+          <div className="min-w-0 flex-1">
+            <span className={cn(opportunityCardTopSlotTitleClass, 'text-[15px] font-bold tracking-tight')}>
+              Size of the market
+            </span>
+            <p className="mt-0.5 font-sans text-[11px] font-medium text-muted-foreground">
+              TAM · SAM · SOM opportunity stack
+            </p>
+          </div>
+        </div>
+      }
+    >
+      <div className="relative flex h-full min-h-0 flex-col items-center gap-6 layout-sm:flex-row layout-sm:items-center layout-sm:gap-8">
+        <div
           aria-hidden
+          className="pointer-events-none absolute -right-16 -top-20 h-48 w-48 rounded-full bg-primary/10 blur-3xl"
         />
-        <span className="font-sans text-[13px] font-medium text-foreground">
-          Size of the market
-        </span>
-      </div>
-      <div className="flex flex-col items-center gap-5 px-4 py-5 layout-sm:flex-row layout-sm:items-center layout-sm:gap-6">
-        <div className="relative mx-auto aspect-square w-full max-w-[280px] shrink-0">
-          <svg viewBox="0 0 280 280" className="h-full w-full" role="img" aria-label="TAM SAM SOM concentric market size">
+        <div className="relative mx-auto aspect-square w-full max-w-[300px] shrink-0">
+          <svg viewBox="0 0 280 280" className="h-full w-full drop-shadow-sm" role="img" aria-label="TAM SAM SOM concentric market size">
             {tiers.map((tier) => {
               const styles = PIPELINE_TIERS[tier.key]
               return (
@@ -410,16 +429,16 @@ function MarketSizingFunnel({
                   r={tier.r}
                   fill={styles.ringFill}
                   stroke={styles.ringStroke}
-                  strokeWidth={2}
+                  strokeWidth={2.5}
                 />
               )
             })}
             <text
               x={140}
-              y={136}
+              y={132}
               textAnchor="middle"
               className="fill-foreground"
-              style={{ fontSize: 11, fontWeight: 600 }}
+              style={{ fontSize: 13, fontWeight: 800 }}
             >
               SOM
             </text>
@@ -427,36 +446,47 @@ function MarketSizingFunnel({
               x={140}
               y={152}
               textAnchor="middle"
-              className="fill-muted-foreground"
-              style={{ fontSize: 10 }}
+              className="fill-foreground"
+              style={{ fontSize: 14, fontWeight: 700 }}
             >
               {somDisplay ?? '—'}
             </text>
           </svg>
         </div>
 
-        <ul className="flex w-full min-w-0 flex-col gap-3">
+        <ul className="relative z-[1] flex w-full min-w-0 flex-1 flex-col justify-center gap-4">
           {tiers.map((tier) => {
             const styles = PIPELINE_TIERS[tier.key]
             const Icon = styles.icon
             return (
-              <li key={tier.key} className="flex min-w-0 items-start gap-2.5">
-                <Icon
-                  className={cn('mt-0.5 h-3.5 w-3.5 shrink-0', styles.textColor)}
-                  strokeWidth={2.5}
-                  aria-hidden
-                />
+              <li
+                key={tier.key}
+                className="flex min-w-0 items-start gap-3 rounded-xl border border-border-subtle/60 bg-card/80 px-3.5 py-3 shadow-sm"
+              >
+                <span
+                  className={cn(
+                    'mt-0.5 inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-lg',
+                    styles.textColor,
+                    'bg-current/10',
+                  )}
+                  style={{ background: styles.ringFill }}
+                >
+                  <Icon className={cn('h-4 w-4', styles.textColor)} strokeWidth={2.5} aria-hidden />
+                </span>
                 <div className="min-w-0 flex-1">
-                  <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">
-                    <span className={cn('font-display text-[13px] font-medium tracking-normal', styles.textColor)}>
+                  <div className="flex flex-wrap items-baseline gap-x-2.5 gap-y-0.5">
+                    <span className={cn('font-display text-[12px] font-bold uppercase tracking-[0.14em]', styles.textColor)}>
                       {styles.abbr}
                     </span>
-                    <span className={cn('font-sans text-[15px] font-bold tabular-nums', styles.textColor)}>
+                    <span className={cn('font-display text-[20px] font-black tabular-nums tracking-tight', styles.textColor)}>
                       {tier.display ?? '—'}
                     </span>
                   </div>
-                  <p className="mt-0.5 font-sans text-[11px] leading-snug text-muted-foreground">
+                  <p className="mt-1 font-sans text-[12px] font-medium leading-snug text-muted-foreground">
                     {styles.title}
+                  </p>
+                  <p className="mt-0.5 font-sans text-[11px] leading-snug text-muted-foreground/80">
+                    {styles.description}
                   </p>
                 </div>
               </li>
@@ -464,7 +494,7 @@ function MarketSizingFunnel({
           })}
         </ul>
       </div>
-    </div>
+    </Card>
   )
 }
 
@@ -664,29 +694,31 @@ export function KeyMarketTrends({
 
           {chartData ? (
             <OpportunityProLock locked={isProLocked} minHeightClassName="min-h-[16rem]">
-              <div className="overflow-visible rounded-xl border-0 bg-card">
-                <div className="mb-0 flex flex-wrap items-center justify-between gap-2 border-b border-border-subtle/60 px-4 py-3">
-                  <div className="flex items-center gap-2">
+              <Card
+                padding="sm"
+                radius="lg"
+                className={cn(opportunityDetailCardClass, 'h-full min-w-0 overflow-hidden')}
+                topSlot={
+                  <div className={cn(opportunityCardTopSlotRowClass, 'flex-wrap')}>
                     <TrendingUp
                       className={iconClassName({ tone: 'muted', size: 'sm' })}
                       strokeWidth={2.5}
                       aria-hidden
                     />
-                    <span className="font-sans text-[13px] font-medium text-foreground">
+                    <span className={cn(opportunityCardTopSlotTitleClass, opportunityCardTopSlotTone.default.title)}>
                       {demandTrend?.label || 'Demand Velocity Trend'}
                     </span>
+                    <div className="ml-auto flex flex-wrap items-center gap-2">
+                      {demandTrend?.trend_direction ? (
+                        <Badge size="sm" className="font-semibold" variant={trendDirectionVariant(demandTrend.trend_direction)}>
+                          {capitalizeFirstLetter(demandTrend.trend_direction)}
+                        </Badge>
+                      ) : null}
+                      {demandTrendHeaderAction}
+                    </div>
                   </div>
-                  <div className="flex flex-wrap items-center gap-2">
-                    {demandTrend?.trend_direction ? (
-                      <Badge size="sm" className="font-semibold" variant={trendDirectionVariant(demandTrend.trend_direction)}>
-                        {capitalizeFirstLetter(demandTrend.trend_direction)}
-                      </Badge>
-                    ) : null}
-                    {demandTrendHeaderAction}
-                  </div>
-                </div>
-
-                <div className="px-4 py-4">
+                }
+              >
                   <div className="-mx-2 h-[220px] w-full min-w-0">
                     <ResponsiveContainer width="100%" height="100%">
                       <AreaChart
@@ -778,8 +810,7 @@ export function KeyMarketTrends({
                       ) : null}
                     </div>
                   ) : null}
-                </div>
-              </div>
+              </Card>
             </OpportunityProLock>
           ) : null}
 
