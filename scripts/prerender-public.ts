@@ -415,7 +415,7 @@ async function main() {
   }
   console.log(`[prerender] ${blogCount} blog pages done`)
 
-  // Vercel serves 404.html for paths with no static file — enables SPA refresh on /room, /profile, etc.
+  // SPA fallback for paths with no static file — enables refresh on /room, /profile, etc.
   const rootIndex = path.join(DIST_DIR, 'index.html')
   const spaFallback = path.join(DIST_DIR, '404.html')
   fs.copyFileSync(rootIndex, spaFallback)

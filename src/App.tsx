@@ -31,8 +31,6 @@ import { roomPathForMode } from "@/lib/discoverHeroRoutes";
 import { Loader2 } from "@/lib/icons";
 import { AppLayout } from "@/components/AppLayout";
 import { NavbarTrailProvider } from "@/contexts/NavbarTrailContext";
-import { SpeedInsights } from "@vercel/speed-insights/react";
-import { Analytics } from "@vercel/analytics/react";
 import { AnalyticsScripts } from "@/components/layout/AnalyticsScripts";
 import { InAppBrowserBanner } from "@/components/layout/InAppBrowserBanner";
 import { PwaPrompts } from "@/components/pwa/PwaPrompts";
@@ -449,9 +447,7 @@ const App = () => {
           <TooltipProvider>
             <Sonner />
             <PwaPrompts />
-            <SpeedInsights />
             <BrowserRouter>
-              <Analytics />
               <AnalyticsScripts />
               <InAppBrowserBanner />
               <LayoutGroup id="powerproof-command-composer-group">

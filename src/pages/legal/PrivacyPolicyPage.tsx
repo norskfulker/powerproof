@@ -200,7 +200,7 @@ export function PrivacyPolicyPage() {
                 <li>email delivery for sign-in codes, receipts, and product notifications;</li>
                 <li>
                   analytics and product-quality tools, which may include Google Analytics, Microsoft
-                  Clarity, Meta Pixel, and Vercel Analytics / Speed Insights when enabled;
+                  Clarity, and Meta Pixel when enabled;
                 </li>
                 <li>AI model providers used to generate workspace outputs.</li>
               </ul>

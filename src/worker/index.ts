@@ -2,7 +2,7 @@
  * Cloudflare Worker entrypoint for the PowerProof SPA.
  *
  * Wraps the assets binding so we can attach security headers + per-path
- * Cache-Control (parity with the previous Vercel config in vercel.json).
+ * Cache-Control for HTML, assets, and public routes.
  * Everything else — auth, data, edge functions — still lives in Supabase.
  */
 

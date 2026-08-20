@@ -620,6 +620,49 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
   const canonicalPath = seo.canonicalPath ?? `/o/${opp?.slug ?? ''}`
   const canonicalUrl = canonicalPath.startsWith('http') ? canonicalPath : `${siteOrigin}${canonicalPath}`
 
+  // Fit / tab state must run unconditionally (before any early returns) to keep hook order stable.
+  const rawBreakdown = (opp as any)?.score_breakdown as Record<string, unknown> | undefined
+  const rawScore = isUserResearch
+    ? ((opp as any)?.fit_index ?? opp?.score ?? null)
+    : (opp?.score ?? null)
+  const fitScoreValid = isFitScoreDisplayValid(rawScore, rawBreakdown)
+  const fitScoreUnavailable =
+    isUserResearch &&
+    !fitScoreValid &&
+    Boolean(String(opp?.title ?? '').trim())
+  const hasProsCons =
+    fullDetail &&
+    ((Array.isArray((opp as any)?.pros) && (opp as any).pros.length > 0) ||
+      (Array.isArray((opp as any)?.cons) && (opp as any).cons.length > 0))
+  const showFitScoreColumn = isUserResearch
+    ? fitScoreValid || fitScoreUnavailable || hasProsCons
+    : fitScoreValid ||
+      rawBreakdown != null ||
+      (rawScore != null && rawScore !== '') ||
+      hasProsCons
+  const hasGuidelinesChips =
+    Boolean(fullDetail) &&
+    (targetCustomerPills.length > 0 ||
+      (Array.isArray((opp as any)?.state_tags) && (opp as any).state_tags.length > 0))
+  const showFitAndChipsColumn = showFitScoreColumn || hasGuidelinesChips
+
+  const researchTabs = useMemo(() => {
+    if (!showFitAndChipsColumn) {
+      return researchDataTabs.filter((tab) => tab.id !== 'od-fit')
+    }
+    if (researchDataTabs.some((tab) => tab.id === 'od-fit')) return researchDataTabs
+    return [{ id: 'od-fit', label: 'Fit' }, ...researchDataTabs]
+  }, [researchDataTabs, showFitAndChipsColumn])
+  const [researchDataTab, setResearchDataTab] = useState('')
+  const defaultResearchDataTab =
+    researchTabs.find((tab) => tab.id !== 'od-fit')?.id ?? researchTabs[0]?.id
+  useEffect(() => {
+    if (researchTabs.length === 0) return
+    if (!researchTabs.some((tab) => tab.id === researchDataTab)) {
+      setResearchDataTab(defaultResearchDataTab ?? '')
+    }
+  }, [researchTabs, researchDataTab, defaultResearchDataTab])
+
   if (isLoading && oppData?.slug !== slug) {
     return <OpportunityLoadingState />
   }
@@ -655,10 +698,6 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
     score: opp?.score ?? null,
   })
   const effortLabel = opp?.ease ? String(opp.ease) : ''
-  const rawBreakdown = (opp as any)?.score_breakdown as Record<string, unknown> | undefined
-  const rawScore = isUserResearch
-    ? ((opp as any)?.fit_index ?? opp?.score ?? null)
-    : (opp?.score ?? null)
   const demandTrendKind = isUserResearch
     ? trendKindFromDemandDirection((opp as any)?.demand_trend?.trend_direction)
     : trendKindFromVelocity(opp?.trend_velocity ?? 0)
@@ -683,47 +722,6 @@ const OpportunityDetailPage = (props: OpportunityDetailPageProps = {}) => {
   const profitMaxAbs = toAbsolute(opp?.monthly_profit_max)
 
   const marginPct = deriveMarginPct(opp)
-
-  const fitScoreValid = isFitScoreDisplayValid(rawScore, rawBreakdown)
-  const fitScoreUnavailable =
-    isUserResearch &&
-    !fitScoreValid &&
-    Boolean(String(opp?.title ?? '').trim())
-  const hasProsCons =
-    fullDetail &&
-    ((Array.isArray((opp as any)?.pros) && (opp as any).pros.length > 0) ||
-      (Array.isArray((opp as any)?.cons) && (opp as any).cons.length > 0))
-  const showFitScoreColumn = isUserResearch
-    ? fitScoreValid || fitScoreUnavailable || hasProsCons
-    : fitScoreValid ||
-      rawBreakdown != null ||
-      (rawScore != null && rawScore !== '') ||
-      hasProsCons
-
-  const hasGuidelinesChips =
-    Boolean(fullDetail) &&
-    (targetCustomerPills.length > 0 ||
-      (Array.isArray((opp as any)?.state_tags) && (opp as any).state_tags.length > 0))
-
-
-  const showFitAndChipsColumn = showFitScoreColumn || hasGuidelinesChips
-
-  const researchTabs = useMemo(() => {
-    if (!showFitAndChipsColumn) {
-      return researchDataTabs.filter((tab) => tab.id !== 'od-fit')
-    }
-    if (researchDataTabs.some((tab) => tab.id === 'od-fit')) return researchDataTabs
-    return [{ id: 'od-fit', label: 'Fit' }, ...researchDataTabs]
-  }, [researchDataTabs, showFitAndChipsColumn])
-  const [researchDataTab, setResearchDataTab] = useState('')
-  const defaultResearchDataTab =
-    researchTabs.find((tab) => tab.id !== 'od-fit')?.id ?? researchTabs[0]?.id
-  useEffect(() => {
-    if (researchTabs.length === 0) return
-    if (!researchTabs.some((tab) => tab.id === researchDataTab)) {
-      setResearchDataTab(defaultResearchDataTab ?? '')
-    }
-  }, [researchTabs, researchDataTab, defaultResearchDataTab])
 
   if (opp && isUserResearch && !user) return null
 
